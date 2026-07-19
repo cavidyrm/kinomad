@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=gambetta@400,401,500,501,700,701&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth;scrollbar-width:none}
+::-webkit-scrollbar{display:none;width:0}
+body{margin:0;--bg:#1f2121;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--card:#141922;--accent:#D9FF3D;--accent-ink:var(--accent);background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;transition:background 0.5s ease,color 0.5s ease;-webkit-font-smoothing:antialiased}
+body.light{--bg:#EDF0F4;--fg:#14130F;--mut:rgba(20,19,15,0.55);--line:rgba(20,19,15,0.16);--card:#DFE4EB;--accent-ink:color-mix(in oklab,var(--accent),#14130F 55%)}
+a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
+a:hover{color:var(--accent-ink)}
+.km-flink{background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:100% 92%;background-size:0% 2px;transition:background-size 0.9s cubic-bezier(0.22,1,0.36,1)}
+.km-flink:hover{background-position:0 92%;background-size:100% 2px}
+.km-cta{background-color:#F1EFE7;background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:#14130F;transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1)}
+.km-cta:hover,a.km-cta:hover{background-size:100% 100%;color:#14130F}
+.km-webcard-info{opacity:0;transform:translateY(24px)}
+.km-webcard:hover .km-webcard-img{filter:blur(16px) brightness(0.45)}
+.km-webcard:hover .km-webcard-txt{opacity:0;transform:scale(0.94)}
+.km-webcard:hover .km-webcard-scrim{opacity:0}
+.km-webcard:hover .km-webcard-info{opacity:1;transform:translateY(0)}
+@container page (max-width:900px){.km-webcard-info{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-end!important}.km-webcard-info>div:last-child{display:none!important}
+  [data-r=brandinfo]{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-end!important}}
+@container page (max-width:1250px){
+  [data-r=brandmeta]{display:none!important}
+  [data-r=brandstmt]{display:none!important}}
+::selection{background:var(--accent);color:#14130F}
+@keyframes km-hzoom{from{transform:scale(1.12)}to{transform:scale(1)}}
+@keyframes km-hfade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes km-rise{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:translateY(0)}}
+@keyframes km-spin{to{transform:rotate(1turn)}}
+@keyframes km-par{from{transform:translateY(-5.5%)}to{transform:translateY(5.5%)}}
+@keyframes km-footrise{from{transform:translateY(90px);opacity:0.35}to{transform:translateY(0);opacity:1}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+#frame{width:var(--frame-w,100%);margin-inline:auto;container:page / inline-size;position:relative;background:var(--bg);transition:width 0.5s cubic-bezier(0.16,1,0.3,1)}
+body.dev{background:#06080d}
+body.dev #frame{box-shadow:0 40px 130px rgba(0,0,0,0.55);outline:1px solid rgba(241,239,231,0.08);cursor:grab}
+body.dev.dragging{user-select:none}
+body.dev.dragging #frame{cursor:grabbing}
+@container page (max-width:1120px){
+  [data-r=foot]{min-height:0!important}
+}
+@container page (max-width:780px){
+  [data-r=foot-grid]{grid-template-columns:1fr!important}
+  [data-r=wmeta]{grid-template-columns:1fr 1fr!important}
+  [data-r=brandimgs]{grid-template-columns:1fr 1fr!important}
+  [data-r=brandcat]{display:block!important}
+}
+</style>
+</helmet>
+
+<header style="position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;width:min(330px,calc(100vw - 36px));display:grid;grid-template-rows:56px {{ navRows }};background:color-mix(in srgb,var(--nav,#0d1016) 62%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(241,239,231,0.1);overflow:hidden;transition:grid-template-rows 0.75s cubic-bezier(0.16,1,0.3,1)">
+  <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 18px;box-sizing:border-box">
+    <a href="Kinomad Landing.dc.html" style="font-weight:700;letter-spacing:-0.02em;font-size:17px;text-transform:uppercase;color:#F1EFE7" style-hover="color:#F1EFE7"><img src="assets/logo-light.png" alt="Kinomad" style="width:24px;height:auto;display:block"></a>
+    <button onClick="{{ toggleMenu }}" aria-label="Menu" style="background:transparent;border:none;color:#F1EFE7;cursor:pointer;font-size:22px;line-height:1;padding:8px 12px;font-family:inherit">{{ menuIcon }}</button>
+  </div>
+  <div style="min-height:0;overflow:hidden">
+    <div style="display:flex;flex-direction:column;padding:14px 0 22px;opacity:{{ menuOp }};transform:translateY({{ menuTy }});transition:opacity 0.45s ease 0.12s,transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.05s">
+      <nav style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <a href="Kinomad Landing.dc.html#studio" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Studio</a>
+        <a href="Kinomad Landing.dc.html#process" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Process</a>
+        <a href="Kinomad Landing.dc.html#services" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Services</a>
+        <a href="#" onClick="{{ backToTop }}" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);padding:9px 24px">Works</a>
+        <a href="Kinomad Landing.dc.html#team" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Team</a>
+        <a href="Kinomad Landing.dc.html#contact" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Contact</a>
+      </nav>
+      <div style="display:flex;justify-content:center;margin-top:16px">
+        <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" title="{{ themeTitle }}" style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;color:#F1EFE7;background:transparent;border:none;cursor:pointer;transition:color 0.25s ease" style-hover="color:var(--accent)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ themeIconPath }}"></path></svg></button>
+      </div>
+      
+    </div>
+  </div>
+</header>
+
+<div id="km-scrollthumb" aria-hidden="true" style="position:fixed;top:0;right:0;width:10px;height:120px;background:#F1EFE7;z-index:130;pointer-events:none;will-change:transform"></div>
+
+<div style="position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:120;display:flex;gap:2px;background:rgba(13,16,22,0.94);backdrop-filter:blur(14px);border:1px solid rgba(241,239,231,0.12);border-radius:999px;padding:4px">
+  <button data-dev="Desktop" onClick="{{ setDevice }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;background:{{ segDesktop.bg }};color:{{ segDesktop.fg }};transition:background 0.3s ease,color 0.3s ease">Desktop</button>
+  <button data-dev="Tablet" onClick="{{ setDevice }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;background:{{ segTablet.bg }};color:{{ segTablet.fg }};transition:background 0.3s ease,color 0.3s ease">Tablet</button>
+  <button data-dev="Mobile" onClick="{{ setDevice }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;background:{{ segMobile.bg }};color:{{ segMobile.fg }};transition:background 0.3s ease,color 0.3s ease">Mobile</button>
+</div>
+
+<div id="frame">
+<main style="position:relative;z-index:1;background:var(--bg)">
+
+<section data-screen-label="Works header" style="padding:clamp(100px,14vh,170px) clamp(20px,4cqw,64px) clamp(40px,5cqw,72px)">
+  <h1 id="km-works-title" style="margin:0;display:flex;align-items:flex-end;justify-content:space-between;font-size:clamp(72px,20.5cqw,340px);line-height:0.78;letter-spacing:-0.045em;font-weight:700;text-transform:uppercase;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) both"><span style="flex:1;display:flex;justify-content:space-between;align-items:flex-end"><span>W</span><span>O</span><span>R</span><span>K</span><span>S</span></span></h1>
+  <div style="border-top:2px solid var(--fg);margin-top:clamp(20px,2.6cqw,40px)"></div>
+  <div data-r="wmeta" style="display:grid;grid-template-columns:minmax(120px,0.8fr) minmax(0,1.4fr) minmax(160px,1fr) auto;gap:clamp(24px,4cqw,72px);align-items:start;padding-top:18px;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.15s both">
+    <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600">Selected works · 11</span>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">Why</span>
+      <p style="margin:0;max-width:440px;font-family:'Gambetta',serif;font-style:italic;font-size:15px;line-height:1.55;font-weight:500;color:var(--mut);text-wrap:pretty">Every project here started as someone's dream. Websites, brand identities and 3D worlds, carefully designed, built and shipped by Kinomad.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;align-items:flex-start">
+      <a href="#websites">Websites · 05</a>
+      <a href="#brand">Brand identity · 03</a>
+      <a href="#three-d">3D · 03</a>
+    </div>
+    <span style="font-size:12px;letter-spacing:0.14em;font-weight:600;justify-self:end">© 2026</span>
+  </div>
+</section>
+
+<section data-screen-label="Websites" id="websites" style="padding:0 0 clamp(64px,9cqw,130px)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);margin:0 clamp(20px,4cqw,64px);padding:20px 0 clamp(28px,4cqw,56px)">
+    <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">Websites</h2>
+    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">01 · 05 PROJECTS//</span>
+  </div>
+
+  <sc-for list="{{ webs }}" as="wp" hint-placeholder-count="5">
+    <a href="{{ wp.href }}" id="{{ wp.id }}" class="km-webcard" onMouseMove="{{ parallaxMove }}" onMouseLeave="{{ parallaxLeave }}" style="display:block;color:inherit;scroll-margin-top:70px;position:relative;overflow:hidden;height:clamp(300px,29cqw,450px);background:var(--card);cursor:pointer;animation:km-rise 1s cubic-bezier(0.2,0.7,0.2,1) both;animation-timeline:view();animation-range:entry 0% entry 25%">
+      <div data-parallax="1" class="km-webcard-img" style="position:absolute;inset:-8% 0;transition:transform 0.6s cubic-bezier(0.2,0.7,0.2,1),filter 0.7s cubic-bezier(0.22,1,0.36,1);animation:km-par 1s linear both;animation-timeline:view();will-change:transform">
+        <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ wp.imgId }}" src="{{ wp.src }}" shape="rect" radius="0" placeholder="{{ wp.ph }}" style="width:100%;height:100%" hint-size="100%,620px"></x-import>
+      </div>
+      <div class="km-webcard-scrim" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(5,5,5,0.7),rgba(5,5,5,0.18) 55%,rgba(5,5,5,0) 80%);transition:opacity 0.5s ease"></div>
+      <div class="km-webcard-txt" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;text-align:center;color:#F1EFE7;padding:0 24px;box-sizing:border-box;transition:opacity 0.5s ease,transform 0.7s cubic-bezier(0.22,1,0.36,1)">
+        <span style="font-size:clamp(34px,4.4cqw,68px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,0.12)">{{ wp.name }}</span>
+        <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.85);text-shadow:0 1px 3px rgba(0,0,0,0.12)">{{ wp.meta }}</span>
+      </div>
+      <div class="km-webcard-info" style="position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(220px,0.9fr);gap:clamp(24px,4cqw,72px);align-items:end;pointer-events:none;color:#F1EFE7;padding:clamp(24px,3cqw,48px);box-sizing:border-box;transition:opacity 0.55s ease,transform 0.8s cubic-bezier(0.22,1,0.36,1)">
+        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:clamp(14px,1.6cqw,24px);min-width:0">
+          <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.65)">({{ wp.num }}) · Website</span>
+          <span style="font-size:clamp(34px,4.4cqw,68px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase">{{ wp.name }}</span>
+          <span style="font-family:'Gambetta',serif;font-style:italic;font-weight:500;font-size:clamp(16px,1.6cqw,24px);line-height:1.35;max-width:560px;text-wrap:pretty">{{ wp.desc }}</span>
+          <span class="km-cta" data-url="{{ wp.url }}" onClick="{{ visitSite }}" style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;padding:11px 20px;pointer-events:auto;cursor:pointer">Visit live site <span style="font-size:14px">↗</span></span>
+        </div>
+        <div style="display:flex;flex-direction:column;font-size:12px">
+          <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid rgba(241,239,231,0.35);padding:9px 0">
+            <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.65)">→ Industry</span>
+            <span style="font-weight:600;font-size:13px">{{ wp.industry }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid rgba(241,239,231,0.35);padding:9px 0">
+            <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.65)">→ Category</span>
+            <span style="font-weight:600;font-size:13px">Website · Design + Dev</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid rgba(241,239,231,0.35);padding:9px 0">
+            <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.65)">→ Year</span>
+            <span style="font-weight:600;font-size:13px">{{ wp.year }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid rgba(241,239,231,0.35);border-bottom:1px solid rgba(241,239,231,0.35);padding:9px 0">
+            <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.65)">→ Live at</span>
+            <span style="font-weight:600;font-size:13px">{{ wp.url }}</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </sc-for>
+</section>
+
+<section data-screen-label="Brand identity" id="brand" style="padding:0 clamp(20px,4cqw,64px) clamp(64px,9cqw,130px);scroll-margin-top:70px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding:20px 0 clamp(28px,4cqw,56px)">
+    <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">Brand identity</h2>
+    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">02 · 03 PROJECTS//</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:clamp(44px,5.5cqw,80px)">
+    <sc-for list="{{ brands }}" as="bp" hint-placeholder-count="3">
+      <div id="{{ bp.id }}" onMouseEnter="{{ brandEnter }}" onMouseLeave="{{ brandLeave }}" onClick="{{ brandOpen }}" data-brand="{{ bp.id }}" style="scroll-margin-top:90px;display:flex;flex-direction:column;cursor:pointer;animation:km-rise 1s cubic-bezier(0.2,0.7,0.2,1) both;animation-timeline:view();animation-range:entry 0% entry 30%">
+        <div style="padding:0 0 14px">
+          <span style="font-size:16px;font-weight:600;letter-spacing:-0.01em">{{ bp.name }}</span>
+        </div>
+        <div style="position:relative;overflow:hidden">
+          <div data-r="brandimgs" style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px">
+            <sc-for list="{{ bp.imgs }}" as="bimg" hint-placeholder-count="4">
+              <div style="position:relative;aspect-ratio:3/2;background:var(--card)">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ bimg.imgId }}" src="{{ bimg.src }}" shape="rect" radius="0" placeholder="{{ bimg.ph }}" style="position:absolute;inset:0;width:100%;height:100%" hint-size="100%,300px"></x-import>
+                <div style="position:absolute;inset:-3px;background:{{ bp.fill }};clip-path:{{ bimg.clip }};transition:clip-path 0.65s cubic-bezier(0.16,1,0.3,1) {{ bimg.delay }};pointer-events:none;z-index:1"></div>
+              </div>
+            </sc-for>
+          </div>
+          <div data-r="brandinfo" style="position:absolute;inset:0;z-index:2;pointer-events:none;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(220px,0.9fr);gap:clamp(24px,4cqw,72px);align-items:end;color:{{ bp.fillFg }};padding:clamp(16px,2.4cqw,36px) clamp(18px,2.4cqw,32px);box-sizing:border-box;opacity:{{ bp.nameOp }};transform:translateY({{ bp.nameTy }});transition:opacity 0.5s ease 0.2s,transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s">
+            <div style="display:flex;flex-direction:column;align-items:flex-start;gap:clamp(8px,1cqw,16px);min-width:0">
+              <span style="font-size:clamp(10px,0.9cqw,12px);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;opacity:0.7">({{ bp.num }}) · Brand identity</span>
+              <span data-r="brandcat" style="display:none;font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;opacity:0.85">{{ bp.meta }}</span>
+              <span style="font-size:clamp(24px,3.2cqw,56px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase">{{ bp.name }}</span>
+              <span data-r="brandstmt" style="font-family:'Gambetta',serif;font-style:italic;font-weight:500;font-size:clamp(14px,1.3cqw,20px);line-height:1.3;max-width:520px;text-wrap:pretty">{{ bp.statement }}</span>
+              <span style="display:inline-flex;align-items:center;gap:10px;background:{{ bp.fillFg }};color:{{ bp.fill }};font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:9px 16px">View case <span style="font-size:13px">↗</span></span>
+            </div>
+            <div data-r="brandmeta" style="display:flex;flex-direction:column;font-size:12px">
+              <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid color-mix(in srgb,currentColor 35%,transparent);padding:9px 0">
+                <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;opacity:0.7">→ Industry</span>
+                <span style="font-weight:600;font-size:13px">{{ bp.industry }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid color-mix(in srgb,currentColor 35%,transparent);padding:9px 0">
+                <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;opacity:0.7">→ Category</span>
+                <span style="font-weight:600;font-size:13px">Brand identity</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid color-mix(in srgb,currentColor 35%,transparent);border-bottom:1px solid color-mix(in srgb,currentColor 35%,transparent);padding:9px 0">
+                <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;opacity:0.7">→ Year</span>
+                <span style="font-weight:600;font-size:13px">{{ bp.year }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="3D" id="three-d" style="padding:0 clamp(20px,4cqw,64px) clamp(64px,9cqw,130px);scroll-margin-top:70px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding:20px 0 clamp(28px,4cqw,56px)">
+    <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">3D &amp; motion</h2>
+    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">03 · 03 PROJECTS//</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(24px,3cqw,40px)">
+    <sc-for list="{{ threes }}" as="tp" hint-placeholder-count="3">
+      <a href="{{ tp.href }}" id="{{ tp.id }}" style="color:inherit;scroll-margin-top:90px;display:flex;flex-direction:column;gap:16px;animation:km-rise 1s cubic-bezier(0.2,0.7,0.2,1) both;animation-timeline:view();animation-range:entry 0% entry 35%">
+        <div onMouseMove="{{ parallaxMove }}" onMouseLeave="{{ parallaxLeave }}" style="position:relative;overflow:hidden;aspect-ratio:4/5;background:var(--card)">
+          <div data-parallax="1" style="position:absolute;inset:-7%;transition:transform 0.6s cubic-bezier(0.2,0.7,0.2,1);will-change:transform">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ tp.imgId }}" src="{{ tp.src }}" shape="rect" radius="0" placeholder="{{ tp.ph }}" style="width:100%;height:100%" hint-size="100%,280px"></x-import>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+          <span style="font-size:22px;font-weight:600;letter-spacing:-0.01em">{{ tp.name }}</span>
+          <span style="font-size:13px;color:var(--mut);font-weight:500">{{ tp.meta }}</span>
+        </div>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Works CTA" style="padding:clamp(64px,10cqw,150px) clamp(20px,4cqw,64px);text-align:center;border-top:1px solid var(--line)">
+  <h2 style="margin:0;font-size:clamp(40px,7cqw,110px);line-height:0.98;letter-spacing:-0.03em;font-weight:700;text-transform:uppercase;animation:km-rise 1s cubic-bezier(0.2,0.7,0.2,1) both;animation-timeline:view();animation-range:entry 0% entry 45%">Dreaming of<br><span style="color:var(--accent-ink)">something?</span></h2>
+  <p style="margin:clamp(18px,2.4cqw,32px) auto 0;max-width:520px;font-size:clamp(16px,1.4cqw,20px);line-height:1.55;font-weight:500;color:var(--mut);text-wrap:pretty;animation:km-rise 1s cubic-bezier(0.2,0.7,0.2,1) both;animation-timeline:view();animation-range:entry 0% entry 45%">A brand, a website, a 3D world, whatever design you have in mind, ask us. No brief too early, no idea too rough.</p>
+  <div style="display:flex;justify-content:center;margin-top:clamp(28px,4cqw,48px)">
+    <a href="mailto:hello@kinomad.studio" class="km-cta" style="display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px">Ask us anything <span style="font-size:16px">↗</span></a>
+  </div>
+</section>
+
+</main>
+
+<footer data-r="foot" data-screen-label="Footer" style="position:sticky;bottom:0;z-index:0;background:#050505;color:#F1EFE7;padding:clamp(70px,9cqw,130px) 0 0;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;animation:km-footrise 1s cubic-bezier(0.16,1,0.3,1) both;animation-timeline:view();animation-range:entry 0% entry 75%">
+  <div style="position:relative;z-index:1;padding:0 1.2cqw;display:flex;justify-content:space-between;align-items:flex-start;gap:24px">
+    <div role="img" aria-label="Kinomad logo" style="width:clamp(56px,5cqw,84px);aspect-ratio:137/138;-webkit-mask:url('assets/logo-light.png') center/contain no-repeat;mask:url('assets/logo-light.png') center/contain no-repeat;background-image:linear-gradient(to top,var(--accent) 50%,#F1EFE7 50%);background-size:100% 200%;background-position:0 0;transition:background-position 0.6s cubic-bezier(0.16,1,0.3,1);cursor:pointer" style-hover="background-position:0 100%"></div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <a href="mailto:Hello@Kinomadstudio.com" style="font-size:clamp(18px,1.8cqw,26px);font-weight:600;letter-spacing:-0.01em;color:#F1EFE7;border-bottom:1px solid rgba(241,239,231,0.3);align-self:flex-start;padding-bottom:4px;margin-bottom:clamp(24px,3cqw,48px)">Hello@Kinomadstudio.com</a>
+      <nav style="display:flex;flex-direction:column">
+        <a href="#" class="km-flink" style="align-self:flex-start;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">LinkedIn</a>
+        <a href="#" class="km-flink" style="align-self:flex-start;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">Behance</a>
+        <a href="#" class="km-flink" style="align-self:flex-start;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">Instagram</a>
+      </nav>
+    </div>
+  </div>
+  <div style="position:relative;z-index:1;padding:clamp(50px,7cqw,110px) 1.2cqw 16px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;font-size:13px;font-weight:500;line-height:1.5">
+    <div style="display:flex;gap:clamp(40px,6cqw,100px);align-items:flex-end">
+      <span>Dubai, UAE</span>
+    </div>
+    <div style="text-align:right">© 2026,<br>All Rights Reserved</div>
+  </div>
+  <div aria-hidden="true" style="position:relative;z-index:1;height:0.6em;overflow:hidden;font-size:21cqw;line-height:1;font-weight:700;letter-spacing:-0.04em;color:#F1EFE7">
+    <div style="display:flex;justify-content:space-between;padding:0 1.2cqw;margin:0 -0.01em 0 -0.05em;transform:translateY(-0.08em)">
+      <span>k</span><span>i</span><span>n</span><span>o</span><span>m</span><span>a</span><span>d</span>
+    </div>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { light: false, menuOpen: false, device: 'Desktop' };
+
+  componentDidMount() {
+    let light;
+    const saved = localStorage.getItem('kinomad-theme');
+    if (saved === 'light' || saved === 'dark') light = saved === 'light';
+    else light = (this.props.defaultTheme ?? 'dark') === 'light';
+    document.body.classList.toggle('light', light);
+    if (light !== this.state.light) this.setState({ light });
+    const savedDev = localStorage.getItem('kinomad-device');
+    if (savedDev === 'Desktop' || savedDev === 'Tablet' || savedDev === 'Mobile') {
+      if (savedDev !== this.state.device) this.setState({ device: savedDev });
+    }
+    this.applyAccent();
+    this.applyDevice();
+    this._drag = { down: false, y: 0, moved: 0, v: 0 };
+    this._pd = (e) => this._dragDown(e);
+    this._pm = (e) => this._dragMove(e);
+    this._pu = () => this._dragUp();
+    this._ck = (e) => {
+      if (this._drag.moved > 6) { e.preventDefault(); e.stopPropagation(); }
+    };
+    this._ds = (e) => this._dragBlock(e);
+    window.addEventListener('pointerdown', this._pd);
+    window.addEventListener('pointermove', this._pm);
+    window.addEventListener('pointerup', this._pu);
+    window.addEventListener('pointercancel', this._pu);
+    window.addEventListener('click', this._ck, true);
+    window.addEventListener('dragstart', this._ds);
+    this._clockTimer = setInterval(() => this._tick(), 1000);
+    this._tick();
+    this._initCursor();
+  }
+
+  _initCursor() {
+    if (this._curRaf) return;
+    if (!window.matchMedia || !window.matchMedia('(pointer: fine)').matches) {
+      const rise = () => this._scrollThumb();
+      window.addEventListener('scroll', rise, { passive: true });
+      rise();
+      return;
+    }
+    ['km-cur-dot', 'km-cur-ring'].forEach((id) => { const el = document.getElementById(id); if (el) el.remove(); });
+    const dot = document.createElement('div');
+    dot.id = 'km-cur-dot';
+    dot.style.cssText = 'position:fixed;top:0;left:0;width:7px;height:7px;background:var(--accent);border-radius:0;pointer-events:none;z-index:9999;transform:translate(-100px,-100px);will-change:transform;transition:border-radius 0.4s cubic-bezier(0.16,1,0.3,1)';
+    document.body.appendChild(dot);
+    this._cm = { x: -100, y: -100 };
+    this._cr = { x: -100, y: -100 };
+    this._onMouse = (e) => {
+      this._cm.x = e.clientX;
+      this._cm.y = e.clientY;
+      this._hot = !!(e.target && e.target.closest && e.target.closest('a,button,[data-idx]'));
+    };
+    window.addEventListener('mousemove', this._onMouse, { passive: true });
+    this._scT = null;
+    this._scC = null;
+    this._onWheel = (e) => {
+      if (e.ctrlKey || e.defaultPrevented) return;
+      e.preventDefault();
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (this._scT === null) { this._scT = window.scrollY; this._scC = window.scrollY; }
+      this._scT = Math.max(0, Math.min(max, this._scT + e.deltaY));
+    };
+    window.addEventListener('wheel', this._onWheel, { passive: false });
+    const loop = () => {
+      const dx = this._cm.x - this._cr.x, dy = this._cm.y - this._cr.y;
+      const dist = Math.hypot(dx, dy);
+      const f = 0.03 + 0.05 * Math.min(1, dist / 260);
+      this._cr.x += dx * f;
+      this._cr.y += dy * f;
+      dot.style.transform = 'translate(' + (this._cr.x - 3.5) + 'px,' + (this._cr.y - 3.5) + 'px)';
+      dot.style.borderRadius = this._hot ? '50%' : '0';
+      this._scrollThumb();
+      if (this._scT !== null) {
+        this._scC += (this._scT - this._scC) * 0.085;
+        const done = Math.abs(this._scT - this._scC) < 0.4;
+        if (done) this._scC = this._scT;
+        window.scrollTo({ top: this._scC, behavior: 'instant' });
+        if (done) this._scT = null;
+      }
+      this._curRaf = requestAnimationFrame(loop);
+    };
+    this._curRaf = requestAnimationFrame(loop);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('pointerdown', this._pd);
+    window.removeEventListener('pointermove', this._pm);
+    window.removeEventListener('pointerup', this._pu);
+    window.removeEventListener('pointercancel', this._pu);
+    window.removeEventListener('click', this._ck, true);
+    window.removeEventListener('dragstart', this._ds);
+    clearInterval(this._clockTimer);
+    cancelAnimationFrame(this._curRaf);
+    this._curRaf = null;
+    window.removeEventListener('mousemove', this._onMouse);
+    window.removeEventListener('wheel', this._onWheel);
+    ['km-cur-dot', 'km-cur-ring'].forEach((id) => { const el = document.getElementById(id); if (el) el.remove(); });
+  }
+
+  _sampleBrandColors(list) {
+    if (this._sampledColors) return;
+    this._sampledColors = true;
+    list.forEach((b) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const c = document.createElement('canvas');
+          c.width = 24; c.height = 16;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0, 24, 16);
+          const d = ctx.getImageData(0, 0, 24, 16).data;
+          let r = 0, g = 0, bl = 0, w = 0;
+          for (let i = 0; i < d.length; i += 4) {
+            const mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
+            const wt = 1 + (mx - mn) / 64;
+            r += d[i] * wt; g += d[i + 1] * wt; bl += d[i + 2] * wt; w += wt;
+          }
+          const hex = '#' + [r, g, bl].map((v) => Math.round(v / w).toString(16).padStart(2, '0')).join('');
+          this.setState((s) => ({ brandColors: { ...(s.brandColors || {}), [b.id]: hex } }));
+        } catch (e) {}
+      };
+      img.src = b.imgs[0].src;
+    });
+  }
+
+
+
+  _scrollThumb() {
+    const el = document.getElementById('km-scrollthumb');
+    if (!el) return;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    if (max <= 0) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    const h = Math.max(48, window.innerHeight * (window.innerHeight / doc.scrollHeight));
+    el.style.height = h.toFixed(0) + 'px';
+    el.style.transform = 'translateY(' + ((window.scrollY / max) * (window.innerHeight - h)).toFixed(1) + 'px)';
+    const now = performance.now();
+    const y = window.scrollY;
+    if (this._stY !== undefined) {
+      const dy = y - this._stY;
+      const dt = Math.max(1, now - this._stT);
+      const v = Math.abs(dy) / dt;
+      if (dy !== 0) this._stDir = dy > 0 ? 1 : -1;
+      const target = Math.min(1, v / 2.5);
+      this._stTarget = Math.max(target, this._stTarget || 0);
+    }
+    this._stY = y; this._stT = now;
+    if (!this._stRaf) {
+      const paint = () => {
+        this._stTarget = (this._stTarget || 0) * 0.965;
+        if (this._stDirR === undefined) this._stDirR = this._stDir;
+        const flipping = this._stDir !== this._stDirR;
+        const goal = flipping ? 0 : this._stTarget;
+        const cur = this._stCur || 0;
+        const next = cur + (goal - cur) * (flipping ? 0.12 : 0.06);
+        if (flipping && next < 0.02) this._stDirR = this._stDir;
+        this._stCur = next;
+        const eased = next * next * (3 - 2 * next);
+        const pct = (eased * 100).toFixed(2);
+        const dir = this._stDirR === -1 ? 'to bottom' : 'to top';
+        el.style.background = 'linear-gradient(' + dir + ', var(--accent) ' + pct + '%, #F1EFE7 ' + pct + '%)';
+        if (next > 0.004 || this._stTarget > 0.004) { this._stRaf = requestAnimationFrame(paint); }
+        else { this._stCur = 0; this._stTarget = 0; el.style.background = '#F1EFE7'; this._stRaf = null; }
+      };
+      this._stRaf = requestAnimationFrame(paint);
+    }
+  }
+
+  _tick() {
+    const t = document.getElementById('foot-time');
+    const d = document.getElementById('foot-date');
+    if (!t || !d) return;
+    const now = new Date();
+    try {
+      t.textContent = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit', hour12: true }).replace(':', ' ');
+      d.textContent = 'Western European Time';
+    } catch (e) {}
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps && prevProps.defaultTheme !== this.props.defaultTheme) {
+      const light = this.props.defaultTheme === 'light';
+      localStorage.setItem('kinomad-theme', light ? 'light' : 'dark');
+      if (light !== this.state.light) { this.setState({ light }); return; }
+    }
+    document.body.classList.toggle('light', this.state.light);
+    this.applyAccent();
+    this.applyDevice();
+  }
+
+  _dragOn() {
+    return this.state.device === 'Tablet' || this.state.device === 'Mobile';
+  }
+
+  _dragBlock(e) {
+    if (this._dragOn() && e.target.closest && e.target.closest('#frame')) e.preventDefault();
+  }
+
+  _dragDown(e) {
+    if (!this._dragOn() || e.button !== 0) return;
+    if (!e.target.closest || !e.target.closest('#frame')) return;
+    this._drag = { down: true, y: e.clientY, moved: 0, v: 0 };
+    document.body.classList.add('dragging');
+    e.preventDefault();
+  }
+
+  _dragMove(e) {
+    if (!this._drag.down) return;
+    const dy = e.clientY - this._drag.y;
+    this._drag.y = e.clientY;
+    this._drag.moved += Math.abs(dy);
+    this._drag.v = dy;
+    const se = document.scrollingElement;
+    se.scrollTo({ top: se.scrollTop - dy * 1.5, behavior: 'instant' });
+  }
+
+  _dragUp() {
+    if (!this._drag.down) return;
+    this._drag.down = false;
+    document.body.classList.remove('dragging');
+    setTimeout(() => { this._drag.moved = 0; }, 0);
+    let v = this._drag.v || 0;
+    const glide = () => {
+      if (this._drag.down || Math.abs(v) < 0.3) return;
+      const se = document.scrollingElement;
+      se.scrollTo({ top: se.scrollTop - v * 1.5, behavior: 'instant' });
+      v *= 0.95;
+      this._mom = requestAnimationFrame(glide);
+    };
+    cancelAnimationFrame(this._mom);
+    this._mom = requestAnimationFrame(glide);
+  }
+
+  applyDevice() {
+    const map = { Tablet: '834px', Mobile: '390px' };
+    const w = map[this.state.device];
+    document.body.classList.toggle('dev', !!w);
+    if (w) document.body.style.setProperty('--frame-w', w);
+    else document.body.style.removeProperty('--frame-w');
+    const dot = document.getElementById('km-cur-dot');
+    if (dot) dot.style.display = w ? 'none' : '';
+  }
+
+  applyAccent() {
+    document.body.style.setProperty('--accent', this.props.accent ?? '#D9FF3D');
+    document.body.style.setProperty('--nav', this.props.navColor ?? '#0d1016');
+    if (this.state.light) document.body.style.removeProperty('--bg');
+    else document.body.style.setProperty('--bg', this.props.bgColor ?? '#1f2121');
+  }
+
+  renderVals() {
+    const webs = (this._webs || (this._webs = [
+      { id: 'web-aurelia', imgId: 'web-aurelia-img', src: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Aurelia, website hero screen', name: 'Aurelia', meta: 'E-commerce · Design + Dev · 2026', desc: 'A slow-fashion storefront rebuilt around feel: art direction, UX and full build.' },
+      { id: 'web-nomadair', imgId: 'web-nomadair-img', src: 'https://images.pexels.com/photos/34088260/pexels-photo-34088260.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Nomad Air, website screens', name: 'Nomad Air', meta: 'Travel platform · Web design · 2025', desc: 'A travel platform that makes booking feel like the trip already started.' },
+      { id: 'web-fieldnote', imgId: 'web-fieldnote-img', src: 'https://images.pexels.com/photos/34804003/pexels-photo-34804003.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Fieldnote, marketing site', name: 'Fieldnote', meta: 'SaaS · Web design · 2025', desc: 'A SaaS marketing site that explains a complex product in one scroll.' },
+      { id: 'web-ostro', imgId: 'web-ostro-img', src: 'https://images.pexels.com/photos/17077374/pexels-photo-17077374.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Ostro, portfolio site', name: 'Ostro', meta: 'Portfolio · Web design · 2025', desc: 'An architecture portfolio where the buildings do the talking.' },
+      { id: 'web-kepler', imgId: 'web-kepler-img', src: 'https://images.pexels.com/photos/34167277/pexels-photo-34167277.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Kepler Labs, startup site', name: 'Kepler Labs', meta: 'AI startup · Design + Dev · 2024', desc: 'Launch site for an AI startup, from nothing to live in three weeks.' },
+    ])).map((x, i) => Object.assign({}, x, {
+      href: 'Kinomad Website Page.dc.html?project=' + x.id,
+      num: '0' + (i + 1),
+      industry: x.meta.split(' · ')[0],
+      year: x.meta.split(' · ')[2],
+      url: 'http://localhost:300' + (i + 1),
+    }));
+    const brandsBase = this._brands || (this._brands = [
+      { id: 'brand-vantar', name: 'Vantar', meta: 'Fintech · 2026', statement: 'Vantar is a fintech on a mission to make everyday banking feel calm, clear and quietly confident.', imgs: [
+        { imgId: 'brand-vantar-img', src: 'https://images.pexels.com/photos/6244/designer-board-typo-word.jpg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, identity spread' },
+        { imgId: 'brand-vantar-img-2', src: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, collateral in use' },
+        { imgId: 'brand-vantar-img-3', src: 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, app / product shot' },
+        { imgId: 'brand-vantar-img-4', src: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, signage / environment' },
+      ] },
+      { id: 'brand-mono', name: 'Mono Coffee', meta: 'Packaging · 2025', statement: 'Mono is a single-origin roaster that believes one great bean, done right, beats a hundred blends.', imgs: [
+        { imgId: 'brand-mono-img', src: 'https://images.pexels.com/photos/4623113/pexels-photo-4623113.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, packaging' },
+        { imgId: 'brand-mono-img-2', src: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, in the café' },
+        { imgId: 'brand-mono-img-3', src: 'https://images.pexels.com/photos/606545/pexels-photo-606545.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, beans / detail' },
+        { imgId: 'brand-mono-img-4', src: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, cup / lifestyle' },
+      ] },
+      { id: 'brand-halcyon', name: 'Halcyon', meta: 'Wellness · 2024', statement: 'Halcyon is a wellness brand for people who are tired of wellness brands shouting at them.', imgs: [
+        { imgId: 'brand-halcyon-img', src: 'https://images.pexels.com/photos/8545636/pexels-photo-8545636.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, brand system' },
+        { imgId: 'brand-halcyon-img-2', src: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, product line' },
+        { imgId: 'brand-halcyon-img-3', src: 'https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, ritual / detail' },
+        { imgId: 'brand-halcyon-img-4', src: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, in use / lifestyle' },
+      ] },
+    ]);
+    const threes = (this._threes || (this._threes = [
+      { id: 'three-d-solstice', imgId: 'three-d-solstice-img', src: 'https://images.pexels.com/photos/13180245/pexels-photo-13180245.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Solstice, product render', name: 'Solstice', meta: 'Product viz · 2026' },
+      { id: 'three-d-terraforma', imgId: 'three-d-terraforma-img', src: 'https://images.pexels.com/photos/12627677/pexels-photo-12627677.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Terraforma, arch viz', name: 'Terraforma', meta: 'Arch viz · 2025' },
+      { id: 'three-d-orbital', imgId: 'three-d-orbital-img', src: 'https://images.pexels.com/photos/28628510/pexels-photo-28628510.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Orbital, animation still', name: 'Orbital', meta: 'Brand film · 2024' },
+    ])).map((x) => Object.assign({}, x, { href: 'Kinomad Motion Page.dc.html?project=' + x.id }));
+    this._sampleBrandColors(brandsBase);
+    const fallback = { 'brand-vantar': '#5B79A6', 'brand-mono': '#6B4A32', 'brand-halcyon': '#96A58C' };
+    const brands = brandsBase.map((b) => {
+      const fill = (this.state.brandColors || {})[b.id] || fallback[b.id] || 'var(--accent)';
+      let fg = '#F1EFE7';
+      const m = /^#([0-9a-f]{6})$/i.exec(fill);
+      if (m) {
+        const n = parseInt(m[1], 16);
+        const lum = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+        fg = lum > 0.62 ? '#14130F' : '#F1EFE7';
+      }
+      const hov = this.state.hovBrand === b.id;
+      const mp = b.meta.split(' · ');
+      return {
+        ...b, fill, fillFg: fg,
+        num: '0' + (brandsBase.indexOf(b) + 1),
+        industry: mp[0], year: mp[1],
+        nameOp: hov ? '1' : '0',
+        nameTy: hov ? '0px' : '14px',
+        imgs: b.imgs.map((im, i) => ({ ...im, clip: hov ? 'inset(0 0 0 0)' : 'inset(100% 0 0 0)', delay: (i * 0.09).toFixed(2) + 's' })),
+      };
+    });
+    const seg = (name) => this.state.device === name
+      ? { bg: 'var(--accent)', fg: '#14130F' }
+      : { bg: 'transparent', fg: 'rgba(241,239,231,0.7)' };
+    return {
+      visitSite: (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.open(e.currentTarget.dataset.url, '_blank', 'noopener');
+      },
+      webs, brands, threes,
+      segDesktop: seg('Desktop'),
+      segTablet: seg('Tablet'),
+      segMobile: seg('Mobile'),
+      setDevice: (e) => {
+        const d = e.currentTarget.dataset.dev;
+        localStorage.setItem('kinomad-device', d);
+        this.setState({ device: d });
+      },
+      navRows: this.state.menuOpen ? '1fr' : '0fr',
+      menuOp: this.state.menuOpen ? '1' : '0',
+      menuTy: this.state.menuOpen ? '0px' : '-10px',
+      menuIcon: this.state.menuOpen ? '✕' : '≡',
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      themeTitle: this.state.light ? 'Switch to dark mode' : 'Switch to light mode',
+      themeIconPath: this.state.light ? 'M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z' : 'M12 3v2M12 19v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M3 12h2M19 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z',
+      toggleTheme: () => {
+        const light = !this.state.light;
+        localStorage.setItem('kinomad-theme', light ? 'light' : 'dark');
+        document.body.classList.toggle('light', light);
+        this.setState({ light });
+      },
+      brandOpen: (e) => {
+        if (e.composedPath && e.composedPath().some((n) => n.tagName === 'BUTTON' || n.tagName === 'INPUT')) return;
+        window.location.href = 'Kinomad Brand Page.dc.html?project=' + e.currentTarget.dataset.brand;
+      },
+      brandEnter: (e) => this.setState({ hovBrand: e.currentTarget.dataset.brand }),
+      brandLeave: () => this.setState({ hovBrand: null }),
+      backToTop: (e) => { e.preventDefault(); this.setState({ menuOpen: false }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      parallaxMove: (e) => {
+        const el = e.currentTarget.querySelector('[data-parallax]');
+        if (!el) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = 'translate(' + (-x * 3.5).toFixed(2) + '%, ' + (-y * 3.5).toFixed(2) + '%) scale(1.03)';
+      },
+      parallaxLeave: (e) => {
+        const el = e.currentTarget.querySelector('[data-parallax]');
+        if (el) el.style.transform = '';
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

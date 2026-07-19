@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;--bg:#1f2121;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#D9FF3D;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
+a:hover{color:var(--accent)}
+.km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
+.km-cta:hover{background-size:100% 100%;color:#14130F}
+.km-flink{background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:100% 92%;background-size:0% 2px;transition:background-size 0.9s cubic-bezier(0.22,1,0.36,1)}
+.km-flink:hover{background-position:0 92%;background-size:100% 2px}
+::selection{background:var(--accent);color:#14130F}
+@keyframes km-slat-out{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes km-rise{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:translateY(0)}}
+@keyframes km-fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+</helmet>
+
+<div data-screen-label="404" style="position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;container:page / inline-size;box-sizing:border-box">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:clamp(20px,3cqw,40px) clamp(20px,4cqw,64px) 0">
+    <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.png" alt="Kinomad" style="width:clamp(28px,2.6cqw,40px);height:auto;display:block"></a>
+    <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.16em;color:var(--mut)">ERROR 404//</span>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:clamp(28px,3.5cqw,52px);padding:0 clamp(20px,4cqw,64px)">
+    <h1 style="margin:0;font-size:clamp(120px,26cqw,460px);line-height:0.85;letter-spacing:-0.05em;font-weight:700;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.15s both">4<span style="color:var(--accent)">0</span>4</h1>
+    <p style="margin:0;max-width:520px;font-size:clamp(18px,1.8cqw,26px);line-height:1.45;font-weight:500;color:var(--mut);text-wrap:pretty;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.3s both">This dream doesn't exist, or it hasn't been made real yet.</p>
+    <a href="Kinomad Landing.dc.html" class="km-cta" style="display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.45s both">Back to home <span style="font-size:16px">↗</span></a>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;padding:0 clamp(20px,4cqw,64px) clamp(20px,3cqw,36px);font-size:13px;font-weight:500;color:var(--mut);animation:km-fade 1s ease 0.7s both">
+    <span>Dubai, UAE</span>
+    <nav style="display:flex;gap:clamp(18px,2.4cqw,36px)">
+      <a href="Kinomad Works.dc.html" class="km-flink" style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">Works</a>
+      <a href="mailto:Hello@Kinomadstudio.com" class="km-flink" style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase">Contact</a>
+    </nav>
+  </div>
+
+  <div aria-hidden="true" style="position:absolute;inset:0;z-index:5;display:flex;pointer-events:none">
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.05s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.13s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.21s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.29s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.37s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.45s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.53s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.61s both"></div>
+    <div style="flex:1;background:#050505;transform-origin:right;animation:km-slat-out 0.9s cubic-bezier(0.16,1,0.3,1) 0.69s both"></div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    document.body.style.setProperty('--accent', this.props.accent ?? '#D9FF3D');
+    document.body.style.setProperty('--bg', this.props.bgColor ?? '#1f2121');
+    document.body.style.setProperty('--nav', this.props.navColor ?? '#0d1016');
+  }
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

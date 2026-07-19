@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
+a:hover{color:var(--accent)}
+::selection{background:var(--accent);color:#14130F}
+input,textarea,select{font-family:'General Sans',ui-sans-serif,system-ui,sans-serif}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!important}
+.km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
+.km-cta:hover{background-size:100% 100%;color:#14130F}
+@keyframes km-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+</helmet>
+
+<div data-screen-label="CRM" style="min-height:100svh;container:page / inline-size;box-sizing:border-box">
+
+  <header style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px clamp(20px,3cqw,48px);background:color-mix(in srgb,#050505 80%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.png" alt="Kinomad" style="width:30px;height:auto;display:block"></a>
+      <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">STUDIO CRM · ADD WORK//</span>
+    </div>
+    <a href="Kinomad Works.dc.html" style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600">View works page ↗</a>
+  </header>
+
+  <main style="max-width:1240px;margin:0 auto;padding:clamp(28px,4cqw,56px) clamp(20px,3cqw,48px) clamp(80px,8cqw,120px)">
+
+    <h1 style="margin:0 0 clamp(28px,3cqw,44px);font-size:clamp(34px,4.5cqw,64px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase;animation:km-rise 0.8s cubic-bezier(0.16,1,0.3,1) both">New project</h1>
+
+    <div style="display:flex;gap:2px;margin-bottom:clamp(28px,3cqw,44px);border:1px solid var(--line);width:fit-content">
+      <button data-type="website" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tabWebBg }};color:{{ tabWebFg }};transition:background 0.3s ease,color 0.3s ease">Website</button>
+      <button data-type="brand" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tabBrandBg }};color:{{ tabBrandFg }};transition:background 0.3s ease,color 0.3s ease">Brand identity</button>
+      <button data-type="three" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tab3dBg }};color:{{ tab3dFg }};transition:background 0.3s ease,color 0.3s ease">3D &amp; motion</button>
+    </div>
+
+    <div data-r="crm-grid" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,0.7fr);gap:clamp(28px,3.5cqw,56px);align-items:start">
+
+      <div style="display:flex;flex-direction:column;gap:clamp(32px,3cqw,48px)">
+
+        <section style="display:flex;flex-direction:column;gap:18px">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 01 BASICS</span>
+          <div data-r="row2" style="display:grid;grid-template-columns:2fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Project name</span>
+              <input value="{{ fName }}" data-key="name" onChange="{{ field }}" placeholder="e.g. Aurelia" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Year</span>
+              <input value="{{ fYear }}" data-key="year" onChange="{{ field }}" placeholder="2026" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+            </label>
+          </div>
+          <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Industry</span>
+              <input value="{{ fIndustry }}" data-key="industry" onChange="{{ field }}" placeholder="e.g. E-commerce" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">{{ metaLabel }}</span>
+              <input value="{{ fMeta }}" data-key="meta" onChange="{{ field }}" placeholder="{{ metaPh }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+            </label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Statement <span style="text-transform:none;font-weight:500;color:var(--mut)">· one line, shown on hover &amp; page top</span></span>
+            <textarea rows="2" value="{{ fStatement }}" data-key="statement" onChange="{{ field }}" placeholder="e.g. Aurelia is a slow-fashion storefront rebuilt around feel." style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;resize:vertical;transition:border-color 0.25s ease"></textarea>
+          </label>
+          <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Background</span>
+              <textarea rows="5" value="{{ fBackground }}" data-key="background" onChange="{{ field }}" placeholder="Where the client started, what they asked for." style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;line-height:1.55;font-weight:500;padding:13px 16px;resize:vertical;transition:border-color 0.25s ease"></textarea>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Concept</span>
+              <textarea rows="5" value="{{ fConcept }}" data-key="concept" onChange="{{ field }}" placeholder="The idea and how it was executed." style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;line-height:1.55;font-weight:500;padding:13px 16px;resize:vertical;transition:border-color 0.25s ease"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}">
+          <section style="display:flex;flex-direction:column;gap:18px">
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 WEBSITE FILES &amp; LOCAL RUN</span>
+            <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(24px,2.6cqw,40px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
+              <input type="file" accept=".zip,.tar,.gz" data-key="siteFiles" onChange="{{ file }}" style="display:none">
+              <span style="font-size:15px;font-weight:600">{{ siteFilesLabel }}</span>
+              <span style="font-size:13px;color:var(--mut);font-weight:500">Drop the built site as a .zip (index.html at root). We unpack and serve it locally.</span>
+            </label>
+            <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <label style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Local port</span>
+                <input value="{{ fPort }}" data-key="port" onChange="{{ field }}" placeholder="3001" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+              </label>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Serves at</span>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#050505;border:1px solid var(--line);padding:13px 16px">
+                  <span style="font-family:'Chillax',sans-serif;font-size:14px;letter-spacing:0.04em">{{ liveUrl }}</span>
+                  <span style="display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:{{ runFg }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ runFg }}"></span>{{ runLabel }}</span>
+                </div>
+              </div>
+            </div>
+            <button onClick="{{ toggleRun }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:11px 20px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">{{ runBtn }}</button>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Hero image · card &amp; page top</span>
+              <input type="file" accept="image/*" data-key="heroImg" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+            </label>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ isBrand }}" hint-placeholder-val="{{ false }}">
+          <section style="display:flex;flex-direction:column;gap:18px">
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 IDENTITY IMAGES</span>
+            <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <label style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Gallery · 4 images, 3:2</span>
+                <input type="file" accept="image/*" multiple="{{ true }}" data-key="brandImgs" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+              </label>
+              <label style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Brand fill color · hover sweep</span>
+                <div style="display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:9px 16px">
+                  <input type="color" value="{{ fFill }}" data-key="fill" onChange="{{ field }}" style="width:36px;height:32px;border:none;background:transparent;padding:0;cursor:pointer">
+                  <span style="font-family:'Chillax',sans-serif;font-size:14px;letter-spacing:0.04em">{{ fFill }}</span>
+                  <span style="font-size:12px;color:var(--mut);font-weight:500;margin-left:auto">auto-sampled from image 1 if empty</span>
+                </div>
+              </label>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ is3d }}" hint-placeholder-val="{{ false }}">
+          <section style="display:flex;flex-direction:column;gap:18px">
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 REEL</span>
+            <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(24px,2.6cqw,40px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
+              <input type="file" accept="video/mp4,video/webm" data-key="reel" onChange="{{ file }}" style="display:none">
+              <span style="font-size:15px;font-weight:600">{{ reelLabel }}</span>
+              <span style="font-size:13px;color:var(--mut);font-weight:500">MP4 or WebM, 21:9 preferred. Saved to assets/reels/ and streamed on the project page.</span>
+            </label>
+            <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <label style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Poster frame · shown before play</span>
+                <input type="file" accept="image/*" data-key="poster" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+              </label>
+              <label style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Card image · 4:5 portrait</span>
+                <input type="file" accept="image/*" data-key="cardImg" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+              </label>
+            </div>
+          </section>
+        </sc-if>
+
+        <section style="display:flex;flex-direction:column;gap:18px">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 03 CREDITS</span>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ credits }}" as="cr" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center">
+                <input value="{{ cr.who }}" data-idx="{{ $index }}" data-key="who" onChange="{{ creditField }}" placeholder="Name" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+                <input value="{{ cr.role }}" data-idx="{{ $index }}" data-key="role" onChange="{{ creditField }}" placeholder="Role, e.g. Design Lead" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+                <button data-idx="{{ $index }}" onClick="{{ rmCredit }}" aria-label="Remove credit" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
+              </div>
+            </sc-for>
+            <button onClick="{{ addCredit }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add credit</button>
+          </div>
+        </section>
+
+        <div style="display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:clamp(20px,2.4cqw,32px)">
+          <button onClick="{{ publish }}" class="km-cta" style="font-family:inherit;border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 28px;cursor:pointer">Publish to works ↗</button>
+          <button style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--fg);font-weight:600;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:14px 24px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">Save draft</button>
+          <span style="font-size:13px;color:var(--accent);font-weight:600;opacity:{{ toastOp }};transition:opacity 0.4s ease">{{ toastMsg }}</span>
+        </div>
+
+      </div>
+
+      <aside data-r="crm-side" style="position:sticky;top:86px;display:flex;flex-direction:column;gap:0;border:1px solid var(--line);background:var(--panel)">
+        <div style="padding:18px 20px;border-bottom:1px solid var(--line)">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">SUMMARY//</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0;font-size:13px">
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Type</span><span style="font-weight:600">{{ typeLabel }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Appears in</span><span style="font-weight:600">{{ destSection }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Project page</span><span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.04em">{{ destPage }}</span>
+          </div>
+          <sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+              <span style="color:var(--mut);font-weight:500">Local URL</span><span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.04em">{{ liveUrl }}</span>
+            </div>
+          </sc-if>
+        </div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:11px">
+          <sc-for list="{{ checklist }}" as="ck" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:{{ ck.c }}">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1px solid {{ ck.c }};font-size:10px">{{ ck.mark }}</span>{{ ck.label }}
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;options&quot;:[&quot;#2bcdee&quot;,&quot;#D9FF3D&quot;,&quot;#FF6B4A&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = {
+    type: 'website',
+    fields: { name: '', year: '', industry: '', meta: '', statement: '', background: '', concept: '', port: '3001', fill: '#5B79A6' },
+    files: {},
+    credits: [{ who: '', role: '' }],
+    running: false,
+    toast: '',
+  };
+
+  componentDidMount() {
+    document.body.style.setProperty('--accent', this.props.accent ?? '#2bcdee');
+  }
+
+  renderVals() {
+    const t = this.state.type;
+    const f = this.state.fields;
+    const files = this.state.files;
+    const seg = (key) => ({ bg: t === key ? '#F1EFE7' : 'transparent', fg: t === key ? '#14130F' : '#F1EFE7' });
+    const w = seg('website'), b = seg('brand'), d = seg('three');
+    const typeLabel = t === 'website' ? 'Website' : t === 'brand' ? 'Brand identity' : '3D & motion';
+    const destPage = t === 'website' ? 'Kinomad Website Page.dc.html' : t === 'brand' ? 'Kinomad Brand Page.dc.html' : 'Kinomad Motion Page.dc.html';
+    const liveUrl = 'http://localhost:' + (f.port || '3001');
+    const need = [
+      { key: 'name', label: 'Project name', ok: !!f.name },
+      { key: 'statement', label: 'Statement', ok: !!f.statement },
+      { key: 'copy', label: 'Background & concept', ok: !!f.background && !!f.concept },
+      { key: 'credits', label: 'At least one credit', ok: this.state.credits.some((c) => c.who) },
+    ];
+    if (t === 'website') {
+      need.push({ key: 'files', label: 'Site files (.zip)', ok: !!files.siteFiles });
+      need.push({ key: 'hero', label: 'Hero image', ok: !!files.heroImg });
+    }
+    if (t === 'brand') need.push({ key: 'imgs', label: '4 gallery images', ok: (files.brandImgsCount || 0) >= 4 });
+    if (t === 'three') {
+      need.push({ key: 'reel', label: 'Reel video', ok: !!files.reel });
+      need.push({ key: 'poster', label: 'Poster frame', ok: !!files.poster });
+    }
+    return {
+      isWeb: t === 'website', isBrand: t === 'brand', is3d: t === 'three',
+      tabWebBg: w.bg, tabWebFg: w.fg, tabBrandBg: b.bg, tabBrandFg: b.fg, tab3dBg: d.bg, tab3dFg: d.fg,
+      fName: f.name, fYear: f.year, fIndustry: f.industry, fMeta: f.meta,
+      fStatement: f.statement, fBackground: f.background, fConcept: f.concept,
+      fPort: f.port, fFill: f.fill,
+      metaLabel: t === 'website' ? 'Category · shown under title' : t === 'brand' ? 'Deliverable' : 'Format',
+      metaPh: t === 'website' ? 'E-commerce · Design + Dev' : t === 'brand' ? 'Packaging' : 'Brand film',
+      typeLabel, destPage,
+      destSection: t === 'website' ? '01 · Websites' : t === 'brand' ? '02 · Brand identity' : '03 · 3D & motion',
+      liveUrl,
+      runFg: this.state.running ? 'var(--accent)' : 'rgba(241,239,231,0.45)',
+      runLabel: this.state.running ? 'Running' : 'Stopped',
+      runBtn: this.state.running ? 'Stop local server' : 'Start local server',
+      siteFilesLabel: files.siteFiles ? files.siteFiles : 'Click to upload site files',
+      reelLabel: files.reel ? files.reel : 'Click to upload reel video',
+      credits: this.state.credits,
+      checklist: need.map((n) => ({ label: n.label, mark: n.ok ? '✓' : '', c: n.ok ? 'var(--accent)' : 'var(--mut)' })),
+      toastMsg: this.state.toast || ' ',
+      toastOp: this.state.toast ? '1' : '0',
+      setType: (e) => this.setState({ type: e.currentTarget.dataset.type }),
+      field: (e) => {
+        const key = e.currentTarget.dataset.key;
+        const val = e.currentTarget.value;
+        this.setState((s) => ({ fields: Object.assign({}, s.fields, { [key]: val }) }));
+      },
+      file: (e) => {
+        const key = e.currentTarget.dataset.key;
+        const list = e.currentTarget.files;
+        const name = list && list.length ? (list.length > 1 ? list.length + ' files selected' : list[0].name) : '';
+        this.setState((s) => ({ files: Object.assign({}, s.files, { [key]: name, [key + 'Count']: list ? list.length : 0 }) }));
+      },
+      creditField: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        const key = e.currentTarget.dataset.key;
+        const val = e.currentTarget.value;
+        this.setState((s) => ({ credits: s.credits.map((c, j) => (j === i ? Object.assign({}, c, { [key]: val }) : c)) }));
+      },
+      addCredit: () => this.setState((s) => ({ credits: s.credits.concat([{ who: '', role: '' }]) })),
+      rmCredit: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        this.setState((s) => ({ credits: s.credits.length > 1 ? s.credits.filter((_, j) => j !== i) : s.credits }));
+      },
+      toggleRun: () => this.setState((s) => ({ running: !s.running })),
+      publish: () => {
+        const missing = need.filter((n) => !n.ok);
+        this.setState({ toast: missing.length ? 'Missing: ' + missing.map((m) => m.label).join(', ') : 'Published — live on the works page' });
+        clearTimeout(this._tt);
+        this._tt = setTimeout(() => this.setState({ toast: '' }), 4000);
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
