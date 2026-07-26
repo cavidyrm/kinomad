@@ -22,14 +22,17 @@ a:hover{color:var(--accent)}
 @keyframes km-slat-out{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 @keyframes km-rise{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:translateY(0)}}
 @keyframes km-fade{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}html{scroll-behavior:auto}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
+.km-skip:focus{top:12px;color:#14130F}
 </style>
 </helmet>
 
 <div data-screen-label="404" style="position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;container:page / inline-size;box-sizing:border-box">
 
   <div style="display:flex;justify-content:space-between;align-items:center;padding:clamp(20px,3cqw,40px) clamp(20px,4cqw,64px) 0">
-    <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.png" alt="Kinomad" style="width:clamp(28px,2.6cqw,40px);height:auto;display:block"></a>
+    <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.svg" alt="Kinomad" style="width:clamp(28px,2.6cqw,40px);height:auto;display:block"></a>
     <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.16em;color:var(--mut)">ERROR 404//</span>
   </div>
 
@@ -64,9 +67,10 @@ a:hover{color:var(--accent)}
 <script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   componentDidMount() {
-    document.body.style.setProperty('--accent', this.props.accent ?? '#D9FF3D');
-    document.body.style.setProperty('--bg', this.props.bgColor ?? '#1f2121');
-    document.body.style.setProperty('--nav', this.props.navColor ?? '#0d1016');
+    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+    document.body.style.setProperty('--accent', g('kinomad-accent') ?? this.props.accent ?? '#D9FF3D');
+    document.body.style.setProperty('--bg', g('kinomad-bg') ?? this.props.bgColor ?? '#1f2121');
+    document.body.style.setProperty('--nav', g('kinomad-nav') ?? this.props.navColor ?? '#0d1016');
   }
   renderVals() {
     return {};

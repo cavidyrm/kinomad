@@ -13,7 +13,7 @@
 html{scroll-behavior:smooth;scrollbar-width:none}
 ::-webkit-scrollbar{display:none;width:0}
 body{margin:0;--bg:#1f2121;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--card:#141922;--accent:#D9FF3D;--accent-ink:var(--accent);background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;transition:background 0.5s ease,color 0.5s ease;-webkit-font-smoothing:antialiased}
-body.light{--bg:#EDF0F4;--fg:#14130F;--mut:rgba(20,19,15,0.55);--line:rgba(20,19,15,0.16);--card:#DFE4EB;--accent-ink:color-mix(in oklab,var(--accent),#14130F 55%)}
+body.light{--bg:#EDF0F4;--fg:#14130F;--mut:rgba(20,19,15,0.7);--line:rgba(20,19,15,0.16);--card:#DFE4EB;--accent-ink:color-mix(in oklab,var(--accent),#14130F 55%)}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent-ink)}
 .km-flink{background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:100% 92%;background-size:0% 2px;transition:background-size 0.9s cubic-bezier(0.22,1,0.36,1)}
@@ -29,7 +29,10 @@ a:hover{color:var(--accent-ink)}
 @keyframes km-hfade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes km-srise{from{opacity:0;transform:translateY(90px)}to{opacity:1;transform:translateY(0)}}
 @keyframes km-footrise{from{transform:translateY(90px);opacity:0.35}to{transform:translateY(0);opacity:1}}
-@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}html{scroll-behavior:auto}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
+.km-skip:focus{top:12px;color:#14130F}
 #frame{width:var(--frame-w,100%);margin-inline:auto;container:page / inline-size;position:relative;background:var(--bg);transition:width 0.5s cubic-bezier(0.16,1,0.3,1)}
 body.dev{background:#06080d}
 body.dev #frame{box-shadow:0 40px 130px rgba(0,0,0,0.55);outline:1px solid rgba(241,239,231,0.08);cursor:grab}
@@ -45,7 +48,6 @@ body.dev.dragging #frame{cursor:grabbing}
   [data-r=svc-explore]{position:absolute;top:-2.6em;right:clamp(12px,1.6cqw,24px)}
 }
 @container page (max-width:780px){
-  #km-hero-photo{padding:14px!important}
   [data-r=wstrip]{height:58cqw!important}
   [data-r=proc-row]{flex-direction:column!important;height:200cqw!important}
   [data-r=proc-row] > div{min-height:0}
@@ -61,10 +63,10 @@ body.dev.dragging #frame{cursor:grabbing}
 
 <header style="position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;width:min(330px,calc(100vw - 36px));display:grid;grid-template-rows:56px {{ navRows }};background:color-mix(in srgb,var(--nav,#0d1016) 62%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(241,239,231,0.1);overflow:hidden;transition:grid-template-rows 0.75s cubic-bezier(0.16,1,0.3,1)">
   <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 18px;box-sizing:border-box">
-    <a href="Kinomad Landing.dc.html" style="font-weight:700;letter-spacing:-0.02em;font-size:17px;text-transform:uppercase;color:#F1EFE7" style-hover="color:#F1EFE7"><img src="assets/logo-light.png" alt="Kinomad" style="width:24px;height:auto;display:block"></a>
-    <button onClick="{{ toggleMenu }}" aria-label="Menu" style="background:transparent;border:none;color:#F1EFE7;cursor:pointer;font-size:22px;line-height:1;padding:8px 12px;font-family:inherit">{{ menuIcon }}</button>
+    <a href="Kinomad Landing.dc.html" style="font-weight:700;letter-spacing:-0.02em;font-size:17px;text-transform:uppercase;color:#F1EFE7" style-hover="color:#F1EFE7"><img src="assets/logo-light.svg" alt="Kinomad" style="width:24px;height:auto;display:block"></a>
+    <button onClick="{{ toggleMenu }}" aria-label="Menu" aria-expanded="{{ menuAria }}" aria-controls="km-nav-menu" style="background:transparent;border:none;color:#F1EFE7;cursor:pointer;font-size:22px;line-height:1;padding:8px 12px;font-family:inherit">{{ menuIcon }}</button>
   </div>
-  <div style="min-height:0;overflow:hidden">
+  <div id="km-nav-menu" style="min-height:0;overflow:hidden">
     <div style="display:flex;flex-direction:column;padding:14px 0 22px;opacity:{{ menuOp }};transform:translateY({{ menuTy }});transition:opacity 0.45s ease 0.12s,transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.05s">
       <nav style="display:flex;flex-direction:column;align-items:center;gap:4px">
         <a href="#studio" onClick="{{ closeMenu }}" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Studio</a>
@@ -83,39 +85,141 @@ body.dev.dragging #frame{cursor:grabbing}
 </header>
 
 <div style="position:fixed;inset:0;z-index:200;display:{{ bookingDisplay }};align-items:center;justify-content:center;padding:clamp(16px,3cqw,48px);box-sizing:border-box">
-  <div onClick="{{ closeBooking }}" style="position:absolute;inset:0;background:rgba(5,5,5,0.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)"></div>
-  <div style="position:relative;width:min(1040px,100%);height:min(720px,100%);background:#141414;border:1px solid rgba(241,239,231,0.14);display:flex;flex-direction:column;animation:km-rise 0.5s cubic-bezier(0.16,1,0.3,1) both">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px clamp(16px,2cqw,28px);border-bottom:1px solid rgba(241,239,231,0.14)">
-      <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:rgba(241,239,231,0.55)">BOOK A CALL//</span>
-      <div style="display:flex;align-items:center;gap:18px">
-        <a href="mailto:Hello@Kinomadstudio.com" style="font-size:12px;letter-spacing:0.08em;font-weight:600;color:rgba(241,239,231,0.55)">or email us instead</a>
-        <button onClick="{{ closeBooking }}" aria-label="Close booking" style="font-family:inherit;border:1px solid rgba(241,239,231,0.22);background:transparent;color:#F1EFE7;width:36px;height:36px;cursor:pointer;font-size:16px;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">×</button>
+  <div onClick="{{ closeBooking }}" style="position:absolute;inset:0;background:rgba(5,5,5,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)"></div>
+  <div data-r="bk-shell" style="position:relative;width:min(980px,100%);max-height:min(680px,100%);background:#141414;border:1px solid rgba(241,239,231,0.14);display:grid;grid-template-columns:290px 1fr;overflow:hidden;animation:km-rise 0.5s cubic-bezier(0.16,1,0.3,1) both">
+
+    <aside data-r="bk-side" style="background:#0d0d0d;border-right:1px solid rgba(241,239,231,0.12);padding:clamp(22px,2.4cqw,32px);display:flex;flex-direction:column;gap:22px;min-width:0">
+      <div style="display:flex;align-items:center;gap:11px">
+        <div style="width:26px;aspect-ratio:1294.8/1305.87;-webkit-mask:url('assets/logo-light.svg') center/contain no-repeat;mask:url('assets/logo-light.svg') center/contain no-repeat;background:#F1EFE7"></div>
+        <span style="font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.16em;color:rgba(241,239,231,0.55)">KINOMAD STUDIO</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(241,239,231,0.5);font-weight:600">Book a call</span>
+        <h3 style="margin:0;font-size:clamp(22px,2.4cqw,30px);font-weight:700;letter-spacing:-0.02em;line-height:1.02">{{ bkTypeName }}</h3>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <sc-for list="{{ bkTypes }}" as="mt" hint-placeholder-count="2">
+          <button data-idx="{{ mt.idx }}" onClick="{{ bkPickType }}" style="font-family:inherit;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid {{ mt.bd }};background:{{ mt.bg }};color:#F1EFE7;padding:11px 13px;cursor:pointer;transition:border-color .25s ease,background .25s ease">
+            <span style="font-size:13px;font-weight:600">{{ mt.name }}</span>
+            <span style="font-size:12px;opacity:0.6">{{ mt.dur }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:11px;font-size:12px;color:rgba(241,239,231,0.6);font-weight:500">
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px">◷</span>{{ bkDur }}</div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px">▤</span>Video call, link sent after</div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px">⊕</span>{{ bkTz }}</div>
+      </div>
+    </aside>
+
+    <div style="position:relative;display:flex;flex-direction:column;min-width:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px clamp(16px,2cqw,26px);border-bottom:1px solid rgba(241,239,231,0.12)">
+        <span style="font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.16em;color:rgba(241,239,231,0.5)">{{ bkStepLabel }}</span>
+        <button onClick="{{ closeBooking }}" aria-label="Close booking" style="font-family:inherit;border:1px solid rgba(241,239,231,0.22);background:transparent;color:#F1EFE7;width:34px;height:34px;cursor:pointer;font-size:15px;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">×</button>
+      </div>
+
+      <div data-r="bk-body" style="flex:1;overflow:auto;padding:clamp(18px,2.2cqw,28px)">
+
+        <sc-if value="{{ bkIsStep1 }}" hint-placeholder-val="{{ true }}">
+          <div data-r="bk-cal" style="display:grid;grid-template-columns:1fr 190px;gap:clamp(18px,2.2cqw,34px)">
+            <div style="min-width:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                <span style="font-size:15px;font-weight:600">{{ bkMonthLabel }}</span>
+                <div style="display:flex;gap:6px">
+                  <button onClick="{{ bkPrevMonth }}" aria-label="Previous month" style="font-family:inherit;border:1px solid rgba(241,239,231,0.2);background:transparent;color:#F1EFE7;width:30px;height:30px;cursor:pointer">‹</button>
+                  <button onClick="{{ bkNextMonth }}" aria-label="Next month" style="font-family:inherit;border:1px solid rgba(241,239,231,0.2);background:transparent;color:#F1EFE7;width:30px;height:30px;cursor:pointer">›</button>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
+                <sc-for list="{{ bkDow }}" as="d" hint-placeholder-count="7">
+                  <span style="text-align:center;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(241,239,231,0.4);font-weight:600">{{ d }}</span>
+                </sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+                <sc-for list="{{ bkDays }}" as="dy" hint-placeholder-count="35">
+                  <button data-iso="{{ dy.iso }}" onClick="{{ bkPickDate }}" style="font-family:inherit;aspect-ratio:1;border:1px solid {{ dy.bd }};background:{{ dy.bg }};color:{{ dy.fg }};font-size:13px;font-weight:{{ dy.fw }};cursor:{{ dy.cur }};pointer-events:{{ dy.pe }};transition:border-color .2s ease,background .2s ease">{{ dy.n }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;min-width:0">
+              <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(241,239,231,0.5);font-weight:600;margin-bottom:12px">{{ bkDateLabel }}</span>
+              <div data-r="bk-slots" style="display:flex;flex-direction:column;gap:6px;overflow:auto;max-height:296px">
+                <sc-for list="{{ bkSlots }}" as="sl" hint-placeholder-count="6">
+                  <button data-t="{{ sl.t }}" onClick="{{ bkPickTime }}" style="font-family:inherit;border:1px solid {{ sl.bd }};background:{{ sl.bg }};color:{{ sl.fg }};padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .2s ease,background .2s ease">{{ sl.t }}</button>
+                </sc-for>
+                <sc-if value="{{ bkNoSlots }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:13px;color:rgba(241,239,231,0.4);font-weight:500;padding:8px 0;line-height:1.5">{{ bkNoSlotsMsg }}</span>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ bkIsStep2 }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:15px;max-width:460px">
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid rgba(241,239,231,0.14);background:#0d0d0d;font-size:13px;font-weight:600"><span style="color:var(--accent)">●</span>{{ bkWhen }}</div>
+            <label style="display:flex;flex-direction:column;gap:7px">
+              <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.5)">Name</span>
+              <input value="{{ bkName }}" data-k="name" onChange="{{ bkField }}" placeholder="Your name" style="background:#0d0d0d;border:1px solid rgba(241,239,231,0.14);color:#F1EFE7;font-size:15px;padding:12px 14px;font-family:inherit">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:7px">
+              <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.5)">Email</span>
+              <input value="{{ bkEmail }}" data-k="email" onChange="{{ bkField }}" type="email" placeholder="you@company.com" style="background:#0d0d0d;border:1px solid rgba(241,239,231,0.14);color:#F1EFE7;font-size:15px;padding:12px 14px;font-family:inherit">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:7px">
+              <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.5)">What's on your mind?</span>
+              <textarea rows="3" value="{{ bkNote }}" data-k="note" onChange="{{ bkField }}" placeholder="A sentence about your project." style="background:#0d0d0d;border:1px solid rgba(241,239,231,0.14);color:#F1EFE7;font-size:14px;padding:12px 14px;font-family:inherit;resize:vertical"></textarea>
+            </label>
+            <span style="font-size:12px;color:#ff8a6b;font-weight:600;min-height:15px">{{ bkError }}</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ bkIsStep3 }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-top:clamp(16px,2.6cqw,40px);max-width:460px">
+            <div style="width:46px;height:46px;border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px">✓</div>
+            <h3 style="margin:0;font-size:clamp(26px,3cqw,40px);font-weight:700;letter-spacing:-0.02em;line-height:1">You're booked.</h3>
+            <p style="margin:0;font-size:15px;line-height:1.55;color:rgba(241,239,231,0.7);font-weight:500;text-wrap:pretty">{{ bkConfirmMsg }}</p>
+            <div style="display:flex;flex-direction:column;gap:9px;width:100%;border-top:1px solid rgba(241,239,231,0.12);padding-top:16px;font-size:13px">
+              <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:rgba(241,239,231,0.5)">When</span><span style="font-weight:600">{{ bkWhen }}</span></div>
+              <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:rgba(241,239,231,0.5)">Type</span><span style="font-weight:600">{{ bkTypeName }}, {{ bkDur }}</span></div>
+              <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:rgba(241,239,231,0.5)">Confirmation to</span><span style="font-weight:600">{{ bkEmail }}</span></div>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px clamp(16px,2cqw,26px);border-top:1px solid rgba(241,239,231,0.12)">
+        <a href="mailto:Hello@Kinomadstudio.com" style="font-size:12px;letter-spacing:0.06em;font-weight:600;color:rgba(241,239,231,0.5)">or email us instead</a>
+        <div style="display:flex;gap:10px">
+          <sc-if value="{{ bkShowBack }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ bkBack }}" style="font-family:inherit;border:1px solid rgba(241,239,231,0.2);background:transparent;color:#F1EFE7;font-weight:600;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:11px 18px;cursor:pointer">Back</button>
+          </sc-if>
+          <button onClick="{{ bkNext }}" class="km-cta" style="font-family:inherit;border:none;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 22px;cursor:{{ bkNextCur }};opacity:{{ bkNextOp }};pointer-events:{{ bkNextPe }}">{{ bkNextLabel }}</button>
+        </div>
       </div>
     </div>
-    <iframe src="{{ bookingSrc }}" title="Book a call" style="flex:1;width:100%;border:none;background:#141414"></iframe>
   </div>
 </div>
 
 <div id="km-scrollthumb" aria-hidden="true" style="position:fixed;top:0;right:0;width:10px;height:120px;background:#F1EFE7;z-index:130;pointer-events:none;will-change:transform"></div>
 
-<div style="position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:120;display:flex;gap:2px;background:rgba(13,16,22,0.94);backdrop-filter:blur(14px);border:1px solid rgba(241,239,231,0.12);border-radius:999px;padding:4px">
-  <button data-dev="Desktop" onClick="{{ setDevice }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;background:{{ segDesktop.bg }};color:{{ segDesktop.fg }};transition:background 0.3s ease,color 0.3s ease">Desktop</button>
-  <button data-dev="Tablet" onClick="{{ setDevice }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;background:{{ segTablet.bg }};color:{{ segTablet.fg }};transition:background 0.3s ease,color 0.3s ease">Tablet</button>
-  <button data-dev="Mobile" onClick="{{ setDevice }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;background:{{ segMobile.bg }};color:{{ segMobile.fg }};transition:background 0.3s ease,color 0.3s ease">Mobile</button>
-</div>
-
 <div id="frame">
-<main style="position:relative;z-index:1;background:var(--bg)">
+<a class="km-skip" href="#km-main">Skip to content</a>
+<main id="km-main" style="position:relative;z-index:1;background:var(--bg)">
 
-<section data-screen-label="Hero" id="km-hero" style="position:relative;height:240vh;background:var(--bg)">
+<section data-screen-label="Hero" id="km-hero" style="position:relative;height:420vh;background:var(--bg)">
   <div style="position:sticky;top:0;height:100svh;overflow:hidden;background:#050505">
     <div style="position:absolute;inset:0;animation:km-hzoom 1.8s cubic-bezier(0.16,1,0.3,1) both">
-      <img id="km-hero-photo" src="assets/hero-stones.png" alt="Kinomad" style="width:100%;height:100%;object-fit:contain;padding:clamp(40px,7vh,90px);box-sizing:border-box;display:block;will-change:transform">
+      <img id="km-hero-photo" class="km-hero-photo" src="assets/hero-1.png" alt="Kinomad" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block">
+      <img id="km-hero-photo2" class="km-hero-photo" src="assets/hero-2.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;will-change:mask-size;-webkit-mask-image:linear-gradient(#000,#000);-webkit-mask-size:0px 100%;-webkit-mask-position:0 0;-webkit-mask-repeat:no-repeat;mask-image:linear-gradient(#000,#000);mask-size:0px 100%;mask-position:0 0;mask-repeat:no-repeat">
+      <img id="km-hero-photo3" class="km-hero-photo" src="assets/hero-3.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;will-change:mask-size;-webkit-mask-image:linear-gradient(#000,#000);-webkit-mask-size:0px 100%;-webkit-mask-position:0 0;-webkit-mask-repeat:no-repeat;mask-image:linear-gradient(#000,#000);mask-size:0px 100%;mask-position:0 0;mask-repeat:no-repeat">
     </div>
+    <div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:34%;z-index:1;pointer-events:none;background:linear-gradient(to top,rgba(5,5,5,0.82) 0%,rgba(5,5,5,0.5) 45%,rgba(5,5,5,0) 100%)"></div>
     <div id="km-hero-title" style="position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none;will-change:transform">
       <h1 id="km-hero-h1" style="margin:0;padding:0 clamp(20px,4cqw,64px);font-size:clamp(52px,10.5cqw,200px);line-height:0.95;letter-spacing:-0.035em;font-weight:600;color:var(--fg);opacity:0;text-align:center;text-wrap:balance">Dreams made real<span style="color:var(--accent-ink)">.</span></h1>
     </div>
-    <div style="position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:0 clamp(20px,4cqw,64px) 26px;font-size:13px;font-weight:500;color:rgba(241,239,231,0.62);animation:km-hfade 1s ease 0.8s both">
+    <div style="position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:0 clamp(20px,4cqw,64px) 26px;font-size:13px;font-weight:500;color:rgba(241,239,231,0.88);text-shadow:0 1px 6px rgba(0,0,0,0.45);animation:km-hfade 1s ease 0.8s both">
       <span>©2026</span>
       <span style="letter-spacing:0.1em;text-transform:uppercase;font-size:12px">Brand / Interface / Motion / Engineering</span>
       <span style="letter-spacing:0.12em;text-transform:uppercase;font-size:12px">Scroll ↓</span>
@@ -130,15 +234,6 @@ body.dev.dragging #frame{cursor:grabbing}
       <div data-km-slat="6" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
       <div data-km-slat="7" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
       <div data-km-slat="8" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="9" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="10" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="11" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="12" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="13" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="14" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="15" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="16" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
-      <div data-km-slat="17" style="flex:1 1 0;background:var(--bg);transform:scaleX(0);transform-origin:left;will-change:transform"></div>
     </div>
   </div>
 </section>
@@ -186,7 +281,7 @@ body.dev.dragging #frame{cursor:grabbing}
   </div>
   <div style="border-bottom:1px solid var(--line)">
     <sc-for list="{{ services }}" as="s" hint-placeholder-count="3">
-      <a href="{{ s.href }}" data-idx="{{ $index }}" onMouseEnter="{{ svcHover }}" onMouseLeave="{{ svcLeave }}" style="display:block;border-top:1px solid var(--line);background:{{ s.bg }};color:{{ s.fg }};transition:background 0.45s cubic-bezier(0.16,1,0.3,1),color 0.45s cubic-bezier(0.16,1,0.3,1)">
+      <a href="{{ s.href }}" data-idx="{{ $index }}" onMouseEnter="{{ svcHover }}" onMouseLeave="{{ svcLeave }}" onClick="{{ svcTap }}" style="display:block;border-top:1px solid var(--line);background:{{ s.bg }};color:{{ s.fg }};transition:background 0.45s cubic-bezier(0.16,1,0.3,1),color 0.45s cubic-bezier(0.16,1,0.3,1)">
         <div style="display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:clamp(14px,2cqw,24px);padding:clamp(18px,2.2cqw,28px) clamp(12px,1.6cqw,24px)">
           <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.08em;opacity:0.65">{{ s.num }}</span>
           <span style="font-size:clamp(20px,2.4cqw,38px);font-weight:700;letter-spacing:-0.01em;text-transform:uppercase">{{ s.name }}</span>
@@ -218,7 +313,7 @@ body.dev.dragging #frame{cursor:grabbing}
     <a href="Kinomad Works.dc.html" style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;padding-bottom:6px">ALL WORKS ↗</a>
   </div>
 
-  <div onPointerDown="{{ wDown }}" onPointerMove="{{ wMove }}" onPointerUp="{{ wUp }}" onPointerCancel="{{ wCancel }}" onDragStart="{{ wPrevent }}" style="overflow:hidden;cursor:grab;touch-action:pan-y">
+  <div onPointerDown="{{ wDown }}" onPointerMove="{{ wMove }}" onPointerUp="{{ wUp }}" onPointerCancel="{{ wCancel }}" onTouchStart="{{ wTDown }}" onTouchMove="{{ wTMove }}" onTouchEnd="{{ wTUp }}" onDragStart="{{ wPrevent }}" style="overflow:hidden;cursor:grab;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent">
     <div data-r="wstrip" style="display:flex;align-items:flex-start;gap:2cqw;height:34cqw;transform:translateX({{ wTx }});transition:transform 0.75s cubic-bezier(0.16,1,0.3,1);will-change:transform">
       <sc-for list="{{ works }}" as="wk" hint-placeholder-count="4">
         <div data-idx="{{ $index }}" onClick="{{ wPick }}" style="flex:0 0 auto;width:{{ wk.cw }};height:{{ wk.ch }};overflow:hidden;background:var(--card);opacity:{{ wk.op }};transition:width 0.75s cubic-bezier(0.16,1,0.3,1),height 0.75s cubic-bezier(0.16,1,0.3,1),opacity 0.5s ease">
@@ -260,7 +355,7 @@ body.dev.dragging #frame{cursor:grabbing}
     <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">Team</h2>
   </div>
   <div style="display:flex;flex-wrap:wrap;gap:clamp(16px,2cqw,28px);align-items:flex-start">
-    <div data-idx="0" onMouseEnter="{{ teamHover }}" onMouseLeave="{{ teamLeave }}" style="flex-grow:1;flex-basis:0;min-width:240px;display:flex;flex-direction:column;cursor:pointer;transition:flex-grow 0.9s cubic-bezier(0.16,1,0.3,1)">
+    <div data-idx="0" onMouseEnter="{{ teamHover }}" onMouseLeave="{{ teamLeave }}" onClick="{{ teamTap }}" style="flex-grow:1;flex-basis:0;min-width:240px;display:flex;flex-direction:column;cursor:pointer;transition:flex-grow 0.9s cubic-bezier(0.16,1,0.3,1)">
       <div style="width:100%;height:clamp(280px,27cqw,400px);overflow:hidden;background:var(--card);filter:grayscale(1);transition:filter 0.7s cubic-bezier(0.16,1,0.3,1),height 0.9s cubic-bezier(0.16,1,0.3,1)">
         <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="team-1" src="https://images.pexels.com/photos/13451104/pexels-photo-13451104.jpeg?auto=compress&cs=tinysrgb&w=1920" shape="rect" placeholder="Portrait, founder" style="width:100%;height:100%" hint-size="100%,320px"></x-import>
       </div>
@@ -269,11 +364,11 @@ body.dev.dragging #frame{cursor:grabbing}
         <span style="font-size:19px;font-weight:600">Daniel Kim</span>
         <span style="font-size:14px;color:var(--mut);font-weight:500">Founder, Creative Director</span>
       </div>
-      <div style="max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.9s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease">
-        <p style="margin:12px 0 0;font-family:'Chillax',sans-serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--mut);font-weight:500;text-wrap:pretty">"Every brief starts the same way: what does this dream look like when it's real?"</p>
+      <div style="display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows 0.9s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease">
+        <p style="overflow:hidden;min-height:0;margin:12px 0 0;font-family:'Chillax',sans-serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--mut);font-weight:500;text-wrap:pretty">"Every brief starts the same way: what does this dream look like when it's real?"</p>
       </div>
     </div>
-    <div data-idx="1" onMouseEnter="{{ teamHover }}" onMouseLeave="{{ teamLeave }}" style="flex-grow:1;flex-basis:0;min-width:240px;display:flex;flex-direction:column;cursor:pointer;transition:flex-grow 0.9s cubic-bezier(0.16,1,0.3,1)">
+    <div data-idx="1" onMouseEnter="{{ teamHover }}" onMouseLeave="{{ teamLeave }}" onClick="{{ teamTap }}" style="flex-grow:1;flex-basis:0;min-width:240px;display:flex;flex-direction:column;cursor:pointer;transition:flex-grow 0.9s cubic-bezier(0.16,1,0.3,1)">
       <div style="width:100%;height:clamp(280px,27cqw,400px);overflow:hidden;background:var(--card);filter:grayscale(1);transition:filter 0.7s cubic-bezier(0.16,1,0.3,1),height 0.9s cubic-bezier(0.16,1,0.3,1)">
         <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="team-2" src="https://images.pexels.com/photos/7675023/pexels-photo-7675023.jpeg?auto=compress&cs=tinysrgb&w=1920" shape="rect" placeholder="Portrait, design lead" style="width:100%;height:100%" hint-size="100%,320px"></x-import>
       </div>
@@ -282,11 +377,11 @@ body.dev.dragging #frame{cursor:grabbing}
         <span style="font-size:19px;font-weight:600">Mara Sole</span>
         <span style="font-size:14px;color:var(--mut);font-weight:500">Design Lead</span>
       </div>
-      <div style="max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.9s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease">
-        <p style="margin:12px 0 0;font-family:'Chillax',sans-serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--mut);font-weight:500;text-wrap:pretty">"Good design is invisible until you feel it. Then it's everything."</p>
+      <div style="display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows 0.9s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease">
+        <p style="overflow:hidden;min-height:0;margin:12px 0 0;font-family:'Chillax',sans-serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--mut);font-weight:500;text-wrap:pretty">"Good design is invisible until you feel it. Then it's everything."</p>
       </div>
     </div>
-    <div data-idx="2" onMouseEnter="{{ teamHover }}" onMouseLeave="{{ teamLeave }}" style="flex-grow:1;flex-basis:0;min-width:240px;display:flex;flex-direction:column;cursor:pointer;transition:flex-grow 0.9s cubic-bezier(0.16,1,0.3,1)">
+    <div data-idx="2" onMouseEnter="{{ teamHover }}" onMouseLeave="{{ teamLeave }}" onClick="{{ teamTap }}" style="flex-grow:1;flex-basis:0;min-width:240px;display:flex;flex-direction:column;cursor:pointer;transition:flex-grow 0.9s cubic-bezier(0.16,1,0.3,1)">
       <div style="width:100%;height:clamp(280px,27cqw,400px);overflow:hidden;background:var(--card);filter:grayscale(1);transition:filter 0.7s cubic-bezier(0.16,1,0.3,1),height 0.9s cubic-bezier(0.16,1,0.3,1)">
         <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="team-3" src="https://images.pexels.com/photos/7315755/pexels-photo-7315755.jpeg?auto=compress&cs=tinysrgb&w=1920" shape="rect" placeholder="Portrait, 3D artist" style="width:100%;height:100%" hint-size="100%,320px"></x-import>
       </div>
@@ -295,8 +390,8 @@ body.dev.dragging #frame{cursor:grabbing}
         <span style="font-size:19px;font-weight:600">Ezra Vane</span>
         <span style="font-size:14px;color:var(--mut);font-weight:500">3D Artist</span>
       </div>
-      <div style="max-height:0px;opacity:0;overflow:hidden;transition:max-height 0.9s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease">
-        <p style="margin:12px 0 0;font-family:'Chillax',sans-serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--mut);font-weight:500;text-wrap:pretty">"If it doesn't exist yet, that's exactly where we start."</p>
+      <div style="display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows 0.9s cubic-bezier(0.16,1,0.3,1),opacity 0.6s ease">
+        <p style="overflow:hidden;min-height:0;margin:12px 0 0;font-family:'Chillax',sans-serif;font-style:italic;font-size:16px;line-height:1.5;color:var(--mut);font-weight:500;text-wrap:pretty">"If it doesn't exist yet, that's exactly where we start."</p>
       </div>
     </div>
   </div>
@@ -309,7 +404,7 @@ body.dev.dragging #frame{cursor:grabbing}
   <div style="border-bottom:1px solid var(--line)">
     <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
       <div style="border-top:1px solid var(--line);background:{{ f.rowBg }};color:{{ f.rowFg }};transition:background 0.45s ease,color 0.45s ease">
-        <button data-idx="{{ $index }}" onClick="{{ toggleFaq }}" data-r="svc-row" style="display:grid;grid-template-columns:64px 1fr 40px;align-items:baseline;gap:24px;width:100%;text-align:left;background:transparent;border:none;cursor:pointer;font-family:inherit;color:inherit;padding:clamp(20px,2.6cqw,34px) 4px">
+        <button data-idx="{{ $index }}" onClick="{{ toggleFaq }}" aria-expanded="{{ f.aria }}" data-r="svc-row" style="display:grid;grid-template-columns:64px 1fr 40px;align-items:baseline;gap:24px;width:100%;text-align:left;background:transparent;border:none;cursor:pointer;font-family:inherit;color:inherit;padding:clamp(20px,2.6cqw,34px) 4px">
           <span style="font-size:14px;color:{{ f.numC }};font-weight:500;transition:color 0.45s ease">{{ f.num }}</span>
           <span style="font-size:clamp(20px,2.6cqw,38px);font-weight:600;letter-spacing:-0.02em;line-height:1.15;text-wrap:balance">{{ f.q }}</span>
           <span style="font-size:26px;line-height:1;justify-self:end;color:{{ f.iconC }};transition:color 0.3s ease">{{ f.icon }}</span>
@@ -334,7 +429,7 @@ body.dev.dragging #frame{cursor:grabbing}
     <span style="font-size:13px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600">Submit your project</span>
     <h2 style="margin:0;font-size:clamp(32px,4.6cqw,68px);line-height:1.08;letter-spacing:-0.025em;font-weight:600;text-wrap:balance">Flexible engagement models designed to accommodate varying scales of ambition and complexity.</h2>
     <div style="display:flex;margin-top:10px">
-      <a href="mailto:Hello@Kinomadstudio.com" class="km-cta" style="display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px">Book a call <span style="font-size:16px">↗</span></a>
+      <button onClick="{{ openBooking }}" class="km-cta" style="font-family:inherit;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px">Book a call <span style="font-size:16px">↗</span></button>
     </div>
   </div>
 </section>
@@ -343,33 +438,37 @@ body.dev.dragging #frame{cursor:grabbing}
 
 <footer data-r="foot" data-screen-label="Footer" style="position:sticky;bottom:0;z-index:0;background:#050505;color:#F1EFE7;padding:clamp(70px,9cqw,130px) 0 0;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;animation:km-footrise 1s cubic-bezier(0.16,1,0.3,1) both;animation-timeline:view();animation-range:entry 0% entry 75%">
   <div style="position:relative;z-index:1;padding:0 1.2cqw;display:flex;justify-content:space-between;align-items:flex-start;gap:24px">
-    <div role="img" aria-label="Kinomad logo" style="width:clamp(56px,5cqw,84px);aspect-ratio:137/138;-webkit-mask:url('assets/logo-light.png') center/contain no-repeat;mask:url('assets/logo-light.png') center/contain no-repeat;background-image:linear-gradient(to top,var(--accent) 50%,#F1EFE7 50%);background-size:100% 200%;background-position:0 0;transition:background-position 0.6s cubic-bezier(0.16,1,0.3,1);cursor:pointer" style-hover="background-position:0 100%"></div>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <a href="mailto:Hello@Kinomadstudio.com" style="font-size:clamp(18px,1.8cqw,26px);font-weight:600;letter-spacing:-0.01em;color:#F1EFE7;border-bottom:1px solid rgba(241,239,231,0.3);align-self:flex-start;padding-bottom:4px;margin-bottom:clamp(24px,3cqw,48px)">Hello@Kinomadstudio.com</a>
-      <nav style="display:flex;flex-direction:column">
-        <a href="#" class="km-flink" style="align-self:flex-start;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">LinkedIn</a>
-        <a href="#" class="km-flink" style="align-self:flex-start;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">Behance</a>
-        <a href="#" class="km-flink" style="align-self:flex-start;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">Instagram</a>
+    <div role="img" aria-label="Kinomad logo" style="width:clamp(56px,5cqw,84px);aspect-ratio:137/138;-webkit-mask:url('assets/logo-light.svg') center/contain no-repeat;mask:url('assets/logo-light.svg') center/contain no-repeat;background-image:linear-gradient(to top,var(--accent) 50%,#F1EFE7 50%);background-size:100% 200%;background-position:0 0;transition:background-position 0.6s cubic-bezier(0.16,1,0.3,1);cursor:pointer" style-hover="background-position:0 100%"></div>
+    <a href="mailto:Hello@Kinomadstudio.com" style="font-size:clamp(18px,1.8cqw,26px);font-weight:600;letter-spacing:-0.01em;color:#F1EFE7;border-bottom:1px solid rgba(241,239,231,0.3);align-self:flex-start;padding-bottom:4px">Hello@Kinomadstudio.com</a>
+  </div>
+  <div style="position:relative;z-index:1;padding:clamp(50px,7cqw,110px) 1.2cqw 16px;display:flex;flex-direction:column;gap:clamp(28px,4cqw,56px)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px">
+      <address style="font-style:normal;font-size:clamp(14px,1.2cqw,17px);font-weight:500;line-height:1.6;color:rgba(241,239,231,0.7);max-width:22ch">Fl 10, City Centre Deira Complex<br>The Tower 1, Trade Center 2<br>Dubai, United Arab Emirates</address>
+      <nav style="display:flex;flex-direction:column;align-items:flex-end;text-align:right">
+        <a href="#" class="km-flink" style="align-self:flex-end;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">LinkedIn</a>
+        <a href="#" class="km-flink" style="align-self:flex-end;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">Behance</a>
+        <a href="#" class="km-flink" style="align-self:flex-end;font-size:clamp(32px,3.6cqw,58px);font-weight:600;letter-spacing:-0.025em;line-height:1.12;color:#F1EFE7">Instagram</a>
       </nav>
     </div>
-  </div>
-  <div style="position:relative;z-index:1;padding:clamp(50px,7cqw,110px) 1.2cqw 16px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;font-size:13px;font-weight:500;line-height:1.5">
-    <div style="display:flex;gap:clamp(40px,6cqw,100px);align-items:flex-end">
-      <span>Dubai, UAE</span>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;font-size:13px;font-weight:500;line-height:1.5">
+      <div style="display:flex;gap:clamp(14px,2cqw,28px);align-items:baseline">
+        <span>Dubai, UAE</span>
+        <a href="Kinomad Privacy.dc.html" class="km-flink" style="color:#F1EFE7;font-size:13px;font-weight:500">Privacy</a>
+      </div>
+      <div style="text-align:right">© 2026,<br>All Rights Reserved</div>
     </div>
-    <div style="text-align:right">© 2026,<br>All Rights Reserved</div>
   </div>
-  <div aria-hidden="true" style="position:relative;z-index:1;height:0.6em;overflow:hidden;font-size:21cqw;line-height:1;font-weight:700;letter-spacing:-0.04em;color:#F1EFE7">
-    <div style="display:flex;justify-content:space-between;padding:0 1.2cqw;margin:0 -0.01em 0 -0.05em;transform:translateY(-0.08em)">
-      <span>k</span><span>i</span><span>n</span><span>o</span><span>m</span><span>a</span><span>d</span>
+  <div aria-hidden="true" style="position:relative;z-index:1;height:0.78em;overflow:hidden;margin:0 0 clamp(20px,3cqw,48px);font-size:17.4cqw;line-height:1;font-weight:700;letter-spacing:-0.02em;color:#F1EFE7">
+    <div style="display:flex;justify-content:space-between;padding:0 1.2cqw;margin:0;transform:translateY(-0.1em)">
+      <span>K</span><span>I</span><span>N</span><span>O</span><span>M</span><span>A</span><span>D</span>
     </div>
   </div>
 </footer>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bookingUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://cal.com/kinomad/intro?embed=true&amp;theme=dark&quot;,&quot;section&quot;:&quot;Booking&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#b5cdb6&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bookingUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://cal.com/kinomad/intro?embed=true&amp;theme=dark&quot;,&quot;section&quot;:&quot;Booking&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  state = { light: false, fill: 0, hovT: -1, hovS: -1, menuOpen: false, device: 'Desktop', openFaq: 0, workIdx: 1 };
+  state = { light: false, fill: 0, hovT: -1, hovS: -1, menuOpen: false, device: 'Desktop', openFaq: 0, workIdx: 1, bookingOpen: false, bkStep: 1, bkType: 0, bkMonthOffset: 0, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '' };
 
   fillRef = React.createRef();
 
@@ -382,7 +481,7 @@ class Component extends DCLogic {
     if (light !== this.state.light) this.setState({ light });
     const savedDev = localStorage.getItem('kinomad-device');
     if (savedDev === 'Desktop' || savedDev === 'Tablet' || savedDev === 'Mobile') {
-      if (savedDev !== this.state.device) this.setState({ device: savedDev });
+      if (savedDev !== (this.props.device || 'Desktop')) this.setState({ device: savedDev });
     }
     this.applyAccent();
     this.applyDevice();
@@ -408,11 +507,103 @@ class Component extends DCLogic {
       this._scrollThumb();
     };
     window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._heroScroll = () => { this._heroFx(); this.applyHeroArt(); };
+    window.addEventListener('scroll', this._heroScroll, { passive: true });
+    window.addEventListener('resize', this._heroScroll);
     window.addEventListener('resize', this._onScroll);
     this.updateFill();
     this._clockTimer = setInterval(() => this._tick(), 1000);
     this._tick();
     this._initCursor();
+  }
+
+  _bkCfg() {
+    const def = { types: [{ name: 'Intro call', min: 30 }, { name: 'Project deep-dive', min: 60 }], tz: 'GST (UTC+4), Dubai', days: [true, true, true, true, true, false, false], start: '10:00', end: '18:00', interval: 30, buffer: 15, notice: 12, blocked: [] };
+    try { const raw = localStorage.getItem('kinomad-availability'); if (raw) return Object.assign({}, def, JSON.parse(raw)); } catch (_) {}
+    return def;
+  }
+
+  _bkView() {
+    const cfg = this._bkCfg();
+    const s = this.state;
+    const types = (cfg.types && cfg.types.length ? cfg.types : [{ name: 'Intro call', min: 30 }]);
+    const ti = Math.min(s.bkType, types.length - 1);
+    const type = types[ti];
+    const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const now = new Date();
+    const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const base = new Date(now.getFullYear(), now.getMonth() + s.bkMonthOffset, 1);
+    const firstDow = (base.getDay() + 6) % 7;
+    const dim = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate();
+    const days = [];
+    for (let i = 0; i < firstDow; i++) days.push({ n: '', iso: '', bg: 'transparent', fg: 'transparent', bd: 'transparent', fw: '500', cur: 'default', pe: 'none' });
+    for (let d = 1; d <= dim; d++) {
+      const dt = new Date(base.getFullYear(), base.getMonth(), d);
+      const dm = (dt.getDay() + 6) % 7;
+      const disabled = dt < today0 || !cfg.days[dm] || (cfg.blocked || []).includes(iso(dt));
+      const sel = iso(dt) === s.bkDate;
+      days.push({ n: String(d), iso: iso(dt), bg: sel ? 'var(--accent)' : 'transparent', fg: sel ? '#14130F' : (disabled ? 'rgba(241,239,231,0.22)' : '#F1EFE7'), bd: sel ? 'var(--accent)' : (disabled ? 'transparent' : 'rgba(241,239,231,0.16)'), fw: sel ? '700' : '500', cur: disabled ? 'default' : 'pointer', pe: disabled ? 'none' : 'auto' });
+    }
+    const toMin = (t) => { const p = t.split(':'); return (+p[0]) * 60 + (+p[1]); };
+    const fmt = (m) => { let h = Math.floor(m / 60), mm = m % 60; const ap = h >= 12 ? 'PM' : 'AM'; let hh = h % 12; if (hh === 0) hh = 12; return hh + ':' + String(mm).padStart(2, '0') + ' ' + ap; };
+    const slots = [];
+    if (s.bkDate) {
+      const s0 = toMin(cfg.start), e0 = toMin(cfg.end), step = cfg.interval || 30;
+      const selIso = s.bkDate;
+      const isToday = selIso === iso(today0);
+      const minM = isToday ? (now.getHours() * 60 + now.getMinutes() + (cfg.notice || 0) * 60) : -1;
+      for (let t = s0; t + type.min <= e0; t += step) {
+        if (t <= minM) continue;
+        const lbl = fmt(t), sel = s.bkTime === lbl;
+        slots.push({ t: lbl, bg: sel ? 'var(--accent)' : 'transparent', fg: sel ? '#14130F' : '#F1EFE7', bd: sel ? 'var(--accent)' : 'rgba(241,239,231,0.16)' });
+      }
+    }
+    const when = (s.bkDate && s.bkTime) ? (new Date(s.bkDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ', ' + s.bkTime) : '';
+    const step1ok = !!(s.bkDate && s.bkTime);
+    const stepLabels = { 1: 'Step 1 of 3 — Pick a time', 2: 'Step 2 of 3 — Your details', 3: 'Confirmed' };
+    return {
+      bookingDisplay: s.bookingOpen ? 'flex' : 'none',
+      openBooking: () => this.setState({ bookingOpen: true, bkStep: 1, bkError: '' }),
+      closeBooking: () => this.setState({ bookingOpen: false }),
+      bkTypeName: type.name,
+      bkDur: type.min + ' minutes',
+      bkTz: cfg.tz,
+      bkTypes: types.map((t, i) => ({ idx: i, name: t.name, dur: t.min + ' min', bd: i === ti ? 'var(--accent)' : 'rgba(241,239,231,0.16)', bg: i === ti ? 'color-mix(in srgb, var(--accent) 15%, transparent)' : 'transparent' })),
+      bkPickType: (e) => this.setState({ bkType: Number(e.currentTarget.dataset.idx), bkTime: '' }),
+      bkStepLabel: stepLabels[s.bkStep],
+      bkIsStep1: s.bkStep === 1, bkIsStep2: s.bkStep === 2, bkIsStep3: s.bkStep === 3,
+      bkMonthLabel: base.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      bkDow: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      bkDays: days,
+      bkPrevMonth: () => this.setState((st) => ({ bkMonthOffset: Math.max(0, st.bkMonthOffset - 1) })),
+      bkNextMonth: () => this.setState((st) => ({ bkMonthOffset: Math.min(11, st.bkMonthOffset + 1) })),
+      bkPickDate: (e) => this.setState({ bkDate: e.currentTarget.dataset.iso, bkTime: '' }),
+      bkDateLabel: s.bkDate ? new Date(s.bkDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Select a date',
+      bkSlots: slots,
+      bkNoSlots: slots.length === 0,
+      bkNoSlotsMsg: s.bkDate ? 'No times left on this day.' : 'Pick a date to see available times.',
+      bkPickTime: (e) => this.setState({ bkTime: e.currentTarget.dataset.t }),
+      bkWhen: when,
+      bkName: s.bkName, bkEmail: s.bkEmail, bkNote: s.bkNote, bkError: s.bkError,
+      bkField: (e) => { const k = e.currentTarget.dataset.k, v = e.currentTarget.value; this.setState((st) => { const o = {}; o['bk' + k.charAt(0).toUpperCase() + k.slice(1)] = v; return o; }); },
+      bkShowBack: s.bkStep === 2,
+      bkBack: () => this.setState({ bkStep: 1, bkError: '' }),
+      bkConfirmMsg: 'A calendar invite and video link are on their way to ' + (s.bkEmail || 'your inbox') + '. We\u2019ll send a reminder the day before.',
+      bkNextLabel: s.bkStep === 1 ? 'Continue' : s.bkStep === 2 ? 'Confirm booking' : 'Done',
+      bkNextCur: (s.bkStep === 1 && !step1ok) ? 'default' : 'pointer',
+      bkNextOp: (s.bkStep === 1 && !step1ok) ? '0.4' : '1',
+      bkNextPe: (s.bkStep === 1 && !step1ok) ? 'none' : 'auto',
+      bkNext: () => {
+        if (s.bkStep === 1) { if (step1ok) this.setState({ bkStep: 2, bkError: '' }); return; }
+        if (s.bkStep === 2) {
+          if (!s.bkName.trim()) return this.setState({ bkError: 'Please add your name.' });
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.bkEmail)) return this.setState({ bkError: 'Please add a valid email.' });
+          try { const b = JSON.parse(localStorage.getItem('kinomad-bookings') || '[]'); b.push({ type: type.name, when, name: s.bkName, email: s.bkEmail, note: s.bkNote, at: Date.now() }); localStorage.setItem('kinomad-bookings', JSON.stringify(b)); } catch (_) {}
+          return this.setState({ bkStep: 3, bkError: '' });
+        }
+        this.setState({ bookingOpen: false, bkStep: 1, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '' });
+      },
+    };
   }
 
   _scrollThumb() {
@@ -468,50 +659,72 @@ class Component extends DCLogic {
     const vh = window.innerHeight;
     const total = (wrap.offsetHeight - vh) || 1;
     const P = Math.max(0, Math.min(1, -wrap.getBoundingClientRect().top / total));
-    // staggered vertical slat wipe (image -> next section color)
-    const sp = Math.max(0, Math.min(1, (P - 0.08) / 0.72));
-    const delays = this._slatD || (this._slatD = Array.from({ length: 18 }, (_, i) => i / 17));
+    const stage = (a, b) => Math.max(0, Math.min(1, (P - a) / (b - a)));
+    // three staggered slat wipes: img1 -> img2 -> img3 -> section colour
     if (!this._slats || !this._slats[0] || !this._slats[0].isConnected) {
       this._slats = Array.from(wrap.querySelectorAll('[data-km-slat]'));
+      this._hImg2 = document.getElementById('km-hero-photo2');
+      this._hImg3 = document.getElementById('km-hero-photo3');
     }
-    const covered = [];
+    if (this._hImg2) this._maskTo(this._hImg2, this._slatCover(stage(0.03, 0.30)));
+    if (this._hImg3) this._maskTo(this._hImg3, this._slatCover(stage(0.34, 0.61)));
+    const covered = this._reduced()
+      ? this._slatCover(P > 0.5 ? 1 : 0)
+      : this._slatCover(stage(0.66, 0.94));
     this._slats.forEach((el, i) => {
-      const q = Math.max(0, Math.min(1, (sp - delays[i % delays.length] * 0.55) / 0.45));
-      const e = 1 - Math.pow(1 - q, 3);
-      covered[i] = Math.min(1, e * 1.04);
-      el.style.transform = 'scaleX(' + (e * 1.04).toFixed(4) + ')';
+      // slight overscale so neighbouring slats overlap — sub-pixel seams otherwise
+      // show hairlines of the image between them at full cover
+      el.style.transform = 'scaleX(' + (covered[i] * 1.04).toFixed(4) + ')';
     });
-    // image recedes to back: slow zoom + drift while slats cover it
-    const img = document.getElementById('km-hero-photo');
-    if (img) img.style.transform = 'translateY(' + (-6 * P).toFixed(2) + '%) scale(' + (1 + 0.1 * P).toFixed(3) + ')';
+    // images stay locked full-bleed; only the slat wipes move
     const ttl = document.getElementById('km-hero-title');
     if (ttl) {
       ttl.style.transform = 'translateY(' + (-52 * P).toFixed(1) + 'px)';
-      // reveal the title only where the dark slats have wiped in: mask the
-      // title layer to the union of covered slat regions (no fade).
-      const W = ttl.clientWidth || window.innerWidth;
-      const sw = W / covered.length;
-      const imgs = [], poss = [], sizes = [];
-      covered.forEach((e, i) => {
-        imgs.push('linear-gradient(#000,#000)');
-        poss.push((i * sw).toFixed(2) + 'px 0px');
-        sizes.push((e * sw + (e > 0 ? 1 : 0)).toFixed(2) + 'px 100%');
-      });
-      ttl.style.webkitMaskImage = imgs.join(',');
-      ttl.style.webkitMaskPosition = poss.join(',');
-      ttl.style.webkitMaskSize = sizes.join(',');
-      ttl.style.webkitMaskRepeat = 'no-repeat';
-      ttl.style.maskImage = imgs.join(',');
-      ttl.style.maskPosition = poss.join(',');
-      ttl.style.maskSize = sizes.join(',');
-      ttl.style.maskRepeat = 'no-repeat';
+      // reveal the title only where the dark slats have wiped in
+      this._maskTo(ttl, covered);
     }
     const h1 = document.getElementById('km-hero-h1');
     if (h1) { h1.style.color = 'var(--fg)'; h1.style.opacity = '1'; }
   }
 
+  _slatCover(sp) {
+    const delays = this._slatD || (this._slatD = Array.from({ length: 9 }, (_, i) => i / 8));
+    const out = [];
+    for (let i = 0; i < delays.length; i++) {
+      const q = Math.max(0, Math.min(1, (sp - delays[i] * 0.55) / 0.45));
+      out[i] = Math.min(1, (1 - Math.pow(1 - q, 3)) * 1.04);
+    }
+    return out;
+  }
+
+  _maskTo(el, covered) {
+    const W = el.clientWidth || window.innerWidth;
+    const sw = W / covered.length;
+    const imgs = [], poss = [], sizes = [];
+    covered.forEach((e, i) => {
+      imgs.push('linear-gradient(#000,#000)');
+      poss.push((i * sw).toFixed(2) + 'px 0px');
+      sizes.push((e * sw + (e > 0 ? 1 : 0)).toFixed(2) + 'px 100%');
+    });
+    const im = imgs.join(','), po = poss.join(','), si = sizes.join(',');
+    el.style.webkitMaskImage = im; el.style.webkitMaskPosition = po; el.style.webkitMaskSize = si; el.style.webkitMaskRepeat = 'no-repeat';
+    el.style.maskImage = im; el.style.maskPosition = po; el.style.maskSize = si; el.style.maskRepeat = 'no-repeat';
+  }
+
+  _reduced() {
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { return false; }
+  }
+
   _initCursor() {
     if (this._curRaf) return;
+    if (this._reduced()) {
+      // Reduced motion: no custom cursor, no wheel hijack, no per-frame loop.
+      const rise = () => { if (this._heroFx) this._heroFx(); if (this._scrollThumb) this._scrollThumb(); };
+      this._riseFallback = rise;
+      window.addEventListener('scroll', rise, { passive: true });
+      rise();
+      return;
+    }
     if (!window.matchMedia || !window.matchMedia('(pointer: fine)').matches) {
       // Coarse pointer: no custom cursor/spotlight/smooth-scroll, but keep the hero
       // title/meta scroll-rise working via a plain scroll handler.
@@ -572,6 +785,8 @@ class Component extends DCLogic {
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('scroll', this._heroScroll);
+    window.removeEventListener('resize', this._heroScroll);
     window.removeEventListener('resize', this._onScroll);
     window.removeEventListener('pointerdown', this._pd);
     window.removeEventListener('pointermove', this._pm);
@@ -630,7 +845,7 @@ class Component extends DCLogic {
     }
     if (kids[1]) kids[1].style.background = on ? 'var(--accent)' : 'var(--line)';
     const q = kids[3];
-    if (q) { q.style.maxHeight = on ? '180px' : '0px'; q.style.opacity = on ? '1' : '0'; }
+    if (q) { q.style.gridTemplateRows = on ? '1fr' : '0fr'; q.style.opacity = on ? '1' : '0'; }
   }
 
   _splitWords(text) {
@@ -651,11 +866,36 @@ class Component extends DCLogic {
     this.applyDevice();
   }
 
+  _wStart(host, x, y) {
+    this._wx = x; this._wy = y; this._wlx = x; this._wmoved = 0;
+    this._wstrip = host.querySelector('[data-r="wstrip"]');
+    if (this._wstrip) {
+      this._wbase = this._wstrip.style.transform || '';
+      if (!this._reduced()) this._wstrip.style.transition = 'none';
+    }
+  }
+
+  _wDrag(x) {
+    if (this._wx == null) return;
+    this._wlx = x;
+    const d = x - this._wx;
+    this._wmoved = Math.abs(d);
+    // finger-following drag with resistance, so the swipe reads as direct manipulation
+    if (this._wstrip && !this._reduced()) {
+      this._wstrip.style.transform = this._wbase + ' translateX(' + (d * 0.55).toFixed(1) + 'px)';
+    }
+  }
+
   _wEnd(x) {
     if (this._wx == null) return;
     const dx = x - this._wx;
     this._wx = null;
     this._wmoved = Math.abs(dx);
+    if (this._wstrip) {
+      this._wstrip.style.transition = '';
+      this._wstrip.style.transform = this._wbase || '';
+      this._wstrip = null;
+    }
     const wi = this.state.workIdx;
     const n = (this._worksL || []).length || 4;
     if (dx < -40) this._setWork(Math.min(n - 1, wi + 1));
@@ -673,7 +913,7 @@ class Component extends DCLogic {
   }
 
   _dragOn() {
-    return this.state.device === 'Tablet' || this.state.device === 'Mobile';
+    return (this.props.device || 'Desktop') === 'Tablet' || (this.props.device || 'Desktop') === 'Mobile';
   }
 
   _dragBlock(e) {
@@ -717,13 +957,26 @@ class Component extends DCLogic {
 
   applyDevice() {
     const map = { Tablet: '834px', Mobile: '390px' };
-    const w = map[this.state.device];
+    const w = map[(this.props.device || 'Desktop')];
     document.body.classList.toggle('dev', !!w);
     if (w) document.body.style.setProperty('--frame-w', w);
     else document.body.style.removeProperty('--frame-w');
     // no custom cursor on tablet/mobile previews
     const dot = document.getElementById('km-cur-dot');
     if (dot) dot.style.display = w ? 'none' : '';
+    this.applyHeroArt();
+  }
+
+  // portrait crops for narrow screens; the 16:9 originals lose their subject when cover-cropped
+  applyHeroArt() {
+    const dev = this.props.device || 'Desktop';
+    const narrow = dev === 'Mobile' || (dev === 'Desktop' && window.innerWidth <= 780);
+    if (this._heroArt === narrow) return;
+    this._heroArt = narrow;
+    ['km-hero-photo', 'km-hero-photo2', 'km-hero-photo3'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.src = 'assets/hero-' + (i + 1) + (narrow ? '-mobile' : '') + '.png';
+    });
   }
 
   _procs() {
@@ -731,7 +984,7 @@ class Component extends DCLogic {
       { num: '01', name: 'Listen', desc: 'We start with your dream, not our portfolio.', imgId: 'proc-1', src: 'https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1600', ph: 'Process image, listen' },
       { num: '02', name: 'Define', desc: 'Strategy, direction, one clear plan, agreed before we design.', imgId: 'proc-2', src: 'https://images.pexels.com/photos/3183170/pexels-photo-3183170.jpeg?auto=compress&cs=tinysrgb&w=1600', ph: 'Process image, define' },
       { num: '03', name: 'Craft', desc: 'Design, build, render. Obsessively, until it feels right.', imgId: 'proc-3', src: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1600', ph: 'Process image, craft' },
-      { num: '04', name: 'Launch', desc: 'We ship, then stay close as it grows.', imgId: 'proc-4', src: 'https://images.pexels.com/photos/23769/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1600', ph: 'Process image, launch' },
+      { num: '04', name: 'Launch', desc: 'We ship, then stay close as it grows.', imgId: 'proc-4', src: 'https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=1600', ph: 'Process image, launch' },
     ]);
     const hov = this.state.hovP ?? 0;
     return data.map((d, i) => {
@@ -746,10 +999,22 @@ class Component extends DCLogic {
   }
 
   applyAccent() {
-    document.body.style.setProperty('--accent', this.props.accent ?? '#D9FF3D');
-    document.body.style.setProperty('--nav', this.props.navColor ?? '#0d1016');
+    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+    const s = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+    const pA = this.props.accent ?? '#D9FF3D';
+    const pN = this.props.navColor ?? '#0d1016';
+    const pB = this.props.bgColor ?? '#1f2121';
+    if (this._pA !== undefined && this._pA !== pA) s('kinomad-accent', pA);
+    if (this._pN !== undefined && this._pN !== pN) s('kinomad-nav', pN);
+    if (this._pB !== undefined && this._pB !== pB) s('kinomad-bg', pB);
+    this._pA = pA; this._pN = pN; this._pB = pB;
+    let accent = g('kinomad-accent'); if (accent == null) { accent = pA; s('kinomad-accent', accent); }
+    let nav = g('kinomad-nav'); if (nav == null) { nav = pN; s('kinomad-nav', nav); }
+    let bg = g('kinomad-bg'); if (bg == null) { bg = pB; s('kinomad-bg', bg); }
+    document.body.style.setProperty('--accent', accent);
+    document.body.style.setProperty('--nav', nav);
     if (this.state.light) document.body.style.removeProperty('--bg');
-    else document.body.style.setProperty('--bg', this.props.bgColor ?? '#1f2121');
+    else document.body.style.setProperty('--bg', bg);
   }
 
   renderVals() {
@@ -810,7 +1075,8 @@ class Component extends DCLogic {
       { num: '01', name: 'Brand strategy', count: '003', href: 'Kinomad Works.dc.html#brand', head: 'Shaping identities that resonate and endure', desc: 'From brand identity to visual systems, our strategic approach crafts cohesive narratives that define who you are and how you connect with your audience.', tags: 'BRAND IDENTITY / VISUAL SYSTEMS / ART DIRECTION / BRAND GUIDELINES / VERBAL IDENTITY' },
       { num: '02', name: 'Interface design', count: '002', href: 'Kinomad Works.dc.html#websites', head: 'Designing experiences that inspire interaction', desc: 'Our interface design services blend aesthetics with functionality, creating intuitive digital experiences across websites, mobile apps, and platforms that users love to engage with.', tags: 'UI / UX DESIGN / WEBSITE DESIGN / MOBILE APPLICATIONS / DESIGN SYSTEMS / E-COMMERCE & PLATFORMS' },
       { num: '03', name: 'Immersive & motion', count: '003', href: 'Kinomad Works.dc.html#three-d', head: 'Bringing imagination to life through movement and depth', desc: 'From photogrammetry to motion graphics, our immersive services create captivating visual experiences that transport audiences into new dimensions of storytelling.', tags: '3D EXPERIENCES / PHOTOGRAMMETRY / MOTION GRAPHICS / VIDEO EDITING / INTERACTIVE NARRATIVES' },
-      { num: '04', name: 'Engineering', count: '002', href: 'Kinomad Works.dc.html', head: 'Building robust foundations for digital excellence', desc: 'Our engineering services deliver full-stack solutions, technical optimization, and seamless integrations that power your digital presence with reliability and performance.', tags: 'FULL STACK SOLUTIONS / TECHNICAL SEO / PERFORMANCE OPTIMIZATION / CMS INTEGRATION / DIGITAL SIGNAGE' },
+      { num: '04', name: 'Marketing', count: '004', href: 'Kinomad Works.dc.html', head: 'Growing brands with campaigns that convert', desc: 'From launch strategy to always-on growth, our marketing services turn attention into traction, pairing sharp creative with data to reach the right people and move them to act.', tags: 'GROWTH STRATEGY / CAMPAIGNS / SOCIAL & CONTENT / SEO & PERFORMANCE / EMAIL & CRM' },
+      { num: '05', name: 'Engineering', count: '002', href: 'Kinomad Works.dc.html', head: 'Building robust foundations for digital excellence', desc: 'Our engineering services deliver full-stack solutions, technical optimization, and seamless integrations that power your digital presence with reliability and performance.', tags: 'FULL STACK SOLUTIONS / TECHNICAL SEO / PERFORMANCE OPTIMIZATION / CMS INTEGRATION / DIGITAL SIGNAGE' },
     ]);
     const worksData = this._worksL || (this._worksL = [
       { title: 'Aurelia', imgId: 'feat-aurelia', src: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Aurelia, website hero screen', desc: 'A slow-fashion storefront rebuilt around feel: art direction, UX and full build.', services: 'Interface Design, Art Direction, Development', industry: 'E-commerce / Fashion', location: 'Lisbon, Portugal', href: 'Kinomad Works.dc.html#web-aurelia' },
@@ -819,7 +1085,7 @@ class Component extends DCLogic {
       { title: 'Nomad Air', imgId: 'feat-nomadair', src: 'https://images.pexels.com/photos/34088260/pexels-photo-34088260.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Nomad Air, website screens', desc: 'A travel platform that makes booking feel like the trip already started.', services: 'Interface Design, Development, Motion Graphics', industry: 'Travel', location: 'Barcelona, Spain', href: 'Kinomad Works.dc.html#web-nomadair' },
     ]);
     const wi = this.state.workIdx;
-    const mob = this.state.device === 'Mobile';
+    const mob = (this.props.device || 'Desktop') === 'Mobile';
     const works = worksData.map((w, i) => Object.assign({}, w, {
       cw: (i === wi ? (mob ? 80 : 48) : (mob ? 52 : 30)) + 'cqw',
       ch: (i === wi ? (mob ? 58 : 34) : (mob ? 38 : 22)) + 'cqw',
@@ -844,14 +1110,11 @@ class Component extends DCLogic {
         tf: on ? 'translateY(0px)' : 'translateY(-12px)',
       });
     });
-    const seg = (name) => this.state.device === name
+    const seg = (name) => (this.props.device || 'Desktop') === name
       ? { bg: 'var(--accent)', fg: '#14130F' }
       : { bg: 'transparent', fg: 'rgba(241,239,231,0.7)' };
     return {
-      bookingDisplay: this.state.bookingOpen ? 'flex' : 'none',
-      bookingSrc: this.state.bookingOpen ? (this.props.bookingUrl ?? 'https://cal.com/kinomad/intro?embed=true&theme=dark') : 'about:blank',
-      openBooking: () => this.setState({ bookingOpen: true }),
-      closeBooking: () => this.setState({ bookingOpen: false }),
+      ...this._bkView(),
       faqs: faqData.map((f, i) => ({
         num: '0' + (i + 1),
         q: f.q,
@@ -864,6 +1127,7 @@ class Component extends DCLogic {
         rowFg: openFaq === i ? 'var(--bg)' : 'inherit',
         numC: openFaq === i ? 'rgba(31,33,33,0.6)' : 'var(--mut)',
         ansC: openFaq === i ? 'rgba(31,33,33,0.75)' : 'var(--mut)',
+        aria: openFaq === i ? 'true' : 'false',
       })),
       toggleFaq: (e) => {
         const i = Number(e.currentTarget.dataset.idx);
@@ -882,10 +1146,13 @@ class Component extends DCLogic {
       awIndustryW: mkW(aw.industry, 400, 55),
       awLocationW: mkW(aw.location, 440, 55),
       awHref: aw.href,
-      wDown: (e) => { this._wx = e.clientX; this._wlx = e.clientX; this._wmoved = 0; e.stopPropagation(); },
-      wMove: (e) => { if (this._wx != null) this._wlx = e.clientX; },
+      wDown: (e) => { this._pOk = true; this._wStart(e.currentTarget, e.clientX, e.clientY); try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {} e.stopPropagation(); },
+      wMove: (e) => this._wDrag(e.clientX),
       wUp: (e) => this._wEnd(e.clientX),
       wCancel: () => this._wEnd(this._wlx),
+      wTDown: (e) => { if (this._pOk) return; const t = e.touches[0]; if (t) this._wStart(e.currentTarget, t.clientX, t.clientY); },
+      wTMove: (e) => { if (this._pOk) return; const t = e.touches[0]; if (t) this._wDrag(t.clientX); },
+      wTUp: () => { if (this._pOk) return; this._wEnd(this._wlx); },
       wPick: (e) => {
         if ((this._wmoved || 0) > 20) { this._wmoved = 0; return; }
         this._setWork(Number(e.currentTarget.dataset.idx));
@@ -894,6 +1161,19 @@ class Component extends DCLogic {
       services,
       svcHover: (e) => this.setState({ hovS: Number(e.currentTarget.dataset.idx) }),
       svcLeave: () => this.setState({ hovS: -1 }),
+      svcTap: (e) => {
+        if (this.state.device === 'Desktop') return;
+        const i = Number(e.currentTarget.dataset.idx);
+        if (this.state.hovS !== i) { e.preventDefault(); this.setState({ hovS: i }); }
+      },
+      teamTap: (e) => {
+        if (this.state.device === 'Desktop') return;
+        const el = e.currentTarget;
+        const isOpen = el.getAttribute('data-open') === '1';
+        if (this._openTeam && this._openTeam !== el) { this._tSet(this._openTeam, false); this._openTeam.removeAttribute('data-open'); }
+        if (isOpen) { this._tSet(el, false); el.removeAttribute('data-open'); this._openTeam = null; }
+        else { this._tSet(el, true); el.setAttribute('data-open', '1'); this._openTeam = el; }
+      },
       segDesktop: seg('Desktop'),
       segTablet: seg('Tablet'),
       segMobile: seg('Mobile'),
@@ -915,6 +1195,7 @@ class Component extends DCLogic {
       menuOp: this.state.menuOpen ? '1' : '0',
       menuTy: this.state.menuOpen ? '0px' : '-10px',
       menuIcon: this.state.menuOpen ? '✕' : '≡',
+      menuAria: this.state.menuOpen ? 'true' : 'false',
       toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
       closeMenu: () => this.setState({ menuOpen: false }),
       themeLabel: this.state.light ? '◖ Dark' : '◗ Light',

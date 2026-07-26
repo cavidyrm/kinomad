@@ -20,7 +20,10 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 .km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
 .km-cta:hover{background-size:100% 100%;color:#14130F}
 @keyframes km-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}html{scroll-behavior:auto}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
+.km-skip:focus{top:12px;color:#14130F}
 </style>
 </helmet>
 
@@ -28,7 +31,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 
   <header style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px clamp(20px,3cqw,48px);background:color-mix(in srgb,#050505 80%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)">
     <div style="display:flex;align-items:center;gap:16px">
-      <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.png" alt="Kinomad" style="width:30px;height:auto;display:block"></a>
+      <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.svg" alt="Kinomad" style="width:30px;height:auto;display:block"></a>
       <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">STUDIO CRM · ADD WORK//</span>
     </div>
     <a href="Kinomad Works.dc.html" style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600">View works page ↗</a>
@@ -36,8 +39,15 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 
   <main style="max-width:1240px;margin:0 auto;padding:clamp(28px,4cqw,56px) clamp(20px,3cqw,48px) clamp(80px,8cqw,120px)">
 
-    <h1 style="margin:0 0 clamp(28px,3cqw,44px);font-size:clamp(34px,4.5cqw,64px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase;animation:km-rise 0.8s cubic-bezier(0.16,1,0.3,1) both">New project</h1>
+    <div style="display:flex;gap:2px;margin-bottom:clamp(24px,2.6cqw,36px);border:1px solid var(--line);width:fit-content">
+      <button data-view="work" onClick="{{ setView }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwWorkBg }};color:{{ vwWorkFg }};transition:background 0.3s ease,color 0.3s ease">Add work</button>
+      <button data-view="avail" onClick="{{ setView }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwAvailBg }};color:{{ vwAvailFg }};transition:background 0.3s ease,color 0.3s ease">Booking availability</button>
+      <button data-view="inbox" onClick="{{ setView }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwInboxBg }};color:{{ vwInboxFg }};transition:background 0.3s ease,color 0.3s ease">Bookings {{ inboxBadge }}</button>
+    </div>
 
+    <h1 style="margin:0 0 clamp(28px,3cqw,44px);font-size:clamp(34px,4.5cqw,64px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase;animation:km-rise 0.8s cubic-bezier(0.16,1,0.3,1) both">{{ crmTitle }}</h1>
+
+    <sc-if value="{{ isWorkView }}" hint-placeholder-val="{{ true }}">
     <div style="display:flex;gap:2px;margin-bottom:clamp(28px,3cqw,44px);border:1px solid var(--line);width:fit-content">
       <button data-type="website" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tabWebBg }};color:{{ tabWebFg }};transition:background 0.3s ease,color 0.3s ease">Website</button>
       <button data-type="brand" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tabBrandBg }};color:{{ tabBrandFg }};transition:background 0.3s ease,color 0.3s ease">Brand identity</button>
@@ -89,6 +99,11 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
         <sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}">
           <section style="display:flex;flex-direction:column;gap:18px">
             <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 WEBSITE FILES &amp; LOCAL RUN</span>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Live website URL</span>
+              <input value="{{ fLiveUrl }}" data-key="liveUrl" onChange="{{ field }}" placeholder="https://client-site.com" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-family:'Chillax',sans-serif;font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+              <span style="font-size:12px;color:var(--mut);font-weight:500">The real, deployed site. Used for the “Visit site” link on the case study.</span>
+            </label>
             <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(24px,2.6cqw,40px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
               <input type="file" accept=".zip,.tar,.gz" data-key="siteFiles" onChange="{{ file }}" style="display:none">
               <span style="font-size:15px;font-weight:600">{{ siteFilesLabel }}</span>
@@ -120,8 +135,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
             <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 IDENTITY IMAGES</span>
             <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
               <label style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Gallery · 4 images, 3:2</span>
-                <input type="file" accept="image/*" multiple="{{ true }}" data-key="brandImgs" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Hero image · 21:10</span>
+                <input type="file" accept="image/*" data-key="brandHero" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
               </label>
               <label style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Brand fill color · hover sweep</span>
@@ -137,11 +152,11 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 
         <sc-if value="{{ is3d }}" hint-placeholder-val="{{ false }}">
           <section style="display:flex;flex-direction:column;gap:18px">
-            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 REEL</span>
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 REEL &amp; SHOTS</span>
             <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(24px,2.6cqw,40px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
               <input type="file" accept="video/mp4,video/webm" data-key="reel" onChange="{{ file }}" style="display:none">
               <span style="font-size:15px;font-weight:600">{{ reelLabel }}</span>
-              <span style="font-size:13px;color:var(--mut);font-weight:500">MP4 or WebM, 21:9 preferred. Saved to assets/reels/ and streamed on the project page.</span>
+              <span style="font-size:13px;color:var(--mut);font-weight:500">Optional. MP4 or WebM, 21:9 preferred. With no reel the project page opens straight into the shots, like a brand identity case.</span>
             </label>
             <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
               <label style="display:flex;flex-direction:column;gap:8px">
@@ -152,6 +167,39 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
                 <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Card image · 4:5 portrait</span>
                 <input type="file" accept="image/*" data-key="cardImg" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
               </label>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ showShots }}" hint-placeholder-val="{{ false }}">
+          <section style="display:flex;flex-direction:column;gap:18px">
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02B SHOTS</span>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Shots · any number, any size</span>
+                <span style="font-size:12px;color:var(--mut);font-weight:500">{{ shotSummary }}</span>
+              </div>
+              <sc-for list="{{ shots }}" as="sh" hint-placeholder-count="2">
+                <div data-r="shotrow" style="display:grid;grid-template-columns:minmax(0,1fr) 150px 130px auto;gap:10px;align-items:center">
+                  <input type="file" accept="image/*" data-idx="{{ $index }}" data-key="img" onChange="{{ shotFile }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+                  <select value="{{ sh.size }}" data-idx="{{ $index }}" data-key="size" onChange="{{ shotField }}" style="font-family:inherit;background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:13px;font-weight:500;padding:12px 14px;cursor:pointer">
+                    <option value="Third">Third width</option>
+                    <option value="Half">Half width</option>
+                    <option value="Two thirds">Two thirds</option>
+                    <option value="Full">Full width</option>
+                  </select>
+                  <select value="{{ sh.ratio }}" data-idx="{{ $index }}" data-key="ratio" onChange="{{ shotField }}" style="font-family:inherit;background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:13px;font-weight:500;padding:12px 14px;cursor:pointer">
+                    <option value="21/9">21:9</option>
+                    <option value="16/9">16:9</option>
+                    <option value="3/2">3:2</option>
+                    <option value="4/3">4:3</option>
+                    <option value="1/1">1:1</option>
+                    <option value="4/5">4:5</option>
+                  </select>
+                  <button data-idx="{{ $index }}" onClick="{{ rmShot }}" aria-label="Remove shot" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
+                </div>
+              </sc-for>
+              <button onClick="{{ addShot }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add shot</button>
             </div>
           </section>
         </sc-if>
@@ -208,22 +256,260 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
       </aside>
 
     </div>
+    </sc-if>
+
+    <sc-if value="{{ isAvailView }}" hint-placeholder-val="{{ false }}">
+    <div data-r="crm-grid" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,0.7fr);gap:clamp(28px,3.5cqw,56px);align-items:start">
+      <div style="display:flex;flex-direction:column;gap:clamp(32px,3cqw,48px)">
+
+        <section style="display:flex;flex-direction:column;gap:18px">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 01 MEETING TYPES</span>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ mtList }}" as="mt" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:1fr 120px auto;gap:10px;align-items:center">
+                <input value="{{ mt.name }}" data-idx="{{ $index }}" data-key="name" onChange="{{ mtField }}" placeholder="e.g. Intro call" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+                <div style="display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);padding:0 14px">
+                  <input value="{{ mt.min }}" data-idx="{{ $index }}" data-key="min" onChange="{{ mtField }}" inputmode="numeric" style="background:transparent;border:none;color:var(--fg);font-size:14px;font-weight:500;padding:12px 0;width:100%;font-family:inherit">
+                  <span style="font-size:12px;color:var(--mut);font-weight:500">min</span>
+                </div>
+                <button data-idx="{{ $index }}" onClick="{{ mtRemove }}" aria-label="Remove type" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
+              </div>
+            </sc-for>
+            <button onClick="{{ mtAdd }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add meeting type</button>
+          </div>
+        </section>
+
+        <section style="display:flex;flex-direction:column;gap:18px">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 WEEKLY HOURS</span>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Days you take calls</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ dayList }}" as="dd" hint-placeholder-count="7">
+                <button data-idx="{{ dd.idx }}" onClick="{{ dayToggle }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border:1px solid {{ dd.bd }};background:{{ dd.bg }};color:{{ dd.fg }};padding:10px 15px;cursor:pointer;transition:border-color 0.25s ease,background 0.25s ease">{{ dd.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Day starts</span>
+              <input type="time" value="{{ aStart }}" data-key="start" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;transition:border-color 0.25s ease">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Day ends</span>
+              <input type="time" value="{{ aEnd }}" data-key="end" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;transition:border-color 0.25s ease">
+            </label>
+          </div>
+        </section>
+
+        <section style="display:flex;flex-direction:column;gap:18px">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 03 SLOT RULES</span>
+          <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Slot interval</span>
+              <select value="{{ aInterval }}" data-key="interval" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;cursor:pointer">
+                <option value="15">Every 15 min</option>
+                <option value="30">Every 30 min</option>
+                <option value="45">Every 45 min</option>
+                <option value="60">Every 60 min</option>
+              </select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Minimum notice</span>
+              <select value="{{ aNotice }}" data-key="notice" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;cursor:pointer">
+                <option value="0">None</option>
+                <option value="2">2 hours</option>
+                <option value="12">12 hours</option>
+                <option value="24">1 day</option>
+                <option value="48">2 days</option>
+              </select>
+            </label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Timezone</span>
+            <input value="{{ aTz }}" data-key="tz" onChange="{{ availField }}" placeholder="GST (UTC+4), Dubai" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+          </label>
+        </section>
+
+        <section style="display:flex;flex-direction:column;gap:18px">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 04 BLOCKED DATES</span>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ blockedList }}" as="bd" hint-placeholder-count="1">
+              <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center">
+                <input type="date" value="{{ bd.date }}" data-idx="{{ $index }}" onChange="{{ blockField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;font-family:inherit;transition:border-color 0.25s ease">
+                <button data-idx="{{ $index }}" onClick="{{ blockRemove }}" aria-label="Remove date" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
+              </div>
+            </sc-for>
+            <button onClick="{{ blockAdd }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Block a date</button>
+          </div>
+        </section>
+
+        <div style="display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:clamp(20px,2.4cqw,32px)">
+          <button onClick="{{ saveAvail }}" class="km-cta" style="font-family:inherit;border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 28px;cursor:pointer">Save availability</button>
+          <span style="font-size:13px;color:var(--accent);font-weight:600;opacity:{{ availToastOp }};transition:opacity 0.4s ease">{{ availToast }}</span>
+        </div>
+
+      </div>
+
+      <aside data-r="crm-side" style="position:sticky;top:86px;display:flex;flex-direction:column;border:1px solid var(--line);background:var(--panel)">
+        <div style="padding:18px 20px;border-bottom:1px solid var(--line)">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">PREVIEW//</span>
+        </div>
+        <div style="display:flex;flex-direction:column;font-size:13px">
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Open days</span><span style="font-weight:600">{{ openDaysLabel }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Hours</span><span style="font-weight:600">{{ hoursLabel }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Slots / day</span><span style="font-weight:600">{{ slotsPerDay }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Meeting types</span><span style="font-weight:600">{{ mtCount }}</span>
+          </div>
+        </div>
+        <div style="padding:16px 20px;font-size:12px;color:var(--mut);font-weight:500;line-height:1.55">These settings drive the “Book a call” scheduler on the landing page.</div>
+      </aside>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isInboxView }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:820px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+        <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// {{ inboxCount }} UPCOMING</span>
+        <button onClick="{{ clearBookings }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--mut);padding:9px 16px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">Clear all</button>
+      </div>
+      <sc-if value="{{ hasBookings }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ bookingsList }}" as="bk" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:180px 1fr auto;gap:20px;align-items:start;background:var(--panel);border:1px solid var(--line);padding:18px 20px">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <span style="font-size:14px;font-weight:700;letter-spacing:-0.01em">{{ bk.when }}</span>
+                <span style="font-size:12px;color:var(--accent);font-weight:600">{{ bk.type }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                <span style="font-size:14px;font-weight:600">{{ bk.name }}</span>
+                <a href="{{ bk.mailto }}" style="font-size:13px;color:var(--mut);font-weight:500">{{ bk.email }}</a>
+                <span style="font-size:13px;color:var(--mut);font-weight:500;line-height:1.5;text-wrap:pretty">{{ bk.note }}</span>
+              </div>
+              <span style="font-size:11px;color:var(--mut);font-weight:500;white-space:nowrap">{{ bk.received }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noBookings }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px dashed color-mix(in srgb,var(--fg) 25%,transparent);padding:clamp(40px,6cqw,80px);text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center">
+          <span style="font-size:16px;font-weight:600">No bookings yet</span>
+          <span style="font-size:13px;color:var(--mut);font-weight:500;max-width:360px;line-height:1.55">Calls booked from the landing page “Book a call” scheduler land here.</span>
+        </div>
+      </sc-if>
+      <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.55">Prototype note: bookings are stored in this browser. In production they’d also create a calendar event and email confirmation.</span>
+    </div>
+    </sc-if>
+
   </main>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;options&quot;:[&quot;#2bcdee&quot;,&quot;#D9FF3D&quot;,&quot;#FF6B4A&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = {
+    view: 'work',
+    avail: null,
+    availToast: '',
     type: 'website',
     fields: { name: '', year: '', industry: '', meta: '', statement: '', background: '', concept: '', port: '3001', fill: '#5B79A6' },
     files: {},
     credits: [{ who: '', role: '' }],
+    shots: [{ img: '', size: 'Half', ratio: '3/2' }],
     running: false,
     toast: '',
   };
 
   componentDidMount() {
-    document.body.style.setProperty('--accent', this.props.accent ?? '#2bcdee');
+    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+    document.body.style.setProperty('--accent', g('kinomad-accent') ?? this.props.accent ?? '#2bcdee');
+    if (!this.state.avail) this.setState({ avail: this._loadAvail() });
+  }
+
+  _defaultAvail() {
+    return { types: [{ name: 'Intro call', min: 30 }, { name: 'Project deep-dive', min: 60 }], tz: 'GST (UTC+4), Dubai', days: [true, true, true, true, true, false, false], start: '10:00', end: '18:00', interval: 30, notice: 12, blocked: [] };
+  }
+
+  _loadAvail() {
+    const def = this._defaultAvail();
+    try { const raw = localStorage.getItem('kinomad-availability'); if (raw) return Object.assign({}, def, JSON.parse(raw)); } catch (_) {}
+    return def;
+  }
+
+  _setAvail(patch) {
+    this.setState((s) => ({ avail: Object.assign({}, s.avail || this._defaultAvail(), patch), availToast: '' }));
+  }
+
+  _inboxView() {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem('kinomad-bookings') || '[]'); } catch (_) {}
+    list = list.slice().sort((a, b) => (b.at || 0) - (a.at || 0));
+    return {
+      inboxBadge: list.length ? '(' + list.length + ')' : '',
+      inboxCount: String(list.length),
+      hasBookings: list.length > 0,
+      noBookings: list.length === 0,
+      bookingsList: list.map((b) => ({
+        when: b.when || '—',
+        type: b.type || 'Call',
+        name: b.name || 'Unnamed',
+        email: b.email || '',
+        mailto: 'mailto:' + (b.email || ''),
+        note: b.note || 'No note',
+        received: b.at ? new Date(b.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '',
+      })),
+      clearBookings: () => { try { localStorage.setItem('kinomad-bookings', '[]'); } catch (_) {} this.forceUpdate(); },
+    };
+  }
+
+  _availView() {
+    const a = this.state.avail || this._defaultAvail();
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const toMin = (t) => { const p = String(t).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
+    const openCount = a.days.filter(Boolean).length;
+    const firstMin = (a.types[0] && a.types[0].min) || 30;
+    const window = Math.max(0, toMin(a.end) - toMin(a.start));
+    const slots = Math.max(0, Math.floor((window - firstMin) / (a.interval || 30)) + 1);
+    const fmt12 = (t) => { const m = toMin(t); let h = Math.floor(m / 60), mm = m % 60; const ap = h >= 12 ? 'PM' : 'AM'; let hh = h % 12; if (hh === 0) hh = 12; return hh + (mm ? ':' + String(mm).padStart(2, '0') : '') + ap; };
+    return {
+      mtList: a.types.map((t) => ({ name: t.name, min: String(t.min) })),
+      mtField: (e) => {
+        const i = Number(e.currentTarget.dataset.idx), key = e.currentTarget.dataset.key;
+        let v = e.currentTarget.value;
+        if (key === 'min') v = v.replace(/[^0-9]/g, '') || '0';
+        this.setState((s) => { const types = (s.avail || this._defaultAvail()).types.map((t, j) => j === i ? Object.assign({}, t, { [key]: key === 'min' ? Number(v) : v }) : t); return { avail: Object.assign({}, s.avail, { types }), availToast: '' }; });
+      },
+      mtAdd: () => this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { types: av.types.concat([{ name: '', min: 30 }]) }), availToast: '' }; }),
+      mtRemove: (e) => { const i = Number(e.currentTarget.dataset.idx); this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { types: av.types.length > 1 ? av.types.filter((_, j) => j !== i) : av.types }), availToast: '' }; }); },
+      dayList: dayNames.map((label, i) => ({ idx: i, label, bg: a.days[i] ? 'var(--accent)' : 'transparent', fg: a.days[i] ? '#14130F' : '#F1EFE7', bd: a.days[i] ? 'var(--accent)' : 'var(--line)' })),
+      dayToggle: (e) => { const i = Number(e.currentTarget.dataset.idx); this.setState((s) => { const av = s.avail || this._defaultAvail(); const days = av.days.slice(); days[i] = !days[i]; return { avail: Object.assign({}, av, { days }), availToast: '' }; }); },
+      aStart: a.start, aEnd: a.end, aInterval: String(a.interval), aNotice: String(a.notice), aTz: a.tz,
+      availField: (e) => { const key = e.currentTarget.dataset.key; let v = e.currentTarget.value; if (key === 'interval' || key === 'notice') v = Number(v); this._setAvail({ [key]: v }); },
+      blockedList: (a.blocked || []).map((date) => ({ date })),
+      blockField: (e) => { const i = Number(e.currentTarget.dataset.idx), v = e.currentTarget.value; this.setState((s) => { const av = s.avail || this._defaultAvail(); const blocked = (av.blocked || []).slice(); blocked[i] = v; return { avail: Object.assign({}, av, { blocked }), availToast: '' }; }); },
+      blockAdd: () => this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { blocked: (av.blocked || []).concat(['']) }), availToast: '' }; }),
+      blockRemove: (e) => { const i = Number(e.currentTarget.dataset.idx); this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { blocked: (av.blocked || []).filter((_, j) => j !== i) }), availToast: '' }; }); },
+      openDaysLabel: openCount === 7 ? 'Every day' : openCount === 0 ? 'None set' : dayNames.filter((_, i) => a.days[i]).join(', '),
+      hoursLabel: fmt12(a.start) + ' – ' + fmt12(a.end),
+      slotsPerDay: String(slots),
+      mtCount: String(a.types.length),
+      availToast: this.state.availToast || ' ',
+      availToastOp: this.state.availToast ? '1' : '0',
+      saveAvail: () => {
+        const av = Object.assign({}, this.state.avail || this._defaultAvail());
+        av.types = av.types.filter((t) => t.name.trim()).map((t) => ({ name: t.name.trim(), min: Number(t.min) || 30 }));
+        if (!av.types.length) av.types = [{ name: 'Intro call', min: 30 }];
+        av.blocked = (av.blocked || []).filter(Boolean);
+        try { localStorage.setItem('kinomad-availability', JSON.stringify(av)); } catch (_) {}
+        this.setState({ avail: av, availToast: 'Saved — the scheduler now uses these hours' });
+        clearTimeout(this._at); this._at = setTimeout(() => this.setState({ availToast: '' }), 4000);
+      },
+    };
   }
 
   renderVals() {
@@ -242,20 +528,37 @@ class Component extends DCLogic {
       { key: 'credits', label: 'At least one credit', ok: this.state.credits.some((c) => c.who) },
     ];
     if (t === 'website') {
+      need.push({ key: 'liveUrl', label: 'Live website URL', ok: !!f.liveUrl });
       need.push({ key: 'files', label: 'Site files (.zip)', ok: !!files.siteFiles });
       need.push({ key: 'hero', label: 'Hero image', ok: !!files.heroImg });
     }
-    if (t === 'brand') need.push({ key: 'imgs', label: '4 gallery images', ok: (files.brandImgsCount || 0) >= 4 });
+    if (t === 'brand') need.push({ key: 'shots', label: 'At least one shot', ok: this.state.shots.filter((x) => x.img).length >= 1 });
     if (t === 'three') {
-      need.push({ key: 'reel', label: 'Reel video', ok: !!files.reel });
-      need.push({ key: 'poster', label: 'Poster frame', ok: !!files.poster });
+      const filled = this.state.shots.filter((x) => x.img).length;
+      need.push({ key: 'shots', label: files.reel ? 'Shots (optional with a reel)' : 'At least one shot', ok: !!files.reel || filled >= 1 });
+      need.push({ key: 'poster', label: files.reel ? 'Poster frame' : 'Poster frame (reel only)', ok: !!files.poster || !files.reel });
     }
     return {
+      view: this.state.view,
+      isWorkView: this.state.view === 'work',
+      isAvailView: this.state.view === 'avail',
+      isInboxView: this.state.view === 'inbox',
+      crmTitle: this.state.view === 'work' ? 'New project' : this.state.view === 'avail' ? 'Booking availability' : 'Bookings',
+      vwWorkBg: this.state.view === 'work' ? 'var(--accent)' : 'transparent',
+      vwWorkFg: this.state.view === 'work' ? '#14130F' : '#F1EFE7',
+      vwWorkFg: this.state.view === 'work' ? '#14130F' : '#F1EFE7',
+      vwAvailBg: this.state.view === 'avail' ? 'var(--accent)' : 'transparent',
+      vwAvailFg: this.state.view === 'avail' ? '#14130F' : '#F1EFE7',
+      vwInboxBg: this.state.view === 'inbox' ? 'var(--accent)' : 'transparent',
+      vwInboxFg: this.state.view === 'inbox' ? '#14130F' : '#F1EFE7',
+      setView: (e) => this.setState({ view: e.currentTarget.dataset.view }),
+      ...this._availView(),
+      ...this._inboxView(),
       isWeb: t === 'website', isBrand: t === 'brand', is3d: t === 'three',
       tabWebBg: w.bg, tabWebFg: w.fg, tabBrandBg: b.bg, tabBrandFg: b.fg, tab3dBg: d.bg, tab3dFg: d.fg,
       fName: f.name, fYear: f.year, fIndustry: f.industry, fMeta: f.meta,
       fStatement: f.statement, fBackground: f.background, fConcept: f.concept,
-      fPort: f.port, fFill: f.fill,
+      fPort: f.port, fFill: f.fill, fLiveUrl: f.liveUrl,
       metaLabel: t === 'website' ? 'Category · shown under title' : t === 'brand' ? 'Deliverable' : 'Format',
       metaPh: t === 'website' ? 'E-commerce · Design + Dev' : t === 'brand' ? 'Packaging' : 'Brand film',
       typeLabel, destPage,
@@ -265,7 +568,15 @@ class Component extends DCLogic {
       runLabel: this.state.running ? 'Running' : 'Stopped',
       runBtn: this.state.running ? 'Stop local server' : 'Start local server',
       siteFilesLabel: files.siteFiles ? files.siteFiles : 'Click to upload site files',
-      reelLabel: files.reel ? files.reel : 'Click to upload reel video',
+      reelLabel: files.reel ? files.reel : 'Click to upload reel video (optional)',
+      shots: this.state.shots,
+      showShots: t === 'brand' || t === 'three',
+      shotSummary: (() => {
+        const n = this.state.shots.filter((x) => x.img).length;
+        if (!n) return t === 'three' && files.reel ? 'reel only' : 'no shots yet';
+        if (t !== 'three') return n + (n === 1 ? ' shot' : ' shots');
+        return n + (n === 1 ? ' shot' : ' shots') + (files.reel ? ' + reel' : ' · shots-only layout');
+      })(),
       credits: this.state.credits,
       checklist: need.map((n) => ({ label: n.label, mark: n.ok ? '✓' : '', c: n.ok ? 'var(--accent)' : 'var(--mut)' })),
       toastMsg: this.state.toast || ' ',
@@ -289,6 +600,23 @@ class Component extends DCLogic {
         this.setState((s) => ({ credits: s.credits.map((c, j) => (j === i ? Object.assign({}, c, { [key]: val }) : c)) }));
       },
       addCredit: () => this.setState((s) => ({ credits: s.credits.concat([{ who: '', role: '' }]) })),
+      shotField: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        const key = e.currentTarget.dataset.key;
+        const val = e.currentTarget.value;
+        this.setState((s) => ({ shots: s.shots.map((x, j) => (j === i ? Object.assign({}, x, { [key]: val }) : x)) }));
+      },
+      shotFile: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        const list = e.currentTarget.files;
+        const name = list && list.length ? list[0].name : '';
+        this.setState((s) => ({ shots: s.shots.map((x, j) => (j === i ? Object.assign({}, x, { img: name }) : x)) }));
+      },
+      addShot: () => this.setState((s) => ({ shots: s.shots.concat([{ img: '', size: 'Half', ratio: '3/2' }]) })),
+      rmShot: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        this.setState((s) => ({ shots: s.shots.length > 1 ? s.shots.filter((_, j) => j !== i) : s.shots }));
+      },
       rmCredit: (e) => {
         const i = Number(e.currentTarget.dataset.idx);
         this.setState((s) => ({ credits: s.credits.length > 1 ? s.credits.filter((_, j) => j !== i) : s.credits }));

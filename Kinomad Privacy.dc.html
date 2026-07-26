@@ -18,6 +18,8 @@ a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent-ink)}
 .km-flink{background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:100% 92%;background-size:0% 2px;transition:background-size 0.9s cubic-bezier(0.22,1,0.36,1)}
 .km-flink:hover{background-position:0 92%;background-size:100% 2px}
+.km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
+.km-cta:hover{background-size:100% 100%;color:#14130F}
 ::selection{background:var(--accent);color:#14130F}
 @keyframes km-hzoom{from{transform:scale(1.12)}to{transform:scale(1)}}
 @keyframes km-hfade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -40,8 +42,8 @@ body.dev.dragging #frame{cursor:grabbing}
   [data-r=casemeta]{grid-template-columns:1fr!important}
   [data-r=casetext]{grid-template-columns:1fr!important}
   [data-r=casegrid]{grid-template-columns:1fr!important}
-  [data-r=shotgrid]>figure{grid-column:span 6!important}
   [data-r=credrow]{grid-template-columns:1fr auto!important}
+  [data-r=privrow]{grid-template-columns:1fr!important;gap:10px!important}
   [data-r=credmid]{display:none!important}
 }
 </style>
@@ -58,7 +60,7 @@ body.dev.dragging #frame{cursor:grabbing}
         <a href="Kinomad Landing.dc.html#studio" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Studio</a>
         <a href="Kinomad Landing.dc.html#process" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Process</a>
         <a href="Kinomad Landing.dc.html#services" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Services</a>
-        <a href="Kinomad Works.dc.html" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);padding:9px 24px">Works</a>
+        <a href="Kinomad Works.dc.html" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Works</a>
         <a href="Kinomad Landing.dc.html#team" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Team</a>
         <a href="Kinomad Landing.dc.html#contact" style="font-size:14px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#F1EFE7;padding:9px 24px">Contact</a>
       </nav>
@@ -75,92 +77,112 @@ body.dev.dragging #frame{cursor:grabbing}
 <a class="km-skip" href="#km-main">Skip to content</a>
 <main id="km-main" style="position:relative;z-index:1;background:var(--bg)">
 
-<section data-screen-label="Case header" style="padding:clamp(100px,14vh,170px) clamp(20px,4cqw,64px) 0">
-  <div style="display:flex;justify-content:space-between;align-items:baseline;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) both">
-    <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600">({{ c.num }}) · Case</span>
-    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut)">BRAND IDENTITY//</span>
-  </div>
-  <h1 style="margin:0;padding-top:14px;font-size:clamp(60px,15.5cqw,250px);line-height:0.82;letter-spacing:-0.04em;font-weight:700;text-transform:uppercase;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.08s both">{{ c.name }}</h1>
+<section data-screen-label="Privacy header" style="padding:clamp(110px,13cqw,190px) clamp(20px,4cqw,64px) clamp(28px,3.4cqw,52px)">
+  <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut)">LEGAL// PRIVACY</span>
+  <h1 style="margin:clamp(14px,1.6cqw,24px) 0 0;font-size:clamp(46px,10cqw,168px);line-height:0.86;letter-spacing:-0.04em;font-weight:700;text-transform:uppercase;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) both">Privacy</h1>
   <div style="border-top:2px solid var(--fg);margin-top:clamp(20px,2.6cqw,40px)"></div>
-  <div data-r="casemeta" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,0.8fr);gap:clamp(28px,5cqw,90px);align-items:start;padding-top:clamp(20px,2.6cqw,36px);animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.16s both">
-    <p style="margin:0;font-family:'Gambetta',serif;font-style:italic;font-weight:500;font-size:clamp(22px,2.6cqw,36px);line-height:1.3;text-wrap:pretty;max-width:640px">{{ c.statement }}</p>
-    <div style="display:flex;flex-direction:column">
-      <div style="display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:11px 0">
-        <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">→ Agency</span>
-        <span style="font-size:13px;font-weight:600">Kinomad Studio</span>
+  <div data-r="casemeta" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,0.8fr);gap:clamp(28px,5cqw,90px);align-items:start;padding-top:clamp(20px,2.6cqw,36px)">
+    <p style="margin:0;font-family:'Gambetta',serif;font-style:italic;font-weight:500;font-size:clamp(20px,2.4cqw,34px);line-height:1.3;text-wrap:pretty;max-width:640px">We collect as little as we can, we tell you what we have, and we give it back or delete it whenever you ask.</p>
+    <div style="display:flex;flex-direction:column;font-size:12px">
+      <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid var(--line);padding:9px 0">
+        <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">→ Controller</span>
+        <span style="font-weight:600;font-size:13px">Kinomad Studio</span>
       </div>
-      <div style="display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:11px 0">
-        <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">→ Industry</span>
-        <span style="font-size:13px;font-weight:600">{{ c.industry }}</span>
+      <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid var(--line);padding:9px 0">
+        <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">→ Jurisdiction</span>
+        <span style="font-weight:600;font-size:13px">Dubai, UAE</span>
       </div>
-      <div style="display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:11px 0">
-        <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">→ Category</span>
-        <span style="font-size:13px;font-weight:600">Brand identity</span>
+      <div style="display:flex;justify-content:space-between;gap:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0">
+        <span style="letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">→ Last updated</span>
+        <span style="font-weight:600;font-size:13px">July 2026</span>
       </div>
-      <div style="display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:11px 0">
-        <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">→ Year</span>
-        <span style="font-size:13px;font-weight:600">{{ c.year }}</span>
-      </div>
-    </div>
-  </div>
-  <div data-r="casetext" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5cqw,90px);padding:clamp(40px,5cqw,80px) 0 clamp(40px,5cqw,72px);animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.24s both">
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">Background</span>
-      <p style="margin:0;font-size:15px;line-height:1.65;font-weight:500;color:var(--mut);text-wrap:pretty">{{ c.background }}</p>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">Concept</span>
-      <p style="margin:0;font-size:15px;line-height:1.65;font-weight:500;color:var(--mut);text-wrap:pretty">{{ c.concept }}</p>
     </div>
   </div>
 </section>
 
-<section data-screen-label="Case hero image" style="padding:0">
-  <div style="position:relative;width:100%;aspect-ratio:21/10;background:var(--card)">
-    <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ c.heroId }}" src="{{ c.heroSrc }}" shape="rect" radius="0" placeholder="{{ c.heroPh }}" style="position:absolute;inset:0;width:100%;height:100%" hint-size="100%,560px"></x-import>
-  </div>
-</section>
-
-<section data-screen-label="Case gallery" style="padding:3px 0 0">
-  <div data-r="shotgrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px">
-    <sc-for list="{{ shots }}" as="sh" hint-placeholder-count="7">
-      <figure style="position:relative;margin:0;background:var(--card);grid-column:span {{ sh.span }};aspect-ratio:{{ sh.ratio }}">
-        <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ sh.imgId }}" src="{{ sh.src }}" shape="rect" radius="0" placeholder="{{ sh.ph }}" style="position:absolute;inset:0;width:100%;height:100%" hint-size="100%,100%"></x-import>
-      </figure>
-    </sc-for>
-  </div>
-</section>
-
-<section data-screen-label="Case credits" style="padding:clamp(64px,9cqw,130px) clamp(20px,4cqw,64px)">
-  <div style="display:flex;justify-content:space-between;align-items:flex-end;padding:0 0 clamp(24px,3cqw,40px)">
-    <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">Credits</h2>
-    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">TOTAL CREDITS · (03)</span>
-  </div>
+<section data-screen-label="Privacy body" style="padding:0 clamp(20px,4cqw,64px) clamp(40px,5cqw,80px)">
   <div style="display:flex;flex-direction:column">
-    <sc-for list="{{ c.credits }}" as="cr" hint-placeholder-count="3">
-      <div data-r="credrow" style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:16px;align-items:baseline;border-top:1px solid var(--line);padding:16px 0">
-        <span style="font-size:17px;font-weight:600;letter-spacing:-0.01em">{{ cr.who }}</span>
-        <span data-r="credmid" style="font-size:13px;color:var(--mut);font-weight:500">{{ cr.role }}</span>
-        <span style="font-size:13px;color:var(--mut);font-weight:500;justify-self:end">Kinomad Studio</span>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">01</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">Who we are</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">Kinomad Studio FZ-LLC, Fl 10, City Centre Deira Complex, The Tower 1, Trade Center 2, Dubai, United Arab Emirates. We are the controller of the personal data described on this page. Questions, requests and complaints: <a href="mailto:Hello@Kinomadstudio.com" class="km-flink">Hello@Kinomadstudio.com</a>.</p>
+        </div>
       </div>
-    </sc-for>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">02</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">What we collect</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">Only what you give us and what a website needs to run. <strong>Contact and enquiry data</strong> — your name, email address and whatever you write in a message or booking note. <strong>Booking data</strong> — the date and time slot you select, and the timezone your browser reports. <strong>Technical data</strong> — IP address, browser and device type, and pages visited, recorded in standard server logs. <strong>Preferences</strong> — your theme choice and similar settings, stored in your own browser, never sent to us.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">03</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">Why we use it</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">To answer enquiries and prepare proposals; to schedule and confirm calls; to keep the site secure and diagnose faults; and to meet our accounting and legal obligations. Our lawful bases are your consent, the steps needed to enter into a contract with you, our legitimate interest in running the studio, and legal obligation.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">04</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">What we do not do</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">We do not sell your data. We do not share it with advertisers. We do not build profiles of you, and we do not use your enquiry to add you to a mailing list unless you ask us to.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">05</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">Cookies and storage</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">The site sets no advertising or tracking cookies. It stores a small amount of data in your browser’s local storage — your theme preference and, in the booking flow, your draft selection — so the site behaves consistently between visits. This never leaves your device and you can clear it at any time from your browser settings. If we add analytics later, this page will say so and you will be asked first.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">06</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">Who else sees it</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">A small number of service providers process data on our behalf: our email and calendar provider, our hosting and CDN provider, and our accounting software. Each is bound by contract to process data only on our instructions. Some are located outside the UAE and the EEA; where that is the case, transfers are covered by standard contractual clauses or an equivalent safeguard.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">07</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">How long we keep it</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">Enquiries and booking records: two years from our last exchange, unless they become part of a client file. Client project records: ten years, to satisfy contractual and accounting requirements. Server logs: ninety days.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">08</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">Your rights</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">You can ask us for a copy of your data, to correct it, to delete it, to restrict or object to how we use it, and to receive it in a portable format. Where we rely on consent, you can withdraw it at any time. Write to <a href="mailto:Hello@Kinomadstudio.com" class="km-flink">Hello@Kinomadstudio.com</a> and we will respond within thirty days. If you are in the EEA or UK and are not satisfied with our answer, you may complain to your local data protection authority.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">09</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">Security</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">Data is transmitted over TLS and held on access-controlled systems. Only the people who need your data to do their work can reach it. No system is perfect — if a breach ever affects your data, we will tell you and the relevant regulator without undue delay.</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:clamp(18px,3cqw,48px);align-items:start;border-top:1px solid var(--line);padding:clamp(22px,2.6cqw,38px) 0" data-r="privrow">
+        <span style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-top:6px">10</span>
+        <div style="display:flex;flex-direction:column;gap:clamp(10px,1.2cqw,16px)">
+          <h2 style="margin:0;font-size:clamp(22px,2.4cqw,34px);font-weight:600;letter-spacing:-0.02em;line-height:1.15">Changes</h2>
+          <p style="margin:0;font-size:clamp(15px,1.35cqw,19px);line-height:1.6;color:var(--mut);max-width:74ch;text-wrap:pretty">If this notice changes materially we will update the date below and, where the change affects you directly, tell you by email.</p>
+        </div>
+      </div>
     <div style="border-top:1px solid var(--line)"></div>
   </div>
 </section>
 
-<section data-screen-label="Next projects" style="padding:0 clamp(20px,4cqw,64px) clamp(64px,10cqw,150px)">
-  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 0 clamp(18px,2cqw,28px)">
-    <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">More brand identity</span>
-    <a href="Kinomad Works.dc.html" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600">All works ↖</a>
-  </div>
-  <div style="display:flex;flex-direction:column">
-    <sc-for list="{{ others }}" as="op" hint-placeholder-count="2">
-      <a href="{{ op.href }}" style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;border-top:1px solid var(--line);padding:clamp(14px,1.6cqw,24px) 0">
-        <span style="font-size:clamp(38px,6cqw,96px);font-weight:700;letter-spacing:-0.03em;line-height:0.95;text-transform:uppercase">{{ op.name }}</span>
-        <span style="font-family:'Gambetta',serif;font-size:15px;color:var(--mut)">({{ op.num }})</span>
-      </a>
-    </sc-for>
-    <div style="border-top:1px solid var(--line)"></div>
+<section data-screen-label="Privacy contact" style="padding:0 clamp(20px,4cqw,64px) clamp(64px,10cqw,150px)">
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;border-top:1px solid var(--line);padding-top:clamp(28px,3.4cqw,52px)">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">Data requests</span>
+      <span style="font-size:clamp(24px,3.4cqw,52px);font-weight:600;letter-spacing:-0.025em;line-height:1.05">Ask us anything about your data.</span>
+    </div>
+    <a href="mailto:Hello@Kinomadstudio.com" class="km-cta" style="display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px">Hello@Kinomadstudio.com <span style="font-size:16px">↗</span></a>
   </div>
 </section>
 
@@ -445,67 +467,115 @@ class Component extends DCLogic {
   _cases() {
     return this._caseData || (this._caseData = [
       {
-        id: 'brand-vantar', num: '01', name: 'Vantar', industry: 'Fintech', year: '2026',
-        statement: 'Vantar is a fintech on a mission to make everyday banking feel calm, clear and quietly confident.',
-        background: 'Vantar came to us as a fast-growing fintech with a product people trusted and a brand nobody remembered. Their tools were sharp, their numbers were strong, but the visual language spoke in the same gradients and glassy blues as every other challenger bank. They asked for an identity that could carry them from app store to annual report without changing its voice.',
-        concept: 'The identity is built on the idea of steady ground. A restrained editorial palette, a confident grotesk paired with a serif that softens the numbers, and a grid system borrowed from financial print tradition. Every touchpoint, cards, statements, app, signage, uses the same quiet rhythm, so trust reads as a design decision, not a slogan.',
-        heroId: 'case-vantar-hero', heroSrc: 'https://images.pexels.com/photos/6244/designer-board-typo-word.jpg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Vantar, hero identity image',
-        shots: [
-          { imgId: 'case-vantar-g1', src: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, collateral', span: 4, ratio: '16/10' },
-          { imgId: 'case-vantar-g2', src: 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, product UI', span: 2, ratio: '4/5' },
-          { imgId: 'case-vantar-g3', src: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, environment', span: 3, ratio: '4/3' },
-          { imgId: 'case-vantar-g4', ph: 'Vantar, logo construction', span: 3, ratio: '4/3' },
-          { imgId: 'case-vantar-full', ph: 'Vantar, full-bleed highlight (billboard / signage)', span: 6, ratio: '21/9' },
-          { imgId: 'case-vantar-g5', ph: 'Vantar, card design', span: 2, ratio: '1/1' },
-          { imgId: 'case-vantar-g6', ph: 'Vantar, typography detail', span: 4, ratio: '16/9' },
+        id: 'web-aurelia', num: '01', name: 'Aurelia', industry: 'E-commerce', year: '2026', url: 'http://localhost:3001',
+        statement: 'Aurelia is a slow-fashion storefront rebuilt around feel, a shop that browses like a lookbook.',
+        background: 'Aurelia sells small-run garments made to last, but their old store was a template that treated every piece like a commodity. Product pages buried the craft, and checkout felt like a different brand entirely. They asked us to rebuild the storefront so the shopping experience matched the care in the clothes.',
+        concept: 'We designed the store as an editorial object: full-bleed campaign imagery, unhurried type, and a product page that reads like a garment label, fabric, origin, care, before it ever asks for a size. The build is fully custom, from art direction to the checkout flow, tuned so the whole store loads like a single continuous page.',
+        heroId: 'web-aurelia-hero', heroSrc: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Aurelia, homepage hero',
+        grid1: [
+          { imgId: 'web-aurelia-g1', ph: 'Aurelia, product page' },
+          { imgId: 'web-aurelia-g2', ph: 'Aurelia, lookbook grid' },
+          { imgId: 'web-aurelia-g3', ph: 'Aurelia, mobile checkout' },
+          { imgId: 'web-aurelia-g4', ph: 'Aurelia, cart drawer' },
+        ],
+        fullId: 'web-aurelia-full', fullPh: 'Aurelia, full homepage scroll',
+        grid2: [
+          { imgId: 'web-aurelia-g5', ph: 'Aurelia, typography detail' },
+          { imgId: 'web-aurelia-g6', ph: 'Aurelia, campaign section' },
         ],
         credits: [
-          { who: 'Mara Voss', role: 'Lead Brand Designer' },
-          { who: 'Jonas Ferreira', role: 'Brand Strategy' },
-          { who: 'Ana Duarte', role: 'Art Direction & Photography' },
+          { who: 'Mara Sole', role: 'Design Lead' },
+          { who: 'Daniel Kim', role: 'Art Direction' },
+          { who: 'Ezra Vane', role: 'Development' },
         ],
       },
       {
-        id: 'brand-mono', num: '02', name: 'Mono Coffee', industry: 'Café & Food', year: '2025',
-        statement: 'Mono is a single-origin roaster that believes one great bean, done right, beats a hundred blends.',
-        background: 'Mono started as a weekend roastery in a Lisbon garage and grew into a café with a cult following. When they moved to retail shelves, the founders realised the brand that worked over the counter, handwritten labels, borrowed type, disappeared next to polished supermarket packaging. They needed a system that kept the hand-made warmth but could scale to print runs.',
-        concept: 'The identity leans into the name: one bean, one origin, one strong mark. A chunky wordmark sits on kraft and deep roast-brown papers, with a single accent colour per origin so the shelf becomes a colour index of the menu. Photography stays close and tactile, hands, steam, paper, never studio-clean, so the packaging feels like the café sounds.',
-        heroId: 'case-mono-hero', heroSrc: 'https://images.pexels.com/photos/4623113/pexels-photo-4623113.jpeg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Mono, hero packaging image',
-        shots: [
-          { imgId: 'case-mono-g1', src: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono, in the café', span: 6, ratio: '21/9' },
-          { imgId: 'case-mono-g2', src: 'https://images.pexels.com/photos/606545/pexels-photo-606545.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono, beans detail', span: 2, ratio: '4/5' },
-          { imgId: 'case-mono-g3', src: 'https://images.pexels.com/photos/1002740/pexels-photo-1002740.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono, packaging range', span: 4, ratio: '16/10' },
-          { imgId: 'case-mono-g4', ph: 'Mono, label system', span: 3, ratio: '3/2' },
-          { imgId: 'case-mono-full', ph: 'Mono, full-bleed highlight (shelf / storefront)', span: 3, ratio: '3/2' },
-          { imgId: 'case-mono-g5', ph: 'Mono, cup & bag set', span: 6, ratio: '2/1' },
-          { imgId: 'case-mono-g6', ph: 'Mono, menu typography', span: 3, ratio: '1/1' },
-          { imgId: 'case-mono-g7', ph: 'Mono, stamp & sticker set', span: 3, ratio: '1/1' },
+        id: 'web-nomadair', num: '02', name: 'Nomad Air', industry: 'Travel', year: '2025', url: 'http://localhost:3002',
+        statement: 'Nomad Air is a travel platform that makes booking feel like the trip already started.',
+        background: 'Nomad Air aggregates long-stay travel for remote workers. Their product was rich, visas, stays, flights, community, but the site explained it like a spreadsheet. Conversion stalled because the dream never made it above the fold. They came to us to make the platform feel like the destination.',
+        concept: 'The site opens on place, not product: full-screen destinations, live local time and weather, and a search that reads as a sentence, "three months in Lisbon, leaving June". Booking steps shed their chrome and borrow the pacing of a boarding pass. The result is a funnel that feels like anticipation instead of admin.',
+        heroId: 'web-nomadair-hero', heroSrc: 'https://images.pexels.com/photos/34088260/pexels-photo-34088260.jpeg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Nomad Air, homepage hero',
+        grid1: [
+          { imgId: 'web-nomadair-g1', ph: 'Nomad Air, destination page' },
+          { imgId: 'web-nomadair-g2', ph: 'Nomad Air, search flow' },
+          { imgId: 'web-nomadair-g3', ph: 'Nomad Air, mobile booking' },
+          { imgId: 'web-nomadair-g4', ph: 'Nomad Air, stay detail' },
+        ],
+        fullId: 'web-nomadair-full', fullPh: 'Nomad Air, full booking flow',
+        grid2: [
+          { imgId: 'web-nomadair-g5', ph: 'Nomad Air, itinerary view' },
+          { imgId: 'web-nomadair-g6', ph: 'Nomad Air, community section' },
         ],
         credits: [
-          { who: 'Mara Voss', role: 'Lead Brand Designer' },
-          { who: 'Tomás Reis', role: 'Packaging Design' },
-          { who: 'Ana Duarte', role: 'Photography' },
+          { who: 'Mara Sole', role: 'Design Lead' },
+          { who: 'Daniel Kim', role: 'UX & Strategy' },
+          { who: 'Ezra Vane', role: 'Development' },
         ],
       },
       {
-        id: 'brand-halcyon', num: '03', name: 'Halcyon', industry: 'Wellness', year: '2024',
-        statement: 'Halcyon is a wellness brand for people who are tired of wellness brands shouting at them.',
-        background: 'Halcyon makes small-batch skincare and rituals rooted in slow routines. The category around them was split between clinical minimalism and pastel noise, and they fit neither. They came to us before launch with a working formula, a name, and a single request: make it feel like exhaling.',
-        concept: 'We built the identity around negative space and low-contrast calm. A soft sage-and-bone palette, a serif wordmark set wide and unhurried, and packaging that keeps information whisper-quiet until you pick it up. Motion and photography follow the same rule, nothing moves fast, nothing competes, so the brand itself becomes part of the ritual.',
-        heroId: 'case-halcyon-hero', heroSrc: 'https://images.pexels.com/photos/8545636/pexels-photo-8545636.jpeg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Halcyon, hero brand image',
-        shots: [
-          { imgId: 'case-halcyon-g1', src: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, product line', span: 3, ratio: '3/2' },
-          { imgId: 'case-halcyon-g2', src: 'https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, ritual detail', span: 3, ratio: '3/2' },
-          { imgId: 'case-halcyon-full', ph: 'Halcyon, full-bleed highlight (campaign / environment)', span: 6, ratio: '21/9' },
-          { imgId: 'case-halcyon-g3', src: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, in use', span: 2, ratio: '4/5' },
-          { imgId: 'case-halcyon-g4', ph: 'Halcyon, logo & type', span: 4, ratio: '16/10' },
-          { imgId: 'case-halcyon-g5', ph: 'Halcyon, packaging set', span: 4, ratio: '16/9' },
-          { imgId: 'case-halcyon-g6', ph: 'Halcyon, palette & texture', span: 2, ratio: '1/1' },
+        id: 'web-fieldnote', num: '03', name: 'Fieldnote', industry: 'SaaS', year: '2025', url: 'http://localhost:3003',
+        statement: 'Fieldnote is a SaaS marketing site that explains a complex product in one scroll.',
+        background: 'Fieldnote builds observability tooling for data teams, a product that takes engineers ten minutes to love and marketers ten pages to describe. Their old site tried to say everything and landed nothing. The brief: one page, one scroll, one clear idea of what Fieldnote does.',
+        concept: 'We structured the site as a single narrative scroll: the problem appears as live, misbehaving data; Fieldnote enters and the same data resolves into order. Product UI is shown real and interactive, not as floating screenshots. Every section earns the next scroll, and the only CTA is the one that matters, try it on your own data.',
+        heroId: 'web-fieldnote-hero', heroSrc: 'https://images.pexels.com/photos/34804003/pexels-photo-34804003.jpeg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Fieldnote, homepage hero',
+        grid1: [
+          { imgId: 'web-fieldnote-g1', ph: 'Fieldnote, hero section' },
+          { imgId: 'web-fieldnote-g2', ph: 'Fieldnote, product demo' },
+          { imgId: 'web-fieldnote-g3', ph: 'Fieldnote, pricing' },
+          { imgId: 'web-fieldnote-g4', ph: 'Fieldnote, docs entry' },
+        ],
+        fullId: 'web-fieldnote-full', fullPh: 'Fieldnote, full page scroll',
+        grid2: [
+          { imgId: 'web-fieldnote-g5', ph: 'Fieldnote, data visual' },
+          { imgId: 'web-fieldnote-g6', ph: 'Fieldnote, mobile view' },
         ],
         credits: [
-          { who: 'Mara Voss', role: 'Lead Brand Designer' },
-          { who: 'Inês Almeida', role: 'Identity & Packaging' },
-          { who: 'Ana Duarte', role: 'Art Direction & Photography' },
+          { who: 'Mara Sole', role: 'Design Lead' },
+          { who: 'Ezra Vane', role: 'Development & Motion' },
+        ],
+      },
+      {
+        id: 'web-ostro', num: '04', name: 'Ostro', industry: 'Architecture', year: '2025', url: 'http://localhost:3004',
+        statement: 'Ostro is an architecture portfolio where the buildings do the talking.',
+        background: 'Ostro Atelier had fifteen years of built work and a website that showed it in 400-pixel thumbnails. Awards, publications and photography were scattered across PDFs. They wanted a portfolio that treated their projects with the same spatial care they put into the buildings themselves.',
+        concept: 'The site is organised like a walk-through: each project is a sequence of full-height photographs with plans and text tucked between them, revealed at the visitor\'s pace. Navigation stays out of the way, a single index that overlays like a site plan. Typography is quiet and structural, so the photography carries the weight.',
+        heroId: 'web-ostro-hero', heroSrc: 'https://images.pexels.com/photos/17077374/pexels-photo-17077374.jpeg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Ostro, homepage hero',
+        grid1: [
+          { imgId: 'web-ostro-g1', ph: 'Ostro, project index' },
+          { imgId: 'web-ostro-g2', ph: 'Ostro, project sequence' },
+          { imgId: 'web-ostro-g3', ph: 'Ostro, plans & text' },
+          { imgId: 'web-ostro-g4', ph: 'Ostro, mobile gallery' },
+        ],
+        fullId: 'web-ostro-full', fullPh: 'Ostro, full project page',
+        grid2: [
+          { imgId: 'web-ostro-g5', ph: 'Ostro, studio page' },
+          { imgId: 'web-ostro-g6', ph: 'Ostro, contact view' },
+        ],
+        credits: [
+          { who: 'Mara Sole', role: 'Design Lead' },
+          { who: 'Ezra Vane', role: 'Development' },
+        ],
+      },
+      {
+        id: 'web-kepler', num: '05', name: 'Kepler Labs', industry: 'AI startup', year: '2024', url: 'http://localhost:3005',
+        statement: 'Kepler Labs went from nothing to a live launch site in three weeks.',
+        background: 'Kepler Labs was two weeks from announcing their seed round with no brand, no site and a deck full of dense research. They needed a public face fast, credible enough for investors, clear enough for the engineers they wanted to hire, without pretending to be bigger than four people.',
+        concept: 'We stripped the launch site to what a four-person lab can honestly say: what they\'re building, who is building it, and why it matters. One page, dark and precise, with a single animated visual explaining the core idea. Designed and shipped in three weeks, built to grow sections as the company does.',
+        heroId: 'web-kepler-hero', heroSrc: 'https://images.pexels.com/photos/34167277/pexels-photo-34167277.jpeg?auto=compress&cs=tinysrgb&w=1920', heroPh: 'Kepler Labs, homepage hero',
+        grid1: [
+          { imgId: 'web-kepler-g1', ph: 'Kepler, hero animation' },
+          { imgId: 'web-kepler-g2', ph: 'Kepler, research section' },
+          { imgId: 'web-kepler-g3', ph: 'Kepler, team page' },
+          { imgId: 'web-kepler-g4', ph: 'Kepler, careers' },
+        ],
+        fullId: 'web-kepler-full', fullPh: 'Kepler, full page scroll',
+        grid2: [
+          { imgId: 'web-kepler-g5', ph: 'Kepler, mobile view' },
+          { imgId: 'web-kepler-g6', ph: 'Kepler, announcement post' },
+        ],
+        credits: [
+          { who: 'Daniel Kim', role: 'Creative Direction' },
+          { who: 'Ezra Vane', role: 'Design & Development' },
         ],
       },
     ]);
@@ -513,18 +583,17 @@ class Component extends DCLogic {
 
   renderVals() {
     const cases = this._cases();
-    let pid = 'brand-vantar';
+    let pid = 'web-aurelia';
     try { pid = new URLSearchParams(window.location.search).get('project') || pid; } catch (e) {}
     const c = cases.find((x) => x.id === pid) || cases[0];
     const others = cases.filter((x) => x.id !== c.id).map((x) => ({
-      name: x.name, num: x.num, href: 'Kinomad Brand Page.dc.html?project=' + x.id,
+      name: x.name, num: x.num, href: 'Kinomad Website Page.dc.html?project=' + x.id,
     }));
     const seg = (name) => (this.props.device || 'Desktop') === name
       ? { bg: 'var(--accent)', fg: '#14130F' }
       : { bg: 'transparent', fg: 'rgba(241,239,231,0.7)' };
-    const shots = c.shots || [];
     return {
-      c, others, shots,
+      c, others,
       segDesktop: seg('Desktop'),
       segTablet: seg('Tablet'),
       segMobile: seg('Mobile'),
