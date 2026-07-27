@@ -50,7 +50,43 @@ Add-work panel with a Website / Brand / 3D type switcher; per-type fields; a sho
 
 Section map: `01` project meta · `02` type-specific media (Website: live URL + site zip + port; Brand: hero + fill colour; 3D: optional reel + poster + card image) · `02B` shots · `03` credits.
 
-**The website local-run (zip upload → unpack → serve on a port) needs a backend.** Full implementation spec — data model, API, unpack guards, publish validation, security, acceptance checks — is in **`CRM-LOCAL-RUN.md`** in this bundle. Persistence for everything else (assets, bookings) is prototyped in browser storage and needs the same API treatment.
+**The CRM needs a backend.** Start with **`BACKEND-GUIDE.md`** — stack, schema, the CRM-state→API→column field map, the full add-a-website request sequence, asset pipeline, publish, bookings, security, build order. The zip-upload/local-preview subsystem is specified separately — data model, API, unpack guards, publish validation, security, acceptance checks — is in **`CRM-LOCAL-RUN.md`** in this bundle. Persistence for everything else (assets, bookings) is prototyped in browser storage and needs the same API treatment.
+
+## Deployment & URL structure
+The prototype filenames (`Kinomad Landing.dc.html`) are **artifacts of the design tool, not the intended URLs**. In production the site is served from the apex domain and the home page must resolve at the root:
+
+| Prototype file | Production route |
+|---|---|
+| `Kinomad Landing.dc.html` | `https://kinomadstudio.com/` |
+| `Kinomad Works.dc.html` | `/works` |
+| `Kinomad Website Page.dc.html` | `/works/[slug]` (website projects) |
+| `Kinomad Brand Page.dc.html` | `/works/[slug]` (brand-identity projects) |
+| `Kinomad Motion Page.dc.html` | `/works/[slug]` (motion / 3D projects) |
+| `Kinomad Privacy.dc.html` | `/privacy` |
+| `Kinomad 404.dc.html` | 404 handler (not a routable path) |
+| `Kinomad CRM.dc.html` | `/admin` — auth-gated, excluded from the public build and from `sitemap.xml`/`robots.txt` |
+
+The three project-detail templates are **one route**, not three: `/works/[slug]` picks its layout from the project's type. The prototype fakes this with `?project=` — replace it with a real slug segment.
+
+Requirements:
+- Home is `/`, never `/index.html` or `/Kinomad Landing.dc.html` — no filename or extension in any public URL.
+- Serve on `https://kinomadstudio.com`; 301 `www.kinomadstudio.com` and all `http://` to the apex `https://`.
+- Rewrite every internal `href` from the prototype filenames to the routes above. Grep for `.dc.html` — none may survive into production markup.
+- One canonical URL per page (`<link rel="canonical">`), no trailing-slash duplicates.
+- Existing prototype links stay relative and work when the bundle is opened from disk; that behaviour is only for review.
+
+## Favicon & app icons
+Shipped in `assets/`, generated from the K mark (cream `#F1EFE7` glyph on `#0D0D0D`, 22% corner radius). Already wired into every page's `<head>`:
+
+```html
+<title>…</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon-180.png">
+<meta name="theme-color" content="#0D0D0D">
+```
+
+Also add in production: `favicon.ico` (16/32/48 multi-res) at the web root for legacy crawlers, and a `site.webmanifest` referencing `favicon-512.png` for Android install icons. Per-page `<title>`s are set in the prototypes — carry them over verbatim.
 
 ## Interactions & Behavior (site-wide)
 - **Custom cursor**: 7px accent square, eased trailing follow, morphs round over interactive elements. Hidden on touch / coarse pointers and tablet/mobile.
@@ -64,6 +100,16 @@ Section map: `01` project meta · `02` type-specific media (Website: live URL + 
 - **Global colour tweaks**: accent / background / nav colour are written to shared browser storage by whichever page's tweak panel changes them, and every page (including the CRM and 404) reads them on load. In production this is a single theme source, not per-page storage.
 - **Reduced motion**: handled in CSS *and* JS. CSS kills animations and collapses transition durations, and sets `scroll-behavior:auto`. In JS, `_reduced()` gates `_initCursor()`: under reduced motion there is no custom cursor, no wheel hijack and no per-frame RAF loop — a plain passive scroll listener drives the scrollbar and hero instead, and the hero's final slat stage becomes a hard cut at 50% progress rather than a staggered wipe. Mirror this structure in production: one `prefersReducedMotion` check that disables cursor, smooth scroll and staggered reveals together.
 - **Keyboard & assistive tech**: every page has a `.km-skip` skip-to-content link (visible on focus, first tab stop) targeting `#km-main`, a global `:focus-visible` ring (2px accent, 3px offset), `aria-expanded` + `aria-controls` on the nav menu button, and `aria-expanded` on the FAQ rows. Still to do in production: keyboard operation of the works carousel (arrow keys + visible focus on the active slide), focus trap and `Esc` handling in the booking modal, and `aria-live` on the booking confirmation step.
+
+### Services rows on tablet/mobile
+Each service row is an `<a>` to its Works anchor. Below 1120cqw the **first tap opens the row and is prevented from navigating**; a second tap on the already-open row follows the link. Tapping a different row moves the open state without navigating. The hover handlers are gated off below 1120cqw — without that gate a touch `mouseenter` fires before `click`, the row is already "open" by the time the tap handler runs, and the tap navigates instead of expanding. The same gate applies to the process and team hover handlers.
+
+### Process & Team rows on tablet/mobile
+Below `1120cqw` both rows stop being static flex layouts and become **native horizontal scroll-snap carousels** (`overflow-x:auto`, `scroll-snap-type:x mandatory`, `scroll-snap-align:center`, scrollbar hidden). They bleed past the page gutter via a negative inline margin, and carry a symmetric `padding-inline: calc(50cqw - cardWidth/2)` so the **first and last card can each reach the centre** — without that padding the end cards can never satisfy a centre snap and the active state sticks one card short.
+
+Card widths: process `min(46cqw,340px)` tablet / `min(80cqw,320px)` mobile; team `min(44cqw,320px)` / `min(82cqw,300px)`.
+
+The reveal that hover drives on desktop is instead driven by **whichever card is nearest the row's centre**, recomputed from a rAF-throttled `scroll` listener, so it tracks the swipe continuously rather than waiting for a tap. Tapping a partially visible card smooth-scrolls it to centre. Above 1120cqw the rows revert to hover and the team cards are reset closed.
 
 ## State Management
 Each page is a single component with local state: theme, device-preview mode, hover ids, carousel index, FAQ open index, booking modal. Project-detail pages parse `?project=` for routing. No server data; all content is inline in `_cases()` / data arrays in each file's logic class — in production, lift this into a CMS or JSON content layer shared across pages (the same project data feeds Works cards AND detail pages; keep it single-source).
@@ -87,7 +133,7 @@ Other: no border radius anywhere (sharp corners; cursor dot morphs round on hove
 
 ## SEO Basics (to implement in production)
 The prototypes are JS-rendered single files — implement these in the real build:
-1. Per-page `<title>` + meta description, e.g. "Kinomad — Design studio in Dubai" / "Works — Kinomad" / project names for detail pages.
+1. Per-page `<title>` is already set in each prototype — carry it over and add a meta description alongside it.
 2. Real routes instead of query params: `/works`, `/works/aurelia`, etc.; project pages statically generated.
 3. Open Graph + Twitter card tags per page (use project hero images).
 4. Semantic markup: one `<h1>` per page, `<nav>`, `<main>`, `<footer>`, alt text on all project images.
@@ -99,6 +145,7 @@ The prototypes are JS-rendered single files — implement these in the real buil
 
 ## Assets
 - `assets/logo-light.svg`, `assets/logo-light.png`, `assets/logo-dark.png` — Kinomad K mark
+- `assets/favicon.svg`, `assets/favicon-32.png`, `assets/favicon-180.png`, `assets/favicon-512.png` — browser tab, Apple touch and Android install icons
 - `assets/hero-1.png`, `assets/hero-2.png`, `assets/hero-3.png` — the three hero images (16:9), in wipe order
 - `assets/hero-1-mobile.png`, `assets/hero-2-mobile.png`, `assets/hero-3-mobile.png` — portrait crops of the same three, used below 780px
 - All project/process photos are **Pexels stock placeholders** (hotlinked URLs in the data arrays) — replace with owned imagery before launch
@@ -107,6 +154,8 @@ The prototypes are JS-rendered single files — implement these in the real buil
 - `support.js` — prototype runtime; not part of the handoff implementation
 
 ## Files
+- `BACKEND-GUIDE.md` — the service to build behind the CRM (read first)
+- `CRM-LOCAL-RUN.md` — zip upload, unpack guards, localhost preview server
 - `Kinomad Landing.dc.html` — landing page
 - `Kinomad Works.dc.html` — portfolio index
 - `Kinomad Website Page.dc.html` / `Kinomad Brand Page.dc.html` / `Kinomad Motion Page.dc.html` — project detail templates
@@ -133,6 +182,7 @@ Ordered roughly by value. Nothing here blocks a faithful rebuild — these are t
 - Light-theme `--mut` raised from `rgba(20,19,15,0.55)` to `0.7` — the old value failed AA for small body text on `#EDF0F4` (~3.5:1, now ~5.6:1).
 - Tablet (834px) and mobile (390px) checked across Landing, Works and the detail pages: brand grids go 4-up → 2×2, 3D cards stack, section headings wrap without collision, footers collapse.
 - Privacy page added and linked from every footer.
+- Favicon set + per-page `<title>` added to all eight pages; production URL map documented under **Deployment & URL structure** (home = `kinomadstudio.com`, no `.dc.html` in any public URL).
 - Mobile hero art: portrait crops replace the cover-cropped 16:9 originals below 780px, and the slats overscale to `1.04` so sub-pixel seams no longer leak hairlines of the image at full cover.
 - Works carousel swipe reworked to follow the finger, with a touch-event fallback — the earlier "swipe does nothing" behaviour on tablet/mobile is fixed.
 

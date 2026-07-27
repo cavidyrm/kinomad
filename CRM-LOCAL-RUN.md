@@ -1,5 +1,8 @@
 # Implementation Spec: CRM "Local Website Run"
 
+> For the full service this sits inside — schema, endpoints, auth, asset pipeline, publish and
+> deploy — read **`BACKEND-GUIDE.md`** first. This file drills into one subsystem of it.
+
 This document specifies the one part of the CRM that cannot be prototyped in HTML: **uploading a
 built website as a `.zip`, serving it on a local port, and linking it from the published case
 study.** Everything else in `Kinomad CRM.dc.html` is a working front-end reference.
@@ -152,8 +155,7 @@ at least one credit with both `who` and `role`.
 **Website**
 - `liveUrl` present and a valid absolute `http(s)` URL
 - bundle uploaded and `bundleStatus === 'ready'`
-- hero image
-- card image
+- hero image (doubles as the Works card image — there is no separate card upload)
 
 **Brand identity**
 - hero image
