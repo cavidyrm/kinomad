@@ -1,7 +1,7 @@
 # Handoff: Kinomad Studio Website
 
 ## Overview
-Complete marketing site for **Kinomad**, a design studio in Dubai, UAE. The package covers eight pages: Landing, Works (portfolio index), three project-detail templates (Website / Brand identity / 3D & motion), a Privacy notice, a 404 page, and an internal CRM panel for adding new works.
+Complete marketing site for **Kinomad**, a design studio in Dubai, UAE. The package covers nine pages: Landing, Works (portfolio index), three project-detail templates (Website / Brand identity / 3D & motion), a Privacy notice, a 404 page, and an internal CRM — sign-in and panel — for managing works.
 
 ## About the Design Files
 The `.dc.html` files in this bundle are **design references created in HTML** — high-fidelity prototypes showing intended look and behavior, not production code to copy directly. The task is to **recreate these designs in your target codebase's environment** (Next.js, Astro, plain React, etc.) using its established patterns. If no environment exists yet, a static-first framework with per-page routing (Next.js or Astro) fits this site best. Open each file in a browser to see the live design; read its markup and logic class for exact values and behavior.
@@ -33,7 +33,7 @@ Header (giant tracked-out "WORKS"), then three portfolio sections + CTA:
 
 ### 3–5. Project pages — `Kinomad Website Page.dc.html`, `Kinomad Brand Page.dc.html`, `Kinomad Motion Page.dc.html`
 Shared layout: header with `(NN) · Type` label + giant project name, italic statement, Background/Concept two-column copy, meta table (Agency / Industry / Category / Year), hero media, credits, prev/next project navigation. Routing: one file per type, project selected by `?project=<id>` query param (see `_cases()` in each logic class).
-- **Website Page**: adds "→ Live at" URL row and a "Visit live site ↗" CTA (accent fill hover). Sites run locally at `http://localhost:3001–3005` (placeholder — projects are served from user-provided site files).
+- **Website Page**: adds "→ Live at" URL row and a "Visit live site ↗" CTA (accent fill hover). For an externally hosted project this is the client's real URL; for a studio-hosted archive it is `https://demo.kinomadstudio.com/<slug>` (placeholder in the prototype — projects are served from user-provided site files).
 - **Motion Page**: reel is **optional**. With a reel: `<video controls>` at `assets/reels/<id>.mp4` + poster, then a "Selected shots" section. Without one: the reel section is skipped entirely, the page opens into the shots (brand-identity-style layout) and the hero CTA becomes "See the shots" → `#shots`.
 - **Brand Page** and **Motion Page** share one gallery system: a `repeat(6,1fr)` grid, `3px` gaps, where **each shot carries its own `span` (2/3/4/6) and `aspect-ratio`** — count and sizes are unconstrained per project. Every shot collapses to `span 6` below 780cqw. Data lives in each case's `shots: []` array.
 
@@ -45,12 +45,29 @@ Legal notice built on the project-page shell: `LEGAL// PRIVACY` label, giant "PR
 ### 7. 404 — `Kinomad 404.dc.html`
 Giant "4**0**4" (accent zero), line "This dream doesn't exist, or it hasn't been made real yet.", "Back to home ↗" CTA, slat-out entrance animation, ERROR 404// corner label.
 
-### 8. CRM — `Kinomad CRM.dc.html` (internal tool, do not link publicly)
-Add-work panel with a Website / Brand / 3D type switcher; per-type fields; a shots repeater (add/remove rows, per-shot width + ratio, live summary) shared by Brand and 3D; credits repeater; sticky summary with completeness checklist; Publish validation; and a Bookings inbox fed by the landing page scheduler.
+### 8. CRM — `Kinomad CRM.dc.html` + `Kinomad CRM Sign In.dc.html` (internal tools, do not link publicly)
+**Sign in is its own page** (`Kinomad CRM Sign In.dc.html` → `/admin/login`): email + password, inline error, session written to browser storage. It is the only unauthenticated route under `/admin`. On success it navigates to the CRM; opened with a live session already present it says so and offers *Open the CRM* or *Sign out instead*. Signing out of the CRM returns here.
 
-Section map: `01` project meta · `02` type-specific media (Website: live URL + site zip + port; Brand: hero + fill colour; 3D: optional reel + poster + card image) · `02B` shots · `03` credits.
+The CRM itself (`/admin`) renders nothing without a session — it shows a **Session required** gate linking to sign-in. In production that gate is a server-side redirect; the prototype stops short of redirecting so the page stays inspectable in a design tool.
 
-**The CRM needs a backend.** Start with **`BACKEND-GUIDE.md`** — stack, schema, the CRM-state→API→column field map, the full add-a-website request sequence, asset pipeline, publish, bookings, security, build order. The zip-upload/local-preview subsystem is specified separately — data model, API, unpack guards, publish validation, security, acceptance checks — is in **`CRM-LOCAL-RUN.md`** in this bundle. Persistence for everything else (assets, bookings) is prototyped in browser storage and needs the same API treatment.
+Three views behind it:
+- **Projects** — the index. Grouped by type, draft/published pill per row, hero thumbnail, slug/year/industry subline, last-updated stamp. Per-row **Edit · Publish/Unpublish · Delete** (delete asks first, inline, never a browser `confirm`), **drag to reorder** within a type group, and an empty state per group. Loading skeletons and an error state with Retry.
+- **Work** — the record editor. Titled *New project* for a draft and *Editing* for an existing one; the same form serves both. Type is locked after first save (it decides slug, destination page and required fields). Autosaves ~700ms after the last keystroke; the sidebar shows *Saving… / Saved <time> / Not saved* with a Retry row on failure.
+- **Booking availability** and **Bookings** — see *Booking* under Interactions.
+
+Section map: `01` project meta (name, year, slug, industry, category, statement, background, concept) · `02` type-specific media · `02B` shots · `03` credits.
+
+**01 Meta.** The slug is derived from the name on first save and then **frozen and shown read-only**, with the resulting public URL (`kinomadstudio.com/works/<slug>`) and, for hosted sites, the demo host beneath it. It is public and permanent — renaming needs a deliberate migration plus a redirect. Year, industry and category are in the completeness checklist because the server requires them.
+
+**02 Website.** An **External / Hosted by us** toggle: external shows the live-URL field, hosted shows the zip uploader — never both. No port field. A status row reads **Not uploaded · Uploading · Unpacking… · Live** (linked to the demo host) **· Error** with the server's message and a Retry. The zip upload has a real progress bar.
+
+**02B Shots** (Brand + 3D). Width is a **six-segment click-to-set picker** that mirrors the `repeat(6,1fr)` grid — any span 1–6, not four named sizes. Ratio offers ten presets (21/9, 2/1, 16/9, 16/10, 3/2, 4/3, 1/1, 4/5, 3/4, 9/16) plus a **custom `w/h`** field, and is **defaulted from the uploaded image's dimensions**. Each row carries its own thumbnail and upload progress, and drags to reorder. A live **grid preview** with a desktop/mobile toggle shows the real layout (everything collapses to span 6 below 780px). Credits drag to reorder too — array order is page order.
+
+**Publish** goes through the server. A `422 {missing}` response renders the server's list, not the local checklist — the checklist is a hint, the server is the authority.
+
+**States.** Autosave, per-upload progress, request failure with retry, empty states, inline delete confirmations and server-driven publish results all exist in the prototype. A header switch (*API healthy / API failing*) forces the next request to fail so every error path is inspectable.
+
+**The CRM needs a backend.** Every request in the prototype goes through `km-api.js`, which mirrors the routes in `BACKEND-GUIDE.md` — swapping it for the real service should not change the UI. Start with **`BACKEND-GUIDE.md`** — stack, schema, the CRM-state→API→column field map, the full add-a-website request sequence, asset pipeline, publish, bookings, security, build order. The zip-upload / demo-host subsystem is specified separately — data model, API, unpack guards, publish validation, security, acceptance checks — in **`CRM-HOSTED-BUNDLES.md`**.
 
 ## Deployment & URL structure
 The prototype filenames (`Kinomad Landing.dc.html`) are **artifacts of the design tool, not the intended URLs**. In production the site is served from the apex domain and the home page must resolve at the root:
@@ -65,6 +82,7 @@ The prototype filenames (`Kinomad Landing.dc.html`) are **artifacts of the desig
 | `Kinomad Privacy.dc.html` | `/privacy` |
 | `Kinomad 404.dc.html` | 404 handler (not a routable path) |
 | `Kinomad CRM.dc.html` | `/admin` — auth-gated, excluded from the public build and from `sitemap.xml`/`robots.txt` |
+| `Kinomad CRM Sign In.dc.html` | `/admin/login` — the only unauthenticated admin route; `noindex` |
 
 The three project-detail templates are **one route**, not three: `/works/[slug]` picks its layout from the project's type. The prototype fakes this with `?project=` — replace it with a real slug segment.
 
@@ -96,10 +114,12 @@ Also add in production: `favicon.ico` (16/32/48 multi-res) at the web root for l
 - **CTA buttons** (`.km-cta`): cream background, accent fills left→right on hover (0.8s, same bezier), text stays dark ink `#14130F`.
 - **Nav bar**: fixed, centered, translucent — `color-mix(… 62%, transparent)` + `backdrop-filter:blur(18px)`; no social icons; borderless theme toggle (accent tint on hover).
 - **Theme**: dark (default) / light, toggled in nav, persisted in `localStorage`.
-- **Booking**: custom on-brand modal scheduler (date picker → time slots → name/email/note → confirmation). Reads availability from the CRM config (working days, hours, slot interval, minimum notice, blocked dates, timezone); confirmed bookings land in the CRM Bookings inbox. Prototype persists to browser storage — back it with the API in production.
+- **Booking**: custom on-brand modal scheduler (date picker → time slots → name/email/note → confirmation). It fetches **two** things: the availability config (working days, hours, slot interval, buffer, minimum notice, blocked date *ranges*, IANA timezone) and a **busy-slots feed for the chosen day** — without the second, the grid offers times that are already booked. Taken slots render struck-through and disabled; the slot column has its own loading and error/retry state. Each time shows the **visitor's local clock** beside Dubai time when the two differ (studio works worldwide). A **409** on submit — the slot was taken while the visitor was typing — returns to step 1, refreshes the grid, keeps their details and explains what happened. Focus trap, `Esc` to close, focus restore and `aria-live` on the confirmation are all in place. Confirmed bookings land in the CRM Bookings inbox, where each has **new / confirmed / cancelled** transitions and per-row cancel or archive with a confirm — there is no bulk "clear all".
+
+  **CRM availability tab**: timezone is an IANA picker (`Asia/Dubai`) whose display label is derived, never typed; buffer has a real control; blocked dates are date-picker **ranges** (holidays are ranges); the slots-per-day preview is computed **per meeting type** (length + buffer must fit before the day ends); Save hits the API.
 - **Global colour tweaks**: accent / background / nav colour are written to shared browser storage by whichever page's tweak panel changes them, and every page (including the CRM and 404) reads them on load. In production this is a single theme source, not per-page storage.
 - **Reduced motion**: handled in CSS *and* JS. CSS kills animations and collapses transition durations, and sets `scroll-behavior:auto`. In JS, `_reduced()` gates `_initCursor()`: under reduced motion there is no custom cursor, no wheel hijack and no per-frame RAF loop — a plain passive scroll listener drives the scrollbar and hero instead, and the hero's final slat stage becomes a hard cut at 50% progress rather than a staggered wipe. Mirror this structure in production: one `prefersReducedMotion` check that disables cursor, smooth scroll and staggered reveals together.
-- **Keyboard & assistive tech**: every page has a `.km-skip` skip-to-content link (visible on focus, first tab stop) targeting `#km-main`, a global `:focus-visible` ring (2px accent, 3px offset), `aria-expanded` + `aria-controls` on the nav menu button, and `aria-expanded` on the FAQ rows. Still to do in production: keyboard operation of the works carousel (arrow keys + visible focus on the active slide), focus trap and `Esc` handling in the booking modal, and `aria-live` on the booking confirmation step.
+- **Keyboard & assistive tech**: every page has a `.km-skip` skip-to-content link (visible on focus, first tab stop) targeting `#km-main`, a global `:focus-visible` ring (2px accent, 3px offset), `aria-expanded` + `aria-controls` on the nav menu button, and `aria-expanded` on the FAQ rows. The booking modal has a focus trap, `Esc` to close, focus restore on close and `aria-live` on the confirmation step. Still to do in production: keyboard operation of the works carousel (arrow keys + visible focus on the active slide).
 
 ### Services rows on tablet/mobile
 Each service row is an `<a>` to its Works anchor. Below 1120cqw the **first tap opens the row and is prevented from navigating**; a second tap on the already-open row follows the link. Tapping a different row moves the open state without navigating. The hover handlers are gated off below 1120cqw — without that gate a touch `mouseenter` fires before `click`, the row is already "open" by the time the tap handler runs, and the tap navigates instead of expanding. The same gate applies to the process and team hover handlers.
@@ -112,7 +132,7 @@ Card widths: process `min(46cqw,340px)` tablet / `min(80cqw,320px)` mobile; team
 The reveal that hover drives on desktop is instead driven by **whichever card is nearest the row's centre**, recomputed from a rAF-throttled `scroll` listener, so it tracks the swipe continuously rather than waiting for a tap. Tapping a partially visible card smooth-scrolls it to centre. Above 1120cqw the rows revert to hover and the team cards are reset closed.
 
 ## State Management
-Each page is a single component with local state: theme, device-preview mode, hover ids, carousel index, FAQ open index, booking modal. Project-detail pages parse `?project=` for routing. No server data; all content is inline in `_cases()` / data arrays in each file's logic class — in production, lift this into a CMS or JSON content layer shared across pages (the same project data feeds Works cards AND detail pages; keep it single-source).
+Each page is a single component with local state: theme, device-preview mode, hover ids, carousel index, FAQ open index, booking modal. Project-detail pages parse `?project=` for routing. The CRM is the exception: it holds no content of its own and reads everything through `km-api.js`. All public-page content is inline in `_cases()` / data arrays in each file's logic class — in production, lift this into a CMS or JSON content layer shared across pages (the same project data feeds Works cards AND detail pages; keep it single-source).
 
 ## Design Tokens
 Colors (dark theme):
@@ -152,17 +172,19 @@ The prototypes are JS-rendered single files — implement these in the real buil
 - Reel videos expected at `assets/reels/<project-id>.mp4` — not included
 - `image-slot.js` — prototype-only drag-and-drop image placeholder; in production these are plain `<img>`/CMS images
 - `support.js` — prototype runtime; not part of the handoff implementation
+- `km-api.js` — prototype stand-in API; replace with the real service, do not port
 
 ## Files
 - `BACKEND-GUIDE.md` — the service to build behind the CRM (read first)
-- `CRM-LOCAL-RUN.md` — zip upload, unpack guards, localhost preview server
+- `CRM-HOSTED-BUNDLES.md` — zip upload, unpack guards, demo-host serving
 - `Kinomad Landing.dc.html` — landing page
 - `Kinomad Works.dc.html` — portfolio index
 - `Kinomad Website Page.dc.html` / `Kinomad Brand Page.dc.html` / `Kinomad Motion Page.dc.html` — project detail templates
 - `Kinomad Privacy.dc.html` — privacy notice (draft copy, needs legal review)
 - `Kinomad 404.dc.html` — error page
-- `Kinomad CRM.dc.html` — internal add-work panel (needs backend)
-- `CRM-LOCAL-RUN.md` — backend spec for the website zip-upload / local-serve feature
+- `Kinomad CRM.dc.html` — internal admin panel: projects index, record editor, scheduler, bookings (needs backend)
+- `Kinomad CRM Sign In.dc.html` — the admin sign-in page
+- `km-api.js` — the prototype's stand-in API: same routes and shapes as `BACKEND-GUIDE.md`, backed by browser storage, with simulated latency and real `401/404/409/422/503` responses so the loading, error and retry states are genuine. **Delete it when the real API lands** — it exists to make the states demonstrable, not to be ported.
 - `assets/` — logos + hero imagery
 
 ## Known gaps & recommended improvements
@@ -185,17 +207,18 @@ Ordered roughly by value. Nothing here blocks a faithful rebuild — these are t
 - Favicon set + per-page `<title>` added to all eight pages; production URL map documented under **Deployment & URL structure** (home = `kinomadstudio.com`, no `.dc.html` in any public URL).
 - Mobile hero art: portrait crops replace the cover-cropped 16:9 originals below 780px, and the slats overscale to `1.04` so sub-pixel seams no longer leak hairlines of the image at full cover.
 - Works carousel swipe reworked to follow the finger, with a touch-event fallback — the earlier "swipe does nothing" behaviour on tablet/mobile is fixed.
+- Booking modal accessibility closed out: focus trap, `Esc`, focus restore on close, `aria-live` on the confirmation step.
+- Loading, empty, error/retry, progress, autosave and confirmation states now exist across the CRM and the booking modal, driven by a stand-in API (`km-api.js`) that returns real status codes.
+- CRM completed: sign-in as its own page, projects index (grouped, reorderable, edit/unpublish/delete), and an edit mode reusing the record editor. Shots accept **any span 1–6 and any aspect ratio**, defaulted from the uploaded image.
 
 **Engineering — still open**
 6. Smooth wheel scroll still hijacks the wheel for users *without* a reduced-motion preference. Test against trackpad momentum and long-page keyboard paging; consider a user-facing toggle.
-7. Booking modal needs a focus trap, `Esc` to close, focus restore on close, and `aria-live` on the confirmation.
-8. The works carousel is pointer/touch only — add arrow-key navigation and a visible focus state.
-9. Query-param routing (`?project=`) must become real routes; see the SEO section.
-10. No loading, empty or error states anywhere — the CRM especially, once it talks to an API (`CRM-LOCAL-RUN.md` specifies the states it needs).
-11. Image delivery is unoptimised full-size PNG/JPEG. Add responsive `srcset`, modern formats and lazy loading below the fold; the hero images are the largest payload on the site. The mobile/desktop hero swap is currently a JS `src` change — move it to `<picture>` so only one set is fetched.
-12. Colour contrast should be re-run with a real checker once brand imagery replaces the stock photos — the hero meta row in particular sits on a scrim tuned to the current three images.
+7. The works carousel is pointer/touch only — add arrow-key navigation and a visible focus state.
+8. Query-param routing (`?project=`) must become real routes; see the SEO section.
+9. Image delivery is unoptimised full-size PNG/JPEG. Add responsive `srcset`, modern formats and lazy loading below the fold; the hero images are the largest payload on the site. The mobile/desktop hero swap is currently a JS `src` change — move it to `<picture>` so only one set is fetched.
+10. Colour contrast should be re-run with a real checker once brand imagery replaces the stock photos — the hero meta row in particular sits on a scrim tuned to the current three images.
 
 **Design**
-13. Light theme is now audited section by section on the Landing page; give Works and the detail pages the same pass once real imagery lands.
-14. Device testing was done at 834px and 390px in the preview, not on physical hardware. Verify the hero wipe performance and the carousel's pointer capture on a real phone.
-15. No cookie-consent banner. Not needed while the site sets no tracking cookies — revisit the moment analytics is added.
+11. Light theme is now audited section by section on the Landing page; give Works and the detail pages the same pass once real imagery lands.
+12. Device testing was done at 834px and 390px in the preview, not on physical hardware. Verify the hero wipe performance and the carousel's pointer capture on a real phone.
+13. No cookie-consent banner. Not needed while the site sets no tracking cookies — revisit the moment analytics is added.
