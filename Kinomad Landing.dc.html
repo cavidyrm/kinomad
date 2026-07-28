@@ -14,7 +14,6 @@
 <link href="assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
 <meta content="#0D0D0D" name="theme-color">
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
-<script src="./km-api.js"></script>
 <style>
 html{scroll-behavior:smooth;scrollbar-width:none}
 ::-webkit-scrollbar{display:none;width:0}
@@ -35,7 +34,6 @@ a:hover{color:var(--accent-ink)}
 @keyframes km-hfade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes km-srise{from{opacity:0;transform:translateY(90px)}to{opacity:1;transform:translateY(0)}}
 @keyframes km-footrise{from{transform:translateY(90px);opacity:0.35}to{transform:translateY(0);opacity:1}}
-@keyframes km-pulse{0%,100%{opacity:0.35}50%{opacity:0.75}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}html{scroll-behavior:auto}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
@@ -102,7 +100,7 @@ body.dev.dragging #frame{cursor:grabbing}
 
 <div style="position:fixed;inset:0;z-index:200;display:{{ bookingDisplay }};align-items:center;justify-content:center;padding:clamp(16px,3cqw,48px);box-sizing:border-box">
   <div onClick="{{ closeBooking }}" style="position:absolute;inset:0;background:rgba(5,5,5,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)"></div>
-  <div data-r="bk-shell" role="dialog" aria-modal="true" aria-label="Book a call with Kinomad" ref="{{ bkShellRef }}" onKeyDown="{{ bkKeyDown }}" style="position:relative;width:min(980px,100%);max-height:min(680px,100%);background:#141414;border:1px solid rgba(241,239,231,0.14);display:grid;grid-template-columns:290px 1fr;overflow:hidden;animation:km-rise 0.5s cubic-bezier(0.16,1,0.3,1) both">
+  <div data-r="bk-shell" style="position:relative;width:min(980px,100%);max-height:min(680px,100%);background:#141414;border:1px solid rgba(241,239,231,0.14);display:grid;grid-template-columns:290px 1fr;overflow:hidden;animation:km-rise 0.5s cubic-bezier(0.16,1,0.3,1) both">
 
     <aside data-r="bk-side" style="background:#0d0d0d;border-right:1px solid rgba(241,239,231,0.12);padding:clamp(22px,2.4cqw,32px);display:flex;flex-direction:column;gap:22px;min-width:0">
       <div style="display:flex;align-items:center;gap:11px">
@@ -125,7 +123,6 @@ body.dev.dragging #frame{cursor:grabbing}
         <div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px">◷</span>{{ bkDur }}</div>
         <div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px">▤</span>Video call, link sent after</div>
         <div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px">⊕</span>{{ bkTz }}</div>
-        <div style="display:flex;align-items:center;gap:10px;display:{{ bkLocalRowShow }}"><span style="font-size:13px">◐</span>Your time · {{ bkLocalTz }}</div>
       </div>
     </aside>
 
@@ -138,10 +135,6 @@ body.dev.dragging #frame{cursor:grabbing}
       <div data-r="bk-body" style="flex:1;overflow:auto;padding:clamp(18px,2.2cqw,28px)">
 
         <sc-if value="{{ bkIsStep1 }}" hint-placeholder-val="{{ true }}">
-          <div role="alert" style="display:{{ bkConflictShow }};align-items:flex-start;gap:11px;border:1px solid #ff8a6b;background:rgba(255,138,107,0.08);padding:13px 15px;margin-bottom:16px">
-            <span style="color:#ff8a6b;font-size:13px;line-height:1.3">●</span>
-            <span style="font-size:13px;font-weight:500;color:#F1EFE7;line-height:1.5;text-wrap:pretty">{{ bkConflictMsg }}</span>
-          </div>
           <div data-r="bk-cal" style="display:grid;grid-template-columns:1fr 190px;gap:clamp(18px,2.2cqw,34px)">
             <div style="min-width:0">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -164,26 +157,9 @@ body.dev.dragging #frame{cursor:grabbing}
             </div>
             <div style="display:flex;flex-direction:column;min-width:0">
               <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(241,239,231,0.5);font-weight:600;margin-bottom:12px">{{ bkDateLabel }}</span>
-              <div data-r="bk-slots" aria-busy="{{ bkSlotsBusy }}" style="display:flex;flex-direction:column;gap:6px;overflow:auto;max-height:296px">
-                <sc-if value="{{ bkSlotsLoading }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:flex;flex-direction:column;gap:6px">
-                    <sc-for list="{{ bkSkeletons }}" as="sk" hint-placeholder-count="5">
-                      <div style="height:41px;border:1px solid rgba(241,239,231,0.08);background:rgba(241,239,231,0.03);animation:km-pulse 1.3s ease-in-out infinite;animation-delay:{{ sk.d }}"></div>
-                    </sc-for>
-                    <span style="font-size:12px;color:rgba(241,239,231,0.4);font-weight:500;padding-top:4px">Checking what’s still free…</span>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ bkSlotsFailed }}" hint-placeholder-val="{{ false }}">
-                  <div role="alert" style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;border:1px solid #ff8a6b;padding:14px">
-                    <span style="font-size:13px;color:#ff8a6b;font-weight:600;line-height:1.45">{{ bkSlotsErr }}</span>
-                    <button onClick="{{ bkRefreshSlots }}" style="font-family:inherit;border:1px solid rgba(241,239,231,0.3);background:transparent;color:#F1EFE7;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:9px 14px;cursor:pointer">Try again</button>
-                  </div>
-                </sc-if>
+              <div data-r="bk-slots" style="display:flex;flex-direction:column;gap:6px;overflow:auto;max-height:296px">
                 <sc-for list="{{ bkSlots }}" as="sl" hint-placeholder-count="6">
-                  <button data-t="{{ sl.t }}" onClick="{{ bkPickTime }}" disabled="{{ sl.taken }}" aria-label="{{ sl.aria }}" style="font-family:inherit;display:flex;align-items:baseline;justify-content:space-between;gap:10px;border:1px solid {{ sl.bd }};background:{{ sl.bg }};color:{{ sl.fg }};padding:10px 12px;font-size:13px;font-weight:600;cursor:{{ sl.cur }};text-decoration:{{ sl.deco }};transition:border-color .2s ease,background .2s ease">
-                    <span>{{ sl.t }}</span>
-                    <span style="font-size:11px;font-weight:500;opacity:0.62;text-decoration:none">{{ sl.sub }}</span>
-                  </button>
+                  <button data-t="{{ sl.t }}" onClick="{{ bkPickTime }}" style="font-family:inherit;border:1px solid {{ sl.bd }};background:{{ sl.bg }};color:{{ sl.fg }};padding:11px;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .2s ease,background .2s ease">{{ sl.t }}</button>
                 </sc-for>
                 <sc-if value="{{ bkNoSlots }}" hint-placeholder-val="{{ false }}">
                   <span style="font-size:13px;color:rgba(241,239,231,0.4);font-weight:500;padding:8px 0;line-height:1.5">{{ bkNoSlotsMsg }}</span>
@@ -195,7 +171,7 @@ body.dev.dragging #frame{cursor:grabbing}
 
         <sc-if value="{{ bkIsStep2 }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;gap:15px;max-width:460px">
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border:1px solid rgba(241,239,231,0.14);background:#0d0d0d;font-size:13px;font-weight:600"><span style="color:var(--accent)">●</span>{{ bkWhen }}<span style="font-size:12px;font-weight:500;color:rgba(241,239,231,0.55);display:{{ bkLocalRowShow }}">· {{ bkWhenLocal }} your time</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid rgba(241,239,231,0.14);background:#0d0d0d;font-size:13px;font-weight:600"><span style="color:var(--accent)">●</span>{{ bkWhen }}</div>
             <label style="display:flex;flex-direction:column;gap:7px">
               <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:rgba(241,239,231,0.5)">Name</span>
               <input value="{{ bkName }}" data-k="name" onChange="{{ bkField }}" placeholder="Your name" style="background:#0d0d0d;border:1px solid rgba(241,239,231,0.14);color:#F1EFE7;font-size:15px;padding:12px 14px;font-family:inherit">
@@ -213,12 +189,12 @@ body.dev.dragging #frame{cursor:grabbing}
         </sc-if>
 
         <sc-if value="{{ bkIsStep3 }}" hint-placeholder-val="{{ false }}">
-          <div role="status" aria-live="polite" style="display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-top:clamp(16px,2.6cqw,40px);max-width:460px">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-top:clamp(16px,2.6cqw,40px);max-width:460px">
             <div style="width:46px;height:46px;border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px">✓</div>
             <h3 style="margin:0;font-size:clamp(26px,3cqw,40px);font-weight:700;letter-spacing:-0.02em;line-height:1">You're booked.</h3>
             <p style="margin:0;font-size:15px;line-height:1.55;color:rgba(241,239,231,0.7);font-weight:500;text-wrap:pretty">{{ bkConfirmMsg }}</p>
             <div style="display:flex;flex-direction:column;gap:9px;width:100%;border-top:1px solid rgba(241,239,231,0.12);padding-top:16px;font-size:13px">
-              <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:rgba(241,239,231,0.5)">When</span><span style="font-weight:600;text-align:right">{{ bkWhen }} <span style="font-weight:500;color:rgba(241,239,231,0.5);display:{{ bkLocalRowShow }}">· {{ bkWhenLocal }} your time</span></span></div>
+              <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:rgba(241,239,231,0.5)">When</span><span style="font-weight:600">{{ bkWhen }}</span></div>
               <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:rgba(241,239,231,0.5)">Type</span><span style="font-weight:600">{{ bkTypeName }}, {{ bkDur }}</span></div>
               <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:rgba(241,239,231,0.5)">Confirmation to</span><span style="font-weight:600">{{ bkEmail }}</span></div>
             </div>
@@ -506,25 +482,9 @@ body.dev.dragging #frame{cursor:grabbing}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#639392&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bookingUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://cal.com/kinomad/intro?embed=true&amp;theme=dark&quot;,&quot;section&quot;:&quot;Booking&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  state = { light: false, fill: 0, hovT: -1, hovS: -1, menuOpen: false, device: 'Desktop', openFaq: 0, workIdx: 1, bookingOpen: false, bkStep: 1, bkType: 0, bkMonthOffset: 0, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '', bkCfg: null, bkCfgLoading: false, bkBusy: [], bkBusyLoading: false, bkBusyErr: '', bkSubmitting: false, bkConflict: '' };
+  state = { light: false, fill: 0, hovT: -1, hovS: -1, menuOpen: false, device: 'Desktop', openFaq: 0, workIdx: 1, bookingOpen: false, bkStep: 1, bkType: 0, bkMonthOffset: 0, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '' };
 
   fillRef = React.createRef();
-  bkShellRef = React.createRef();
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.bookingOpen === this.state.bookingOpen) return;
-    if (this.state.bookingOpen) {
-      this._bkReturnTo = document.activeElement;
-      requestAnimationFrame(() => {
-        const root = this.bkShellRef.current;
-        const el = root && root.querySelector('button,a[href],input');
-        if (el) el.focus();
-      });
-    } else if (this._bkReturnTo && this._bkReturnTo.focus) {
-      this._bkReturnTo.focus();
-      this._bkReturnTo = null;
-    }
-  }
 
   componentDidMount() {
     let light;
@@ -575,44 +535,14 @@ class Component extends DCLogic {
   }
 
   _bkCfg() {
-    return this.state.bkCfg || KMAPI.defaultAvail();
-  }
-
-  /* Availability comes from the API, not from this browser. */
-  _bkLoadCfg() {
-    this.setState({ bkCfgLoading: true });
-    KMAPI.availability.get().then(
-      (a) => this.setState({ bkCfg: a, bkCfgLoading: false }),
-      () => this.setState({ bkCfg: KMAPI.defaultAvail(), bkCfgLoading: false })
-    );
-  }
-
-  /* Which slots are already taken on the chosen day — the client cannot know this alone. */
-  _bkLoadBusy(iso) {
-    if (!iso) return;
-    this._busyReq = iso;
-    this.setState({ bkBusyLoading: true, bkBusyErr: '', bkBusy: [] });
-    KMAPI.bookings.busy(iso).then(
-      (list) => { if (this._busyReq === iso) this.setState({ bkBusy: list, bkBusyLoading: false }); },
-      (err) => { if (this._busyReq === iso) this.setState({ bkBusyLoading: false, bkBusyErr: err.message }); }
-    );
-  }
-
-  /* studio-local "HH:MM" on a date → the visitor's own clock */
-  _bkLocal(iso, hm) {
-    const cfg = this._bkCfg();
-    const p = String(hm).split(':');
-    const guessUTC = Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10), +p[0], +p[1] || 0);
-    const off = KMAPI.tzOffsetMin(cfg.tz, new Date(guessUTC));
-    return new Date(guessUTC - off * 60000);
+    const def = { types: [{ name: 'Intro call', min: 30 }, { name: 'Project deep-dive', min: 60 }], tz: 'GST (UTC+4), Dubai', days: [true, true, true, true, true, false, false], start: '10:00', end: '18:00', interval: 30, buffer: 15, notice: 12, blocked: [] };
+    try { const raw = localStorage.getItem('kinomad-availability'); if (raw) return Object.assign({}, def, JSON.parse(raw)); } catch (_) {}
+    return def;
   }
 
   _bkView() {
     const cfg = this._bkCfg();
     const s = this.state;
-    const localZone = (Intl.DateTimeFormat().resolvedOptions().timeZone) || '';
-    const sameZone = !localZone || localZone === cfg.tz;
-    const hm12 = (d) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     const types = (cfg.types && cfg.types.length ? cfg.types : [{ name: 'Intro call', min: 30 }]);
     const ti = Math.min(s.bkType, types.length - 1);
     const type = types[ti];
@@ -627,69 +557,34 @@ class Component extends DCLogic {
     for (let d = 1; d <= dim; d++) {
       const dt = new Date(base.getFullYear(), base.getMonth(), d);
       const dm = (dt.getDay() + 6) % 7;
-      const disabled = dt < today0 || !cfg.days[dm] || KMAPI.blockedOn(cfg, iso(dt));
+      const disabled = dt < today0 || !cfg.days[dm] || (cfg.blocked || []).includes(iso(dt));
       const sel = iso(dt) === s.bkDate;
       days.push({ n: String(d), iso: iso(dt), bg: sel ? 'var(--accent)' : 'transparent', fg: sel ? '#14130F' : (disabled ? 'rgba(241,239,231,0.22)' : '#F1EFE7'), bd: sel ? 'var(--accent)' : (disabled ? 'transparent' : 'rgba(241,239,231,0.16)'), fw: sel ? '700' : '500', cur: disabled ? 'default' : 'pointer', pe: disabled ? 'none' : 'auto' });
     }
-    const toMin = (t) => { const p = String(t).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
+    const toMin = (t) => { const p = t.split(':'); return (+p[0]) * 60 + (+p[1]); };
     const fmt = (m) => { let h = Math.floor(m / 60), mm = m % 60; const ap = h >= 12 ? 'PM' : 'AM'; let hh = h % 12; if (hh === 0) hh = 12; return hh + ':' + String(mm).padStart(2, '0') + ' ' + ap; };
-    const busy = s.bkBusy || [];
     const slots = [];
-    if (s.bkDate && !s.bkBusyLoading && !s.bkBusyErr) {
-      const isToday = s.bkDate === iso(today0);
+    if (s.bkDate) {
+      const s0 = toMin(cfg.start), e0 = toMin(cfg.end), step = cfg.interval || 30;
+      const selIso = s.bkDate;
+      const isToday = selIso === iso(today0);
       const minM = isToday ? (now.getHours() * 60 + now.getMinutes() + (cfg.notice || 0) * 60) : -1;
-      KMAPI.slotsFor(cfg, s.bkDate, type.min).forEach((hm) => {
-        const m = toMin(hm);
-        if (m <= minM) return;
-        const lbl = fmt(m), sel = s.bkTime === hm, taken = busy.indexOf(hm) >= 0;
-        slots.push({
-          t: lbl, hm: hm, taken: taken,
-          sub: taken ? 'taken' : (sameZone ? '' : hm12(this._bkLocal(s.bkDate, hm)) + ' your time'),
-          aria: lbl + (taken ? ', already booked' : ''),
-          bg: sel ? 'var(--accent)' : 'transparent',
-          fg: sel ? '#14130F' : taken ? 'rgba(241,239,231,0.3)' : '#F1EFE7',
-          bd: sel ? 'var(--accent)' : taken ? 'rgba(241,239,231,0.07)' : 'rgba(241,239,231,0.16)',
-          cur: taken ? 'not-allowed' : 'pointer',
-          deco: taken ? 'line-through' : 'none',
-        });
-      });
+      for (let t = s0; t + type.min <= e0; t += step) {
+        if (t <= minM) continue;
+        const lbl = fmt(t), sel = s.bkTime === lbl;
+        slots.push({ t: lbl, bg: sel ? 'var(--accent)' : 'transparent', fg: sel ? '#14130F' : '#F1EFE7', bd: sel ? 'var(--accent)' : 'rgba(241,239,231,0.16)' });
+      }
     }
-    const whenD = (s.bkDate && s.bkTime) ? this._bkLocal(s.bkDate, s.bkTime) : null;
-    const when = (s.bkDate && s.bkTime) ? (new Date(s.bkDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ', ' + fmt(toMin(s.bkTime))) : '';
-    const whenLocal = whenD ? whenD.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ', ' + hm12(whenD) : '';
+    const when = (s.bkDate && s.bkTime) ? (new Date(s.bkDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ', ' + s.bkTime) : '';
     const step1ok = !!(s.bkDate && s.bkTime);
     const stepLabels = { 1: 'Step 1 of 3 — Pick a time', 2: 'Step 2 of 3 — Your details', 3: 'Confirmed' };
     return {
       bookingDisplay: s.bookingOpen ? 'flex' : 'none',
-      openBooking: () => { this._bkLoadCfg(); this.setState({ bookingOpen: true, bkStep: 1, bkError: '', bkConflict: '' }); },
+      openBooking: () => this.setState({ bookingOpen: true, bkStep: 1, bkError: '' }),
       closeBooking: () => this.setState({ bookingOpen: false }),
-      bkShellRef: this.bkShellRef,
-      bkKeyDown: (e) => {
-        if (e.key === 'Escape') { e.stopPropagation(); return this.setState({ bookingOpen: false }); }
-        if (e.key !== 'Tab') return;
-        const root = this.bkShellRef.current;
-        if (!root) return;
-        const f = [...root.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),textarea,select,[tabindex]:not([tabindex="-1"])')]
-          .filter((el) => el.offsetParent !== null);
-        if (!f.length) return;
-        const first = f[0], last = f[f.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      },
       bkTypeName: type.name,
       bkDur: type.min + ' minutes',
-      bkTz: KMAPI.tzLabel(cfg.tz),
-      bkLocalTz: localZone.replace(/_/g, ' ') + ' · ' + KMAPI.tzOffsetLabel(localZone || 'UTC'),
-      bkLocalRowShow: sameZone ? 'none' : 'flex',
-      bkWhenLocal: whenLocal,
-      bkSkeletons: [{ d: '0s' }, { d: '0.1s' }, { d: '0.2s' }, { d: '0.3s' }, { d: '0.4s' }],
-      bkSlotsLoading: !!s.bkDate && (s.bkBusyLoading || s.bkCfgLoading),
-      bkSlotsBusy: (s.bkBusyLoading || s.bkCfgLoading) ? 'true' : 'false',
-      bkSlotsFailed: !!s.bkDate && !!s.bkBusyErr,
-      bkSlotsErr: s.bkBusyErr,
-      bkRefreshSlots: () => this._bkLoadBusy(this.state.bkDate),
-      bkConflictShow: s.bkConflict ? 'flex' : 'none',
-      bkConflictMsg: s.bkConflict,
+      bkTz: cfg.tz,
       bkTypes: types.map((t, i) => ({ idx: i, name: t.name, dur: t.min + ' min', bd: i === ti ? 'var(--accent)' : 'rgba(241,239,231,0.16)', bg: i === ti ? 'color-mix(in srgb, var(--accent) 15%, transparent)' : 'transparent' })),
       bkPickType: (e) => this.setState({ bkType: Number(e.currentTarget.dataset.idx), bkTime: '' }),
       bkStepLabel: stepLabels[s.bkStep],
@@ -699,45 +594,31 @@ class Component extends DCLogic {
       bkDays: days,
       bkPrevMonth: () => this.setState((st) => ({ bkMonthOffset: Math.max(0, st.bkMonthOffset - 1) })),
       bkNextMonth: () => this.setState((st) => ({ bkMonthOffset: Math.min(11, st.bkMonthOffset + 1) })),
-      bkPickDate: (e) => { const d = e.currentTarget.dataset.iso; this.setState({ bkDate: d, bkTime: '', bkConflict: '' }); this._bkLoadBusy(d); },
+      bkPickDate: (e) => this.setState({ bkDate: e.currentTarget.dataset.iso, bkTime: '' }),
       bkDateLabel: s.bkDate ? new Date(s.bkDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Select a date',
       bkSlots: slots,
-      bkNoSlots: slots.length === 0 && !s.bkBusyLoading && !s.bkBusyErr,
+      bkNoSlots: slots.length === 0,
       bkNoSlotsMsg: s.bkDate ? 'No times left on this day.' : 'Pick a date to see available times.',
-      bkPickTime: (e) => { const lbl = e.currentTarget.dataset.t; const hit = slots.filter((x) => x.t === lbl)[0]; if (hit && !hit.taken) this.setState({ bkTime: hit.hm, bkConflict: '' }); },
+      bkPickTime: (e) => this.setState({ bkTime: e.currentTarget.dataset.t }),
       bkWhen: when,
       bkName: s.bkName, bkEmail: s.bkEmail, bkNote: s.bkNote, bkError: s.bkError,
       bkField: (e) => { const k = e.currentTarget.dataset.k, v = e.currentTarget.value; this.setState((st) => { const o = {}; o['bk' + k.charAt(0).toUpperCase() + k.slice(1)] = v; return o; }); },
       bkShowBack: s.bkStep === 2,
       bkBack: () => this.setState({ bkStep: 1, bkError: '' }),
       bkConfirmMsg: 'A calendar invite and video link are on their way to ' + (s.bkEmail || 'your inbox') + '. We\u2019ll send a reminder the day before.',
-      bkNextLabel: s.bkSubmitting ? 'Booking…' : s.bkStep === 1 ? 'Continue' : s.bkStep === 2 ? 'Confirm booking' : 'Done',
-      bkNextCur: (s.bkStep === 1 && !step1ok) ? 'default' : s.bkSubmitting ? 'progress' : 'pointer',
-      bkNextOp: ((s.bkStep === 1 && !step1ok) || s.bkSubmitting) ? '0.4' : '1',
-      bkNextPe: ((s.bkStep === 1 && !step1ok) || s.bkSubmitting) ? 'none' : 'auto',
+      bkNextLabel: s.bkStep === 1 ? 'Continue' : s.bkStep === 2 ? 'Confirm booking' : 'Done',
+      bkNextCur: (s.bkStep === 1 && !step1ok) ? 'default' : 'pointer',
+      bkNextOp: (s.bkStep === 1 && !step1ok) ? '0.4' : '1',
+      bkNextPe: (s.bkStep === 1 && !step1ok) ? 'none' : 'auto',
       bkNext: () => {
         if (s.bkStep === 1) { if (step1ok) this.setState({ bkStep: 2, bkError: '' }); return; }
         if (s.bkStep === 2) {
           if (!s.bkName.trim()) return this.setState({ bkError: 'Please add your name.' });
           if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.bkEmail)) return this.setState({ bkError: 'Please add a valid email.' });
-          this.setState({ bkSubmitting: true, bkError: '' });
-          return KMAPI.bookings.create({
-            typeName: type.name,
-            startsAt: s.bkDate + 'T' + s.bkTime,
-            name: s.bkName.trim(), email: s.bkEmail.trim(), note: s.bkNote,
-          }).then(
-            () => this.setState({ bkSubmitting: false, bkStep: 3, bkError: '' }),
-            (err) => {
-              if (err.status === 409) {
-                // someone took the slot while this form was open — reload and explain
-                this._bkLoadBusy(s.bkDate);
-                return this.setState({ bkSubmitting: false, bkStep: 1, bkTime: '', bkError: '', bkConflict: 'That time was booked by someone else while you were typing. The times below are fresh — pick another and your details are still here.' });
-              }
-              this.setState({ bkSubmitting: false, bkError: err.message });
-            }
-          );
+          try { const b = JSON.parse(localStorage.getItem('kinomad-bookings') || '[]'); b.push({ type: type.name, when, name: s.bkName, email: s.bkEmail, note: s.bkNote, at: Date.now() }); localStorage.setItem('kinomad-bookings', JSON.stringify(b)); } catch (_) {}
+          return this.setState({ bkStep: 3, bkError: '' });
         }
-        this.setState({ bookingOpen: false, bkStep: 1, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '', bkConflict: '' });
+        this.setState({ bookingOpen: false, bkStep: 1, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '' });
       },
     };
   }

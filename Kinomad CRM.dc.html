@@ -14,20 +14,17 @@
 <link href="assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
 <meta content="#0D0D0D" name="theme-color">
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
-<script src="./km-api.js"></script>
 <style>
 html{scroll-behavior:smooth}
-body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent)}
 ::selection{background:var(--accent);color:#14130F}
-input,textarea,select,button{font-family:'General Sans',ui-sans-serif,system-ui,sans-serif}
+input,textarea,select{font-family:'General Sans',ui-sans-serif,system-ui,sans-serif}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!important}
 .km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
 .km-cta:hover{background-size:100% 100%;color:#14130F}
 @keyframes km-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes km-spin{to{transform:rotate(360deg)}}
-@keyframes km-pulse{0%,100%{opacity:0.35}50%{opacity:0.8}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}html{scroll-behavior:auto}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
@@ -37,160 +34,37 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 
 <div data-screen-label="CRM" style="min-height:100svh;container:page / inline-size;box-sizing:border-box">
 
-<sc-if value="{{ isLocked }}" hint-placeholder-val="{{ false }}">
-  <div style="min-height:100svh;display:grid;place-items:center;padding:clamp(20px,4cqw,60px);position:relative;overflow:hidden">
-    <span aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(120px,26cqw,360px);font-weight:700;letter-spacing:-0.04em;color:rgba(241,239,231,0.028);white-space:nowrap;pointer-events:none">KINOMAD</span>
-    <div style="position:relative;width:min(400px,100%);display:flex;flex-direction:column;gap:18px;background:var(--panel);border:1px solid var(--line);padding:clamp(28px,3cqw,40px);animation:km-rise 0.6s cubic-bezier(0.16,1,0.3,1) both">
-      <div style="display:flex;align-items:center;gap:12px">
-        <img src="assets/logo-light.svg" alt="" style="width:28px;height:auto;display:block">
-        <span style="font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.18em;color:var(--mut)">STUDIO CRM//</span>
-      </div>
-      <h1 style="margin:0;font-size:clamp(24px,2.8cqw,34px);font-weight:700;letter-spacing:-0.025em;line-height:1.05;text-transform:uppercase">Session required</h1>
-      <span style="font-size:14px;color:var(--mut);font-weight:500;line-height:1.55;text-wrap:pretty">There is no live session in this browser. In production this route redirects straight to the sign-in page.</span>
-      <a href="Kinomad CRM Sign In.dc.html" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 24px;text-align:center">Go to sign in ↗</a>
-    </div>
-  </div>
-</sc-if>
-
-<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}">
-  <a href="#crm-main" class="km-skip">Skip to content</a>
-
-  <header style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:14px clamp(20px,3cqw,48px);background:color-mix(in srgb,#050505 80%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);flex-wrap:wrap">
+  <header style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px clamp(20px,3cqw,48px);background:color-mix(in srgb,#050505 80%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)">
     <div style="display:flex;align-items:center;gap:16px">
       <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.svg" alt="Kinomad" style="width:30px;height:auto;display:block"></a>
-      <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">STUDIO CRM//</span>
+      <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">STUDIO CRM · ADD WORK//</span>
     </div>
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <button onClick="{{ toggleFail }}" title="Prototype switch — forces the next request to fail so error and retry states can be seen." style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px solid {{ failBd }};background:transparent;color:{{ failFg }};padding:8px 12px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease"><span style="width:6px;height:6px;border-radius:50%;background:{{ failFg }}"></span>{{ failLabel }}</button>
-      <span style="font-size:12px;color:var(--mut);font-weight:500">{{ sessEmail }}</span>
-      <button onClick="{{ doLogout }}" style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:8px 14px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">Sign out</button>
-    </div>
+    <a href="Kinomad Works.dc.html" style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600">View works page ↗</a>
   </header>
 
-  <main id="crm-main" style="max-width:1240px;margin:0 auto;padding:clamp(24px,3.4cqw,48px) clamp(20px,3cqw,48px) clamp(80px,8cqw,120px)">
+  <main style="max-width:1240px;margin:0 auto;padding:clamp(28px,4cqw,56px) clamp(20px,3cqw,48px) clamp(80px,8cqw,120px)">
 
-    <div style="display:flex;gap:2px;margin-bottom:clamp(24px,2.6cqw,36px);border:1px solid var(--line);width:fit-content;flex-wrap:wrap">
-      <button data-view="projects" onClick="{{ setView }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwProjBg }};color:{{ vwProjFg }};transition:background 0.3s ease,color 0.3s ease">Projects {{ projBadge }}</button>
-      <button data-view="work" onClick="{{ setView }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwWorkBg }};color:{{ vwWorkFg }};transition:background 0.3s ease,color 0.3s ease">{{ workTabLabel }}</button>
-      <button data-view="avail" onClick="{{ setView }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwAvailBg }};color:{{ vwAvailFg }};transition:background 0.3s ease,color 0.3s ease">Booking availability</button>
-      <button data-view="inbox" onClick="{{ setView }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwInboxBg }};color:{{ vwInboxFg }};transition:background 0.3s ease,color 0.3s ease">Bookings {{ inboxBadge }}</button>
+    <div style="display:flex;gap:2px;margin-bottom:clamp(24px,2.6cqw,36px);border:1px solid var(--line);width:fit-content">
+      <button data-view="work" onClick="{{ setView }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwWorkBg }};color:{{ vwWorkFg }};transition:background 0.3s ease,color 0.3s ease">Add work</button>
+      <button data-view="avail" onClick="{{ setView }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwAvailBg }};color:{{ vwAvailFg }};transition:background 0.3s ease,color 0.3s ease">Booking availability</button>
+      <button data-view="inbox" onClick="{{ setView }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;border:none;padding:11px 22px;cursor:pointer;background:{{ vwInboxBg }};color:{{ vwInboxFg }};transition:background 0.3s ease,color 0.3s ease">Bookings {{ inboxBadge }}</button>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:clamp(26px,3cqw,40px)">
-      <h1 style="margin:0;font-size:clamp(32px,4.2cqw,60px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase">{{ crmTitle }}</h1>
-      <span style="font-size:13px;color:var(--mut);font-weight:500;max-width:420px;line-height:1.5;text-wrap:pretty">{{ crmSub }}</span>
+    <h1 style="margin:0 0 clamp(28px,3cqw,44px);font-size:clamp(34px,4.5cqw,64px);font-weight:700;letter-spacing:-0.025em;line-height:0.95;text-transform:uppercase;animation:km-rise 0.8s cubic-bezier(0.16,1,0.3,1) both">{{ crmTitle }}</h1>
+
+    <sc-if value="{{ isWorkView }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:2px;margin-bottom:clamp(28px,3cqw,44px);border:1px solid var(--line);width:fit-content">
+      <button data-type="website" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tabWebBg }};color:{{ tabWebFg }};transition:background 0.3s ease,color 0.3s ease">Website</button>
+      <button data-type="brand" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tabBrandBg }};color:{{ tabBrandFg }};transition:background 0.3s ease,color 0.3s ease">Brand identity</button>
+      <button data-type="three" onClick="{{ setType }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:pointer;background:{{ tab3dBg }};color:{{ tab3dFg }};transition:background 0.3s ease,color 0.3s ease">3D &amp; motion</button>
     </div>
 
-    <!-- ══════════ PROJECTS INDEX ══════════ -->
-    <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex;flex-direction:column;gap:clamp(26px,3cqw,42px)">
+    <div data-r="crm-grid" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,0.7fr);gap:clamp(28px,3.5cqw,56px);align-items:start">
 
-        <sc-if value="{{ pjLoading }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="4">
-              <div style="height:66px;background:var(--panel);border:1px solid var(--line);animation:km-pulse 1.4s ease-in-out infinite;animation-delay:{{ sk.delay }}"></div>
-            </sc-for>
-          </div>
-        </sc-if>
+      <div style="display:flex;flex-direction:column;gap:clamp(32px,3cqw,48px)">
 
-        <sc-if value="{{ pjError }}" hint-placeholder-val="{{ false }}">
-          <div role="alert" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--warn);background:color-mix(in srgb,var(--warn) 8%,transparent);padding:20px 22px">
-            <div style="display:flex;flex-direction:column;gap:5px">
-              <span style="font-size:14px;font-weight:700">Couldn’t load projects</span>
-              <span style="font-size:13px;color:var(--mut);font-weight:500">{{ pjErrMsg }}</span>
-            </div>
-            <button onClick="{{ loadProjects }}" style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--fg);background:transparent;color:var(--fg);padding:11px 20px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">Retry</button>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ pjEmptyAll }}" hint-placeholder-val="{{ false }}">
-          <div style="border:1px dashed color-mix(in srgb,var(--fg) 25%,transparent);padding:clamp(48px,7cqw,96px);text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center">
-            <span style="font-size:20px;font-weight:700;letter-spacing:-0.015em">Nothing in the archive yet</span>
-            <span style="font-size:14px;color:var(--mut);font-weight:500;max-width:400px;line-height:1.55">Add your first case study and it will appear on the works page the moment you publish it.</span>
-            <button onClick="{{ newProject }}" class="km-cta" style="margin-top:8px;border:none;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;padding:14px 24px;cursor:pointer">+ New project</button>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ pjReady }}" hint-placeholder-val="{{ false }}">
-          <sc-for list="{{ groups }}" as="gp" hint-placeholder-count="3">
-            <section style="display:flex;flex-direction:column;gap:12px">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--line);padding-bottom:12px">
-                <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">{{ gp.head }}</span>
-                <span style="font-size:12px;color:var(--mut);font-weight:500">{{ gp.count }}</span>
-              </div>
-
-              <sc-if value="{{ gp.empty }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;border:1px dashed color-mix(in srgb,var(--fg) 20%,transparent);padding:22px 24px">
-                  <span style="font-size:13px;color:var(--mut);font-weight:500">{{ gp.emptyMsg }}</span>
-                  <button data-type="{{ gp.type }}" onClick="{{ newOfType }}" style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;border:1px solid var(--line);background:transparent;color:var(--fg);padding:10px 16px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">+ Add</button>
-                </div>
-              </sc-if>
-
-              <div style="display:flex;flex-direction:column;gap:2px">
-                <sc-for list="{{ gp.rows }}" as="rw" hint-placeholder-count="2">
-                  <div draggable="true" data-id="{{ rw.id }}" data-type="{{ rw.type }}" onDragStart="{{ pjDragStart }}" onDragOver="{{ pjDragOver }}" onDrop="{{ pjDrop }}" onDragEnd="{{ pjDragEnd }}" style="display:grid;grid-template-columns:22px 64px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--panel);border:1px solid {{ rw.bd }};border-top:{{ rw.dropTop }};padding:12px 16px;opacity:{{ rw.op }};transition:border-color 0.25s ease,opacity 0.2s ease">
-                    <span aria-hidden="true" title="Drag to reorder" style="cursor:grab;color:var(--mut);font-size:14px;line-height:1;letter-spacing:0.1em;user-select:none">⠿</span>
-                    <div style="width:64px;height:44px;background:#0d0d0d;background-image:url({{ rw.thumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;display:grid;place-items:center">
-                      <span style="font-size:10px;color:rgba(241,239,231,0.3);font-weight:600;display:{{ rw.phShow }}">NO IMG</span>
-                    </div>
-                    <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-                      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                        <span style="font-size:15px;font-weight:700;letter-spacing:-0.01em">{{ rw.name }}</span>
-                        <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border:1px solid {{ rw.pillBd }};color:{{ rw.pillFg }}">{{ rw.pill }}</span>
-                      </div>
-                      <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.03em;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rw.sub }}</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-                      <sc-if value="{{ rw.confirming }}" hint-placeholder-val="{{ false }}">
-                        <div style="display:flex;align-items:center;gap:10px">
-                          <span style="font-size:12px;font-weight:600;color:var(--warn)">{{ rw.confirmMsg }}</span>
-                          <button data-id="{{ rw.id }}" onClick="{{ pjDeleteGo }}" style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--warn);background:var(--warn);color:#14130F;padding:9px 14px;cursor:pointer">Delete</button>
-                          <button onClick="{{ pjCancelConfirm }}" style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:9px 14px;cursor:pointer">Keep</button>
-                        </div>
-                      </sc-if>
-                      <sc-if value="{{ rw.idle }}" hint-placeholder-val="{{ true }}">
-                        <div style="display:flex;align-items:center;gap:8px">
-                          <span style="font-size:11px;color:var(--mut);font-weight:500;white-space:nowrap;margin-right:6px">{{ rw.updated }}</span>
-                          <a href="{{ rw.viewHref }}" title="Open the public page" style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);padding:9px 14px;display:{{ rw.viewShow }}">View ↗</a>
-                          <button data-id="{{ rw.id }}" onClick="{{ pjEdit }}" style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:9px 14px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">Edit</button>
-                          <button data-id="{{ rw.id }}" data-to="{{ rw.toggleTo }}" onClick="{{ pjToggleState }}" style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:9px 14px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">{{ rw.toggleLabel }}</button>
-                          <button data-id="{{ rw.id }}" onClick="{{ pjAskDelete }}" aria-label="Delete project" style="border:1px solid var(--line);background:transparent;color:var(--mut);width:34px;height:34px;cursor:pointer;font-size:15px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--warn);border-color:var(--warn)">×</button>
-                        </div>
-                      </sc-if>
-                      <sc-if value="{{ rw.busy }}" hint-placeholder-val="{{ false }}">
-                        <span style="display:inline-flex;align-items:center;gap:9px;font-size:12px;color:var(--accent);font-weight:600"><span style="width:11px;height:11px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:km-spin 0.7s linear infinite"></span>{{ rw.busyLabel }}</span>
-                      </sc-if>
-                    </div>
-                  </div>
-                </sc-for>
-              </div>
-            </section>
-          </sc-for>
-
-          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:clamp(20px,2.4cqw,30px)">
-            <button onClick="{{ newProject }}" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px;cursor:pointer">+ New project</button>
-            <span role="status" aria-live="polite" style="font-size:13px;color:{{ pjToastFg }};font-weight:600">{{ pjToast }}</span>
-          </div>
-        </sc-if>
-      </div>
-    </sc-if>
-
-    <!-- ══════════ WORK (create / edit) ══════════ -->
-    <sc-if value="{{ isWorkView }}" hint-placeholder-val="{{ false }}">
-    <div data-r="crm-grid" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(290px,0.72fr);gap:clamp(28px,3.5cqw,56px);align-items:start">
-
-      <div style="display:flex;flex-direction:column;gap:clamp(32px,3cqw,48px);min-width:0">
-
-        <div style="display:flex;gap:2px;border:1px solid var(--line);width:fit-content;flex-wrap:wrap;opacity:{{ typeLockOp }}">
-          <button data-type="website" onClick="{{ setType }}" style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:{{ typeCur }};pointer-events:{{ typePe }};background:{{ tabWebBg }};color:{{ tabWebFg }};transition:background 0.3s ease,color 0.3s ease">Website</button>
-          <button data-type="brand" onClick="{{ setType }}" style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:{{ typeCur }};pointer-events:{{ typePe }};background:{{ tabBrandBg }};color:{{ tabBrandFg }};transition:background 0.3s ease,color 0.3s ease">Brand identity</button>
-          <button data-type="three" onClick="{{ setType }}" style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;border:none;padding:12px 24px;cursor:{{ typeCur }};pointer-events:{{ typePe }};background:{{ tab3dBg }};color:{{ tab3dFg }};transition:background 0.3s ease,color 0.3s ease">3D &amp; motion</button>
-        </div>
-        <span style="font-size:12px;color:var(--mut);font-weight:500;margin-top:-32px;display:{{ typeLockShow }}">Type is fixed after the first save — it decides the slug, the destination page and the required fields.</span>
-
-        <!-- 01 META -->
         <section style="display:flex;flex-direction:column;gap:18px">
-          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 01 META</span>
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 01 BASICS</span>
           <div data-r="row2" style="display:grid;grid-template-columns:2fr 1fr;gap:14px">
             <label style="display:flex;flex-direction:column;gap:8px">
               <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Project name</span>
@@ -198,23 +72,9 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
             </label>
             <label style="display:flex;flex-direction:column;gap:8px">
               <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Year</span>
-              <input value="{{ fYear }}" data-key="year" onChange="{{ field }}" inputmode="numeric" placeholder="2026" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+              <input value="{{ fYear }}" data-key="year" onChange="{{ field }}" placeholder="2026" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
             </label>
           </div>
-
-          <div style="display:flex;flex-direction:column;gap:9px;border:1px solid var(--line);background:var(--panel);padding:15px 17px">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
-              <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--mut)">Slug</span>
-              <span style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;color:{{ slugStateFg }}">{{ slugState }}</span>
-            </div>
-            <span style="font-family:'Chillax',sans-serif;font-size:19px;letter-spacing:0.01em;font-weight:500;color:{{ slugFg }}">{{ slugValue }}</span>
-            <div style="display:flex;flex-direction:column;gap:5px;border-top:1px solid var(--line);padding-top:10px;font-size:12px">
-              <div style="display:flex;justify-content:space-between;gap:14px"><span style="color:var(--mut);font-weight:500">Public URL</span><span style="font-family:'Chillax',sans-serif;letter-spacing:0.02em">{{ publicUrl }}</span></div>
-              <div style="display:flex;justify-content:space-between;gap:14px;display:{{ demoRowShow }}"><span style="color:var(--mut);font-weight:500">Demo host</span><span style="font-family:'Chillax',sans-serif;letter-spacing:0.02em">{{ demoUrl }}</span></div>
-            </div>
-            <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.5">{{ slugNote }}</span>
-          </div>
-
           <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <label style="display:flex;flex-direction:column;gap:8px">
               <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Industry</span>
@@ -241,303 +101,186 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
           </div>
         </section>
 
-        <!-- 02 WEBSITE -->
         <sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}">
           <section style="display:flex;flex-direction:column;gap:18px">
-            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 WHERE THE SITE LIVES</span>
-            <div style="display:flex;gap:2px;border:1px solid var(--line);width:fit-content">
-              <button data-host="external" onClick="{{ setHosting }}" style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:11px 20px;cursor:pointer;background:{{ hostExtBg }};color:{{ hostExtFg }};transition:background 0.3s ease,color 0.3s ease">External</button>
-              <button data-host="hosted" onClick="{{ setHosting }}" style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:11px 20px;cursor:pointer;background:{{ hostHosBg }};color:{{ hostHosFg }};transition:background 0.3s ease,color 0.3s ease">Hosted by us</button>
-            </div>
-            <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.5;margin-top:-6px">{{ hostNote }}</span>
-
-            <sc-if value="{{ isExternal }}" hint-placeholder-val="{{ true }}">
-              <label style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Live website URL</span>
-                <input value="{{ fLiveUrl }}" data-key="liveUrl" onChange="{{ field }}" placeholder="https://client-site.com" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-family:'Chillax',sans-serif;font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
-                <span style="font-size:12px;color:{{ urlNoteFg }};font-weight:500">{{ urlNote }}</span>
-              </label>
-            </sc-if>
-
-            <sc-if value="{{ isHosted }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;gap:12px">
-                <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(22px,2.4cqw,36px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
-                  <input type="file" accept=".zip" data-key="bundle" onChange="{{ bundleFile }}" style="display:none">
-                  <span style="font-size:15px;font-weight:600">{{ bundleCta }}</span>
-                  <span style="font-size:13px;color:var(--mut);font-weight:500">Drop the built site as a .zip with index.html at the archive root. We unpack it and serve it from the demo host.</span>
-                </label>
-
-                <div style="display:flex;flex-direction:column;gap:7px;display:{{ bundleBarShow }}">
-                  <div style="height:4px;background:#0d0d0d;border:1px solid var(--line)">
-                    <div style="height:100%;width:{{ bundlePct }};background:var(--accent);transition:width 0.15s linear"></div>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--mut);font-weight:500">
-                    <span>{{ bundleFileName }}</span><span>{{ bundlePct }}</span>
-                  </div>
-                </div>
-
-                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;background:#050505;border:1px solid {{ bundleBd }};padding:14px 16px">
-                  <span style="display:inline-flex;align-items:center;gap:9px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:{{ bundleFg }}">
-                    <span style="width:7px;height:7px;border-radius:50%;background:{{ bundleFg }};animation:{{ bundlePulse }}"></span>{{ bundleStatus }}
-                  </span>
-                  <a href="{{ demoUrl }}" target="_blank" rel="noopener" style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.03em;display:{{ bundleLinkShow }}">{{ demoUrl }} ↗</a>
-                  <span style="font-size:13px;color:var(--warn);font-weight:500;display:{{ bundleMsgShow }}">{{ bundleMessage }}</span>
-                  <button onClick="{{ bundleRetry }}" style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:9px 15px;cursor:pointer;display:{{ bundleRetryShow }};transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">Retry unpack</button>
-                </div>
-              </div>
-            </sc-if>
-
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 WEBSITE FILES &amp; LOCAL RUN</span>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Live website URL</span>
+              <input value="{{ fLiveUrl }}" data-key="liveUrl" onChange="{{ field }}" placeholder="https://client-site.com" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-family:'Chillax',sans-serif;font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+              <span style="font-size:12px;color:var(--mut);font-weight:500">The real, deployed site. Used for the “Visit site” link on the case study.</span>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(24px,2.6cqw,40px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
+              <input type="file" accept=".zip,.tar,.gz" data-key="siteFiles" onChange="{{ file }}" style="display:none">
+              <span style="font-size:15px;font-weight:600">{{ siteFilesLabel }}</span>
+              <span style="font-size:13px;color:var(--mut);font-weight:500">Drop the built site as a .zip (index.html at root). We unpack and serve it locally.</span>
+            </label>
             <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-              <div style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Hero image · card &amp; page top</span>
-                <label style="display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
-                  <input type="file" accept="image/*" data-key="hero" onChange="{{ assetFile }}" style="display:none">
-                  <span style="width:46px;height:34px;background:#0d0d0d;background-image:url({{ heroThumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;flex:0 0 auto"></span>
-                  <span style="font-size:13px;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ heroLabel }}</span>
-                </label>
-                <div style="height:3px;background:#0d0d0d;display:{{ heroBarShow }}"><div style="height:100%;width:{{ heroPct }};background:var(--accent);transition:width 0.12s linear"></div></div>
-              </div>
               <label style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Accent fill · hover sweep</span>
-                <div style="display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:9px 16px">
-                  <input type="color" value="{{ fFill }}" data-key="fill" onChange="{{ field }}" style="width:36px;height:32px;border:none;background:transparent;padding:0;cursor:pointer">
-                  <span style="font-family:'Chillax',sans-serif;font-size:14px;letter-spacing:0.04em">{{ fFill }}</span>
-                </div>
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Local port</span>
+                <input value="{{ fPort }}" data-key="port" onChange="{{ field }}" placeholder="3001" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
               </label>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Serves at</span>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#050505;border:1px solid var(--line);padding:13px 16px">
+                  <span style="font-family:'Chillax',sans-serif;font-size:14px;letter-spacing:0.04em">{{ liveUrl }}</span>
+                  <span style="display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:{{ runFg }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ runFg }}"></span>{{ runLabel }}</span>
+                </div>
+              </div>
             </div>
+            <button onClick="{{ toggleRun }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:11px 20px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">{{ runBtn }}</button>
+            <label style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Hero image · card &amp; page top</span>
+              <input type="file" accept="image/*" data-key="heroImg" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+            </label>
           </section>
         </sc-if>
 
-        <!-- 02 BRAND -->
         <sc-if value="{{ isBrand }}" hint-placeholder-val="{{ false }}">
           <section style="display:flex;flex-direction:column;gap:18px">
-            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 IDENTITY</span>
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 IDENTITY IMAGES</span>
             <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-              <div style="display:flex;flex-direction:column;gap:8px">
+              <label style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Hero image · 21:10</span>
-                <label style="display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
-                  <input type="file" accept="image/*" data-key="hero" onChange="{{ assetFile }}" style="display:none">
-                  <span style="width:46px;height:34px;background:#0d0d0d;background-image:url({{ heroThumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;flex:0 0 auto"></span>
-                  <span style="font-size:13px;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ heroLabel }}</span>
-                </label>
-                <div style="height:3px;background:#0d0d0d;display:{{ heroBarShow }}"><div style="height:100%;width:{{ heroPct }};background:var(--accent);transition:width 0.12s linear"></div></div>
-              </div>
+                <input type="file" accept="image/*" data-key="brandHero" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+              </label>
               <label style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Brand fill color · hover sweep</span>
                 <div style="display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:9px 16px">
                   <input type="color" value="{{ fFill }}" data-key="fill" onChange="{{ field }}" style="width:36px;height:32px;border:none;background:transparent;padding:0;cursor:pointer">
                   <span style="font-family:'Chillax',sans-serif;font-size:14px;letter-spacing:0.04em">{{ fFill }}</span>
+                  <span style="font-size:12px;color:var(--mut);font-weight:500;margin-left:auto">auto-sampled from image 1 if empty</span>
                 </div>
               </label>
             </div>
           </section>
         </sc-if>
 
-        <!-- 02 MOTION -->
         <sc-if value="{{ is3d }}" hint-placeholder-val="{{ false }}">
           <section style="display:flex;flex-direction:column;gap:18px">
-            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 REEL</span>
-            <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(22px,2.4cqw,36px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
-              <input type="file" accept="video/mp4,video/webm" data-key="reel" onChange="{{ assetFile }}" style="display:none">
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 REEL &amp; SHOTS</span>
+            <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(24px,2.6cqw,40px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
+              <input type="file" accept="video/mp4,video/webm" data-key="reel" onChange="{{ file }}" style="display:none">
               <span style="font-size:15px;font-weight:600">{{ reelLabel }}</span>
-              <span style="font-size:13px;color:var(--mut);font-weight:500">Optional. MP4 or WebM, 21:9 preferred. With no reel the project page opens straight into the shots.</span>
+              <span style="font-size:13px;color:var(--mut);font-weight:500">Optional. MP4 or WebM, 21:9 preferred. With no reel the project page opens straight into the shots, like a brand identity case.</span>
             </label>
-            <div style="height:3px;background:#0d0d0d;display:{{ reelBarShow }}"><div style="height:100%;width:{{ reelPct }};background:var(--accent);transition:width 0.12s linear"></div></div>
             <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-              <div style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Poster frame · before play</span>
-                <label style="display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
-                  <input type="file" accept="image/*" data-key="poster" onChange="{{ assetFile }}" style="display:none">
-                  <span style="width:46px;height:34px;background:#0d0d0d;background-image:url({{ posterThumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;flex:0 0 auto"></span>
-                  <span style="font-size:13px;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ posterLabel }}</span>
-                </label>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:8px">
+              <label style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Poster frame · shown before play</span>
+                <input type="file" accept="image/*" data-key="poster" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+              </label>
+              <label style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Card image · 4:5 portrait</span>
-                <label style="display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
-                  <input type="file" accept="image/*" data-key="card" onChange="{{ assetFile }}" style="display:none">
-                  <span style="width:46px;height:34px;background:#0d0d0d;background-image:url({{ cardThumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;flex:0 0 auto"></span>
-                  <span style="font-size:13px;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ cardLabel }}</span>
-                </label>
-              </div>
+                <input type="file" accept="image/*" data-key="cardImg" onChange="{{ file }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+              </label>
             </div>
           </section>
         </sc-if>
 
-        <!-- 02B SHOTS -->
         <sc-if value="{{ showShots }}" hint-placeholder-val="{{ false }}">
           <section style="display:flex;flex-direction:column;gap:18px">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap">
-              <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02B SHOTS · ANY WIDTH, ANY RATIO</span>
-              <span style="font-size:12px;color:var(--mut);font-weight:500">{{ shotSummary }}</span>
-            </div>
-
+            <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02B SHOTS</span>
             <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px">
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Shots · any number, any size</span>
+                <span style="font-size:12px;color:var(--mut);font-weight:500">{{ shotSummary }}</span>
+              </div>
               <sc-for list="{{ shots }}" as="sh" hint-placeholder-count="2">
-                <div draggable="true" data-idx="{{ sh.i }}" onDragStart="{{ shDragStart }}" onDragOver="{{ shDragOver }}" onDrop="{{ shDrop }}" onDragEnd="{{ shDragEnd }}" style="display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid {{ sh.bd }};border-top:{{ sh.dropTop }};padding:12px 14px;opacity:{{ sh.op }};transition:border-color 0.25s ease,opacity 0.2s ease">
-                  <div data-r="shotrow" style="display:grid;grid-template-columns:20px 58px minmax(0,1fr) auto auto 34px;gap:12px;align-items:center">
-                    <span aria-hidden="true" title="Drag to reorder" style="cursor:grab;color:var(--mut);font-size:13px;line-height:1;user-select:none">⠿</span>
-                    <label style="width:58px;height:44px;background:#0d0d0d;background-image:url({{ sh.thumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;cursor:pointer;position:relative">
-                      <input type="file" accept="image/*" data-idx="{{ sh.i }}" onChange="{{ shotFile }}" style="display:none">
-                      <span style="font-size:9px;letter-spacing:0.08em;color:rgba(241,239,231,0.35);font-weight:600;display:{{ sh.phShow }}">UPLOAD</span>
-                    </label>
-                    <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-                      <span style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sh.name }}</span>
-                      <span style="font-size:11px;color:{{ sh.metaFg }};font-weight:500">{{ sh.metaText }}</span>
-                    </div>
-                    <div role="group" aria-label="Column span" style="display:grid;grid-template-columns:repeat(6,20px);gap:2px">
-                      <sc-for list="{{ sh.segs }}" as="sg" hint-placeholder-count="6">
-                        <button data-idx="{{ sh.i }}" data-span="{{ sg.n }}" onClick="{{ shotSpan }}" title="{{ sg.title }}" aria-label="{{ sg.title }}" style="height:26px;border:1px solid {{ sg.bd }};background:{{ sg.bg }};color:{{ sg.fg }};font-size:10px;font-weight:700;cursor:pointer;padding:0;transition:background 0.18s ease,border-color 0.18s ease">{{ sg.label }}</button>
-                      </sc-for>
-                    </div>
-                    <div style="display:flex;gap:6px;align-items:center">
-                      <select value="{{ sh.ratio }}" data-idx="{{ sh.i }}" data-key="ratio" onChange="{{ shotField }}" style="background:#0d0d0d;border:1px solid var(--line);color:var(--fg);font-size:12px;font-weight:500;padding:8px 8px;cursor:pointer">
-                        <option value="21/9">21:9</option>
-                        <option value="2/1">2:1</option>
-                        <option value="16/9">16:9</option>
-                        <option value="16/10">16:10</option>
-                        <option value="3/2">3:2</option>
-                        <option value="4/3">4:3</option>
-                        <option value="1/1">1:1</option>
-                        <option value="4/5">4:5</option>
-                        <option value="3/4">3:4</option>
-                        <option value="9/16">9:16</option>
-                        <option value="custom">Custom…</option>
-                      </select>
-                      <div style="display:{{ sh.customShow }};align-items:center;gap:4px;background:#0d0d0d;border:1px solid var(--line);padding:0 8px">
-                        <input value="{{ sh.cw }}" data-idx="{{ sh.i }}" data-key="cw" onChange="{{ shotField }}" inputmode="decimal" aria-label="Custom width" style="width:34px;background:transparent;border:none;color:var(--fg);font-size:12px;font-weight:600;padding:8px 0;text-align:center">
-                        <span style="font-size:12px;color:var(--mut)">/</span>
-                        <input value="{{ sh.ch }}" data-idx="{{ sh.i }}" data-key="ch" onChange="{{ shotField }}" inputmode="decimal" aria-label="Custom height" style="width:34px;background:transparent;border:none;color:var(--fg);font-size:12px;font-weight:600;padding:8px 0;text-align:center">
-                      </div>
-                    </div>
-                    <button data-idx="{{ sh.i }}" onClick="{{ rmShot }}" aria-label="Remove shot" style="border:1px solid var(--line);background:transparent;color:var(--mut);width:34px;height:34px;cursor:pointer;font-size:15px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--warn);border-color:var(--warn)">×</button>
-                  </div>
-                  <div style="display:{{ sh.barShow }};flex-direction:column;gap:5px">
-                    <div style="height:3px;background:#0d0d0d"><div style="height:100%;width:{{ sh.pct }};background:{{ sh.barFg }};transition:width 0.12s linear"></div></div>
-                    <div style="display:flex;justify-content:space-between;gap:12px;font-size:11px;font-weight:500;color:{{ sh.barFg }}"><span>{{ sh.barLabel }}</span><span>{{ sh.barRight }}</span></div>
-                  </div>
+                <div data-r="shotrow" style="display:grid;grid-template-columns:minmax(0,1fr) 150px 130px auto;gap:10px;align-items:center">
+                  <input type="file" accept="image/*" data-idx="{{ $index }}" data-key="img" onChange="{{ shotFile }}" style="background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:13px;padding:12px 16px">
+                  <select value="{{ sh.size }}" data-idx="{{ $index }}" data-key="size" onChange="{{ shotField }}" style="font-family:inherit;background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:13px;font-weight:500;padding:12px 14px;cursor:pointer">
+                    <option value="Third">Third width</option>
+                    <option value="Half">Half width</option>
+                    <option value="Two thirds">Two thirds</option>
+                    <option value="Full">Full width</option>
+                  </select>
+                  <select value="{{ sh.ratio }}" data-idx="{{ $index }}" data-key="ratio" onChange="{{ shotField }}" style="font-family:inherit;background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:13px;font-weight:500;padding:12px 14px;cursor:pointer">
+                    <option value="21/9">21:9</option>
+                    <option value="16/9">16:9</option>
+                    <option value="3/2">3:2</option>
+                    <option value="4/3">4:3</option>
+                    <option value="1/1">1:1</option>
+                    <option value="4/5">4:5</option>
+                  </select>
+                  <button data-idx="{{ $index }}" onClick="{{ rmShot }}" aria-label="Remove shot" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
                 </div>
               </sc-for>
-              <button onClick="{{ addShot }}" style="align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add shot</button>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);background:var(--panel);padding:16px">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
-                <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--mut)">Grid preview</span>
-                <div style="display:flex;gap:2px;border:1px solid var(--line)">
-                  <button data-m="0" onClick="{{ setGridMode }}" style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:7px 13px;cursor:pointer;background:{{ gmDeskBg }};color:{{ gmDeskFg }}">Desktop</button>
-                  <button data-m="1" onClick="{{ setGridMode }}" style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:7px 13px;cursor:pointer;background:{{ gmMobBg }};color:{{ gmMobFg }}">Mobile</button>
-                </div>
-              </div>
-              <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;max-width:{{ gridMaxW }};transition:max-width 0.4s cubic-bezier(0.16,1,0.3,1)">
-                <sc-for list="{{ gridCells }}" as="gc" hint-placeholder-count="3">
-                  <div style="grid-column:span {{ gc.span }};aspect-ratio:{{ gc.ratio }};background:#0d0d0d;background-image:url({{ gc.thumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;position:relative;display:grid;place-items:center">
-                    <span style="position:relative;font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.06em;color:rgba(241,239,231,0.45)">{{ gc.label }}</span>
-                  </div>
-                </sc-for>
-              </div>
-              <sc-if value="{{ gridEmpty }}" hint-placeholder-val="{{ true }}">
-                <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.5">Add a shot to see the grid. Widths are columns of six; below 780px every shot goes full width.</span>
-              </sc-if>
+              <button onClick="{{ addShot }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add shot</button>
             </div>
           </section>
         </sc-if>
 
-        <!-- 03 CREDITS -->
         <section style="display:flex;flex-direction:column;gap:18px">
-          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 03 CREDITS · ORDER IS THE ORDER ON THE PAGE</span>
-          <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 03 CREDITS</span>
+          <div style="display:flex;flex-direction:column;gap:10px">
             <sc-for list="{{ credits }}" as="cr" hint-placeholder-count="2">
-              <div draggable="true" data-idx="{{ cr.i }}" onDragStart="{{ crDragStart }}" onDragOver="{{ crDragOver }}" onDrop="{{ crDrop }}" onDragEnd="{{ crDragEnd }}" style="display:grid;grid-template-columns:20px 1fr 1fr 34px;gap:10px;align-items:center;border:1px solid {{ cr.bd }};border-top:{{ cr.dropTop }};background:{{ cr.bg }};padding:8px 10px;opacity:{{ cr.op }};transition:border-color 0.25s ease,opacity 0.2s ease">
-                <span aria-hidden="true" title="Drag to reorder" style="cursor:grab;color:var(--mut);font-size:13px;line-height:1;user-select:none">⠿</span>
-                <input value="{{ cr.who }}" data-idx="{{ cr.i }}" data-key="who" onChange="{{ creditField }}" placeholder="Name" style="background:#0d0d0d;border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:11px 14px;transition:border-color 0.25s ease">
-                <input value="{{ cr.role }}" data-idx="{{ cr.i }}" data-key="role" onChange="{{ creditField }}" placeholder="Role, e.g. Design Lead" style="background:#0d0d0d;border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:11px 14px;transition:border-color 0.25s ease">
-                <button data-idx="{{ cr.i }}" onClick="{{ rmCredit }}" aria-label="Remove credit" style="border:1px solid var(--line);background:transparent;color:var(--mut);width:34px;height:34px;cursor:pointer;font-size:15px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--warn);border-color:var(--warn)">×</button>
+              <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center">
+                <input value="{{ cr.who }}" data-idx="{{ $index }}" data-key="who" onChange="{{ creditField }}" placeholder="Name" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+                <input value="{{ cr.role }}" data-idx="{{ $index }}" data-key="role" onChange="{{ creditField }}" placeholder="Role, e.g. Design Lead" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+                <button data-idx="{{ $index }}" onClick="{{ rmCredit }}" aria-label="Remove credit" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
               </div>
             </sc-for>
-            <button onClick="{{ addCredit }}" style="align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add credit</button>
+            <button onClick="{{ addCredit }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add credit</button>
           </div>
         </section>
 
-        <!-- ACTIONS -->
-        <div style="display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--line);padding-top:clamp(20px,2.4cqw,32px)">
-          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-            <button onClick="{{ publish }}" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 28px;cursor:{{ pubCur }};opacity:{{ pubOp }};pointer-events:{{ pubPe }}">{{ pubLabel }}</button>
-            <button onClick="{{ unpublish }}" style="border:1px solid var(--line);background:transparent;color:var(--fg);font-weight:600;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:14px 22px;cursor:pointer;display:{{ unpubShow }};transition:border-color 0.25s ease" style-hover="border-color:var(--warn)">Unpublish</button>
-            <button onClick="{{ saveNow }}" style="border:1px solid var(--line);background:transparent;color:var(--fg);font-weight:600;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:14px 22px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">Save now</button>
-            <button onClick="{{ backToList }}" style="border:none;background:transparent;color:var(--mut);font-weight:600;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:14px 8px;cursor:pointer;transition:color 0.25s ease" style-hover="color:var(--accent)">← All projects</button>
-          </div>
-
-          <div role="status" aria-live="polite" style="display:{{ pubPanelShow }};flex-direction:column;gap:10px;border:1px solid {{ pubPanelBd }};background:color-mix(in srgb,{{ pubPanelBd }} 8%,transparent);padding:18px 20px">
-            <span style="font-size:14px;font-weight:700">{{ pubPanelTitle }}</span>
-            <span style="font-size:13px;color:var(--mut);font-weight:500;line-height:1.5;text-wrap:pretty">{{ pubPanelBody }}</span>
-            <div style="display:flex;flex-direction:column;gap:7px;display:{{ pubMissingShow }}">
-              <sc-for list="{{ pubMissing }}" as="ms" hint-placeholder-count="2">
-                <span style="display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--warn)"><span style="width:15px;height:15px;border:1px solid var(--warn);display:inline-grid;place-items:center;font-size:10px">!</span>{{ ms.label }}</span>
-              </sc-for>
-            </div>
-            <a href="{{ publicHref }}" style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);display:{{ pubLinkShow }}">Open the case study ↗</a>
-          </div>
+        <div style="display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:clamp(20px,2.4cqw,32px)">
+          <button onClick="{{ publish }}" class="km-cta" style="font-family:inherit;border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 28px;cursor:pointer">Publish to works ↗</button>
+          <button style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--fg);font-weight:600;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:14px 24px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">Save draft</button>
+          <span style="font-size:13px;color:var(--accent);font-weight:600;opacity:{{ toastOp }};transition:opacity 0.4s ease">{{ toastMsg }}</span>
         </div>
+
       </div>
 
-      <!-- SIDEBAR -->
-      <aside data-r="crm-side" style="position:sticky;top:84px;display:flex;flex-direction:column;border:1px solid var(--line);background:var(--panel)">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line)">
+      <aside data-r="crm-side" style="position:sticky;top:86px;display:flex;flex-direction:column;gap:0;border:1px solid var(--line);background:var(--panel)">
+        <div style="padding:18px 20px;border-bottom:1px solid var(--line)">
           <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">SUMMARY//</span>
-          <span role="status" aria-live="polite" style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:0.06em;color:{{ saveFg }}">
-            <span style="width:6px;height:6px;border-radius:50%;background:{{ saveFg }};animation:{{ savePulse }}"></span>{{ saveLabel }}
-          </span>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--warn) 12%,transparent);display:{{ saveErrShow }}">
-          <span style="font-size:12px;font-weight:600;color:var(--warn);line-height:1.4">{{ saveErrMsg }}</span>
-          <button onClick="{{ saveNow }}" style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--warn);background:transparent;color:var(--warn);padding:7px 11px;cursor:pointer;flex:0 0 auto">Retry</button>
-        </div>
-        <div style="display:flex;flex-direction:column;font-size:13px">
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
-            <span style="color:var(--mut);font-weight:500">State</span><span style="font-weight:600;color:{{ stateFg }}">{{ stateLabel }}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
+        <div style="display:flex;flex-direction:column;gap:0;font-size:13px">
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
             <span style="color:var(--mut);font-weight:500">Type</span><span style="font-weight:600">{{ typeLabel }}</span>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
             <span style="color:var(--mut);font-weight:500">Appears in</span><span style="font-weight:600">{{ destSection }}</span>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
-            <span style="color:var(--mut);font-weight:500">Project page</span><span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.03em;text-align:right">{{ destPage }}</span>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Project page</span><span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.04em">{{ destPage }}</span>
           </div>
+          <sc-if value="{{ isWeb }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+              <span style="color:var(--mut);font-weight:500">Local URL</span><span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.04em">{{ liveUrl }}</span>
+            </div>
+          </sc-if>
         </div>
-        <div style="padding:15px 20px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line)">
-          <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--mut)">Ready to publish · {{ checkScore }}</span>
-          <sc-for list="{{ checklist }}" as="ck" hint-placeholder-count="6">
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:11px">
+          <sc-for list="{{ checklist }}" as="ck" hint-placeholder-count="4">
             <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:{{ ck.c }}">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1px solid {{ ck.c }};font-size:10px;flex:0 0 auto">{{ ck.mark }}</span>{{ ck.label }}
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1px solid {{ ck.c }};font-size:10px">{{ ck.mark }}</span>{{ ck.label }}
             </div>
           </sc-for>
         </div>
       </aside>
+
     </div>
     </sc-if>
 
-    <!-- ══════════ AVAILABILITY ══════════ -->
     <sc-if value="{{ isAvailView }}" hint-placeholder-val="{{ false }}">
-    <div data-r="crm-grid" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(290px,0.72fr);gap:clamp(28px,3.5cqw,56px);align-items:start">
-      <div style="display:flex;flex-direction:column;gap:clamp(32px,3cqw,48px);min-width:0">
+    <div data-r="crm-grid" style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,0.7fr);gap:clamp(28px,3.5cqw,56px);align-items:start">
+      <div style="display:flex;flex-direction:column;gap:clamp(32px,3cqw,48px)">
 
         <section style="display:flex;flex-direction:column;gap:18px">
           <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 01 MEETING TYPES</span>
           <div style="display:flex;flex-direction:column;gap:10px">
             <sc-for list="{{ mtList }}" as="mt" hint-placeholder-count="2">
               <div style="display:grid;grid-template-columns:1fr 120px auto;gap:10px;align-items:center">
-                <input value="{{ mt.name }}" data-idx="{{ mt.i }}" data-key="name" onChange="{{ mtField }}" placeholder="e.g. Intro call" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+                <input value="{{ mt.name }}" data-idx="{{ $index }}" data-key="name" onChange="{{ mtField }}" placeholder="e.g. Intro call" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
                 <div style="display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);padding:0 14px">
-                  <input value="{{ mt.min }}" data-idx="{{ mt.i }}" data-key="min" onChange="{{ mtField }}" inputmode="numeric" style="background:transparent;border:none;color:var(--fg);font-size:14px;font-weight:500;padding:12px 0;width:100%">
+                  <input value="{{ mt.min }}" data-idx="{{ $index }}" data-key="min" onChange="{{ mtField }}" inputmode="numeric" style="background:transparent;border:none;color:var(--fg);font-size:14px;font-weight:500;padding:12px 0;width:100%;font-family:inherit">
                   <span style="font-size:12px;color:var(--mut);font-weight:500">min</span>
                 </div>
-                <button data-idx="{{ mt.i }}" onClick="{{ mtRemove }}" aria-label="Remove type" style="border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--warn);border-color:var(--warn)">×</button>
+                <button data-idx="{{ $index }}" onClick="{{ mtRemove }}" aria-label="Remove type" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
               </div>
             </sc-for>
-            <button onClick="{{ mtAdd }}" style="align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add meeting type</button>
+            <button onClick="{{ mtAdd }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Add meeting type</button>
           </div>
         </section>
 
@@ -547,28 +290,28 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
             <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Days you take calls</span>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
               <sc-for list="{{ dayList }}" as="dd" hint-placeholder-count="7">
-                <button data-idx="{{ dd.idx }}" onClick="{{ dayToggle }}" aria-pressed="{{ dd.on }}" style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border:1px solid {{ dd.bd }};background:{{ dd.bg }};color:{{ dd.fg }};padding:10px 15px;cursor:pointer;transition:border-color 0.25s ease,background 0.25s ease">{{ dd.label }}</button>
+                <button data-idx="{{ dd.idx }}" onClick="{{ dayToggle }}" style="font-family:inherit;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border:1px solid {{ dd.bd }};background:{{ dd.bg }};color:{{ dd.fg }};padding:10px 15px;cursor:pointer;transition:border-color 0.25s ease,background 0.25s ease">{{ dd.label }}</button>
               </sc-for>
             </div>
           </div>
           <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <label style="display:flex;flex-direction:column;gap:8px">
               <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Day starts</span>
-              <input type="time" value="{{ aStart }}" data-key="start" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+              <input type="time" value="{{ aStart }}" data-key="start" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;transition:border-color 0.25s ease">
             </label>
             <label style="display:flex;flex-direction:column;gap:8px">
               <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Day ends</span>
-              <input type="time" value="{{ aEnd }}" data-key="end" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
+              <input type="time" value="{{ aEnd }}" data-key="end" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;transition:border-color 0.25s ease">
             </label>
           </div>
         </section>
 
         <section style="display:flex;flex-direction:column;gap:18px">
           <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 03 SLOT RULES</span>
-          <div data-r="row3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+          <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <label style="display:flex;flex-direction:column;gap:8px">
               <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Slot interval</span>
-              <select value="{{ aInterval }}" data-key="interval" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;cursor:pointer">
+              <select value="{{ aInterval }}" data-key="interval" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;cursor:pointer">
                 <option value="15">Every 15 min</option>
                 <option value="30">Every 30 min</option>
                 <option value="45">Every 45 min</option>
@@ -576,18 +319,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
               </select>
             </label>
             <label style="display:flex;flex-direction:column;gap:8px">
-              <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Buffer after</span>
-              <select value="{{ aBuffer }}" data-key="buffer" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;cursor:pointer">
-                <option value="0">No buffer</option>
-                <option value="5">5 min</option>
-                <option value="10">10 min</option>
-                <option value="15">15 min</option>
-                <option value="30">30 min</option>
-              </select>
-            </label>
-            <label style="display:flex;flex-direction:column;gap:8px">
               <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Minimum notice</span>
-              <select value="{{ aNotice }}" data-key="notice" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;cursor:pointer">
+              <select value="{{ aNotice }}" data-key="notice" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;font-family:inherit;cursor:pointer">
                 <option value="0">None</option>
                 <option value="2">2 hours</option>
                 <option value="12">12 hours</option>
@@ -598,12 +331,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
           </div>
           <label style="display:flex;flex-direction:column;gap:8px">
             <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Timezone</span>
-            <select value="{{ aTz }}" data-key="tz" onChange="{{ availField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;cursor:pointer">
-              <sc-for list="{{ tzOptions }}" as="tz" hint-placeholder-count="6">
-                <option value="{{ tz.id }}">{{ tz.label }}</option>
-              </sc-for>
-            </select>
-            <span style="font-size:12px;color:var(--mut);font-weight:500">Stored as an IANA zone so daylight saving is handled by the server. Shown to visitors as <span style="color:var(--fg);font-weight:600">{{ tzDerived }}</span>.</span>
+            <input value="{{ aTz }}" data-key="tz" onChange="{{ availField }}" placeholder="GST (UTC+4), Dubai" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:12px 16px;transition:border-color 0.25s ease">
           </label>
         </section>
 
@@ -611,842 +339,303 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
           <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 04 BLOCKED DATES</span>
           <div style="display:flex;flex-direction:column;gap:10px">
             <sc-for list="{{ blockedList }}" as="bd" hint-placeholder-count="1">
-              <div data-r="blockrow" style="display:grid;grid-template-columns:1fr 18px 1fr minmax(0,150px) auto;gap:10px;align-items:center">
-                <input type="date" value="{{ bd.from }}" data-idx="{{ bd.i }}" data-key="from" onChange="{{ blockField }}" aria-label="Blocked from" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 14px;transition:border-color 0.25s ease">
-                <span style="text-align:center;font-size:13px;color:var(--mut)">→</span>
-                <input type="date" value="{{ bd.to }}" data-idx="{{ bd.i }}" data-key="to" onChange="{{ blockField }}" aria-label="Blocked to" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 14px;transition:border-color 0.25s ease">
-                <span style="font-size:12px;color:{{ bd.fg }};font-weight:500">{{ bd.note }}</span>
-                <button data-idx="{{ bd.i }}" onClick="{{ blockRemove }}" aria-label="Remove blocked range" style="border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--warn);border-color:var(--warn)">×</button>
+              <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center">
+                <input type="date" value="{{ bd.date }}" data-idx="{{ $index }}" onChange="{{ blockField }}" style="background:var(--panel);border:1px solid var(--line);color:var(--fg);font-size:14px;font-weight:500;padding:12px 16px;font-family:inherit;transition:border-color 0.25s ease">
+                <button data-idx="{{ $index }}" onClick="{{ blockRemove }}" aria-label="Remove date" style="font-family:inherit;border:1px solid var(--line);background:transparent;color:var(--mut);width:42px;height:42px;cursor:pointer;font-size:16px;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">×</button>
               </div>
             </sc-for>
-            <sc-if value="{{ noBlocked }}" hint-placeholder-val="{{ false }}">
-              <span style="font-size:13px;color:var(--mut);font-weight:500">Nothing blocked. Holidays and shoot weeks go here as ranges.</span>
-            </sc-if>
-            <button onClick="{{ blockAdd }}" style="align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Block dates</button>
+            <button onClick="{{ blockAdd }}" style="font-family:inherit;align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:transparent;color:var(--mut);padding:11px 20px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">+ Block a date</button>
           </div>
         </section>
 
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:clamp(20px,2.4cqw,32px)">
-          <button onClick="{{ saveAvail }}" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 28px;cursor:{{ avCur }};opacity:{{ avOp }};pointer-events:{{ avPe }}">{{ avBtn }}</button>
-          <span role="status" aria-live="polite" style="font-size:13px;color:{{ availToastFg }};font-weight:600">{{ availToast }}</span>
-          <button onClick="{{ saveAvail }}" style="border:1px solid var(--warn);background:transparent;color:var(--warn);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:10px 16px;cursor:pointer;display:{{ avRetryShow }}">Retry</button>
+        <div style="display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:clamp(20px,2.4cqw,32px)">
+          <button onClick="{{ saveAvail }}" class="km-cta" style="font-family:inherit;border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 28px;cursor:pointer">Save availability</button>
+          <span style="font-size:13px;color:var(--accent);font-weight:600;opacity:{{ availToastOp }};transition:opacity 0.4s ease">{{ availToast }}</span>
         </div>
+
       </div>
 
-      <aside data-r="crm-side" style="position:sticky;top:84px;display:flex;flex-direction:column;border:1px solid var(--line);background:var(--panel)">
-        <div style="padding:15px 20px;border-bottom:1px solid var(--line)">
+      <aside data-r="crm-side" style="position:sticky;top:86px;display:flex;flex-direction:column;border:1px solid var(--line);background:var(--panel)">
+        <div style="padding:18px 20px;border-bottom:1px solid var(--line)">
           <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">PREVIEW//</span>
         </div>
         <div style="display:flex;flex-direction:column;font-size:13px">
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
-            <span style="color:var(--mut);font-weight:500">Open days</span><span style="font-weight:600;text-align:right">{{ openDaysLabel }}</span>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Open days</span><span style="font-weight:600">{{ openDaysLabel }}</span>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
             <span style="color:var(--mut);font-weight:500">Hours</span><span style="font-weight:600">{{ hoursLabel }}</span>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
-            <span style="color:var(--mut);font-weight:500">Timezone</span><span style="font-weight:600;text-align:right">{{ tzDerived }}</span>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Slots / day</span><span style="font-weight:600">{{ slotsPerDay }}</span>
           </div>
-          <div style="display:flex;justify-content:space-between;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line)">
-            <span style="color:var(--mut);font-weight:500">Blocked</span><span style="font-weight:600">{{ blockedSummary }}</span>
+          <div style="display:flex;justify-content:space-between;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line)">
+            <span style="color:var(--mut);font-weight:500">Meeting types</span><span style="font-weight:600">{{ mtCount }}</span>
           </div>
         </div>
-        <div style="padding:15px 20px;display:flex;flex-direction:column;gap:11px;border-top:1px solid var(--line)">
-          <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--mut)">Slots per open day</span>
-          <sc-for list="{{ slotsByType }}" as="st" hint-placeholder-count="2">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;font-size:13px">
-              <span style="font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ st.name }}</span>
-              <span style="color:var(--mut);font-weight:500;white-space:nowrap">{{ st.detail }}</span>
-            </div>
-          </sc-for>
-        </div>
-        <div style="padding:14px 20px;font-size:12px;color:var(--mut);font-weight:500;line-height:1.55;border-top:1px solid var(--line)">Each meeting type gets its own grid: length plus buffer has to fit before the day ends.</div>
+        <div style="padding:16px 20px;font-size:12px;color:var(--mut);font-weight:500;line-height:1.55">These settings drive the “Book a call” scheduler on the landing page.</div>
       </aside>
     </div>
     </sc-if>
 
-    <!-- ══════════ BOOKINGS ══════════ -->
     <sc-if value="{{ isInboxView }}" hint-placeholder-val="{{ false }}">
-    <div style="display:flex;flex-direction:column;gap:16px;max-width:900px">
-
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
-        <div style="display:flex;gap:2px;border:1px solid var(--line);flex-wrap:wrap">
-          <sc-for list="{{ bkFilters }}" as="ft" hint-placeholder-count="4">
-            <button data-f="{{ ft.id }}" onClick="{{ setBkFilter }}" style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:10px 18px;cursor:pointer;background:{{ ft.bg }};color:{{ ft.fg }};transition:background 0.3s ease,color 0.3s ease">{{ ft.label }}</button>
-          </sc-for>
-        </div>
-        <button onClick="{{ loadBookings }}" style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--mut);padding:9px 16px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">Refresh</button>
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:820px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+        <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// {{ inboxCount }} UPCOMING</span>
+        <button onClick="{{ clearBookings }}" style="font-family:inherit;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--mut);padding:9px 16px;cursor:pointer;transition:color 0.25s ease,border-color 0.25s ease" style-hover="color:var(--accent);border-color:var(--accent)">Clear all</button>
       </div>
-
-      <sc-if value="{{ bkLoading }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="3">
-            <div style="height:96px;background:var(--panel);border:1px solid var(--line);animation:km-pulse 1.4s ease-in-out infinite;animation-delay:{{ sk.delay }}"></div>
-          </sc-for>
-        </div>
-      </sc-if>
-
-      <sc-if value="{{ bkError }}" hint-placeholder-val="{{ false }}">
-        <div role="alert" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;border:1px solid var(--warn);background:color-mix(in srgb,var(--warn) 8%,transparent);padding:20px 22px">
-          <div style="display:flex;flex-direction:column;gap:5px">
-            <span style="font-size:14px;font-weight:700">Couldn’t load bookings</span>
-            <span style="font-size:13px;color:var(--mut);font-weight:500">{{ bkErrMsg }}</span>
-          </div>
-          <button onClick="{{ loadBookings }}" style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--fg);background:transparent;color:var(--fg);padding:11px 20px;cursor:pointer">Retry</button>
-        </div>
-      </sc-if>
-
-      <sc-if value="{{ bkHasRows }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ hasBookings }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:2px">
           <sc-for list="{{ bookingsList }}" as="bk" hint-placeholder-count="3">
-            <div data-r="bkrow" style="display:grid;grid-template-columns:190px minmax(0,1fr) auto;gap:20px;align-items:start;background:var(--panel);border:1px solid {{ bk.bd }};padding:16px 20px;opacity:{{ bk.op }}">
-              <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:grid;grid-template-columns:180px 1fr auto;gap:20px;align-items:start;background:var(--panel);border:1px solid var(--line);padding:18px 20px">
+              <div style="display:flex;flex-direction:column;gap:4px">
                 <span style="font-size:14px;font-weight:700;letter-spacing:-0.01em">{{ bk.when }}</span>
                 <span style="font-size:12px;color:var(--accent);font-weight:600">{{ bk.type }}</span>
-                <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border:1px solid {{ bk.pillBd }};color:{{ bk.pillFg }};width:fit-content">{{ bk.status }}</span>
               </div>
               <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
                 <span style="font-size:14px;font-weight:600">{{ bk.name }}</span>
                 <a href="{{ bk.mailto }}" style="font-size:13px;color:var(--mut);font-weight:500">{{ bk.email }}</a>
                 <span style="font-size:13px;color:var(--mut);font-weight:500;line-height:1.5;text-wrap:pretty">{{ bk.note }}</span>
               </div>
-              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:9px">
-                <span style="font-size:11px;color:var(--mut);font-weight:500;white-space:nowrap">{{ bk.received }}</span>
-                <sc-if value="{{ bk.idle }}" hint-placeholder-val="{{ true }}">
-                  <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end">
-                    <button data-id="{{ bk.id }}" data-to="confirmed" onClick="{{ bkSetStatus }}" style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;display:{{ bk.confirmShow }};transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">Confirm</button>
-                    <button data-id="{{ bk.id }}" data-to="new" onClick="{{ bkSetStatus }}" style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer;display:{{ bk.reopenShow }};transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--accent);color:var(--accent)">Reopen</button>
-                    <button data-id="{{ bk.id }}" onClick="{{ bkAskCancel }}" style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--mut);padding:8px 12px;cursor:pointer;display:{{ bk.cancelShow }};transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--warn);color:var(--warn)">Cancel</button>
-                    <button data-id="{{ bk.id }}" onClick="{{ bkAskArchive }}" style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--mut);padding:8px 12px;cursor:pointer;display:{{ bk.archiveShow }};transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--warn);color:var(--warn)">Archive</button>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ bk.confirming }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end">
-                    <span style="font-size:12px;font-weight:600;color:var(--warn);text-align:right">{{ bk.confirmMsg }}</span>
-                    <button data-id="{{ bk.id }}" onClick="{{ bkConfirmGo }}" style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--warn);background:var(--warn);color:#14130F;padding:8px 12px;cursor:pointer">{{ bk.confirmYes }}</button>
-                    <button onClick="{{ bkCancelConfirm }}" style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;color:var(--fg);padding:8px 12px;cursor:pointer">Keep</button>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ bk.busy }}" hint-placeholder-val="{{ false }}">
-                  <span style="display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--accent);font-weight:600"><span style="width:11px;height:11px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:km-spin 0.7s linear infinite"></span>Saving</span>
-                </sc-if>
-              </div>
+              <span style="font-size:11px;color:var(--mut);font-weight:500;white-space:nowrap">{{ bk.received }}</span>
             </div>
           </sc-for>
         </div>
       </sc-if>
-
-      <sc-if value="{{ bkEmpty }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ noBookings }}" hint-placeholder-val="{{ false }}">
         <div style="border:1px dashed color-mix(in srgb,var(--fg) 25%,transparent);padding:clamp(40px,6cqw,80px);text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center">
-          <span style="font-size:16px;font-weight:600">{{ bkEmptyTitle }}</span>
-          <span style="font-size:13px;color:var(--mut);font-weight:500;max-width:380px;line-height:1.55">{{ bkEmptyBody }}</span>
+          <span style="font-size:16px;font-weight:600">No bookings yet</span>
+          <span style="font-size:13px;color:var(--mut);font-weight:500;max-width:360px;line-height:1.55">Calls booked from the landing page “Book a call” scheduler land here.</span>
         </div>
       </sc-if>
-
-      <span role="status" aria-live="polite" style="font-size:13px;font-weight:600;color:{{ bkToastFg }};min-height:16px">{{ bkToast }}</span>
+      <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.55">Prototype note: bookings are stored in this browser. In production they’d also create a calendar event and email confirmation.</span>
     </div>
     </sc-if>
 
   </main>
-</sc-if>
 </div>
-
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;options&quot;:[&quot;#2bcdee&quot;,&quot;#D9FF3D&quot;,&quot;#FF6B4A&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = {
-    booting: true, session: null, view: 'projects',
-    pjList: null, pjLoading: false, pjErr: '', pjBusy: {}, pjConfirm: '', pjToast: '', pjToastErr: false,
-    pjDrag: null, pjOver: null,
-    p: null, saveState: 'idle', saveErr: '', savedAt: 0,
-    upload: {}, uploadErr: {}, bundleProg: -1, bundleName: '',
-    pubBusy: false, pubMissing: [], pubResult: '', pubMsg: '',
-    shDrag: -1, shOver: -1, crDrag: -1, crOver: -1, gridMobile: false,
-    avail: null, availLoading: false, availErr: '', availState: 'idle', availToast: '',
-    bkList: null, bkLoading: false, bkErr: '', bkFilter: 'all', bkBusy: {}, bkConfirm: null, bkToast: '', bkToastErr: false,
-    tick: 0,
+    view: 'work',
+    avail: null,
+    availToast: '',
+    type: 'website',
+    fields: { name: '', year: '', industry: '', meta: '', statement: '', background: '', concept: '', port: '3001', fill: '#5B79A6' },
+    files: {},
+    credits: [{ who: '', role: '' }],
+    shots: [{ img: '', size: 'Half', ratio: '3/2' }],
+    running: false,
+    toast: '',
   };
 
   componentDidMount() {
     const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
     document.body.style.setProperty('--accent', g('kinomad-accent') ?? this.props.accent ?? '#2bcdee');
-    const s = window.KMAPI ? KMAPI.session.current() : null;
-    this.setState({ booting: false, session: s }, () => { if (s) this._bootData(); });
-    this._clock = setInterval(() => this.setState((st) => ({ tick: st.tick + 1 })), 15000);
-  }
-  componentWillUnmount() { clearInterval(this._clock); clearTimeout(this._saveT); clearTimeout(this._toastT); clearTimeout(this._bkToastT); }
-
-  _bootData() { this._loadProjects(); this._loadAvail(); this._loadBookings(); }
-
-  /* ---------- projects index ---------- */
-  _loadProjects() {
-    this.setState({ pjLoading: true, pjErr: '' });
-    KMAPI.projects.list().then(
-      (l) => this.setState({ pjList: l, pjLoading: false }),
-      (e) => this.setState({ pjLoading: false, pjErr: e.message })
-    );
-  }
-  _toast(msg, isErr) {
-    this.setState({ pjToast: msg, pjToastErr: !!isErr });
-    clearTimeout(this._toastT);
-    this._toastT = setTimeout(() => this.setState({ pjToast: '' }), 4500);
-  }
-  _bkToast(msg, isErr) {
-    this.setState({ bkToast: msg, bkToastErr: !!isErr });
-    clearTimeout(this._bkToastT);
-    this._bkToastT = setTimeout(() => this.setState({ bkToast: '' }), 4500);
-  }
-  _setBusy(id, label) { this.setState((s) => ({ pjBusy: Object.assign({}, s.pjBusy, { [id]: label }) })); }
-  _clearBusy(id) { this.setState((s) => { const b = Object.assign({}, s.pjBusy); delete b[id]; return { pjBusy: b }; }); }
-
-  /* ---------- work record ---------- */
-  _blank(type) {
-    return { id: '', slug: '', type: type || 'website', state: 'draft', name: '', year: '', industry: '', meta: '', statement: '', background: '', concept: '', hosting: 'external', liveUrl: '', fill: '#5B79A6', bundle: { status: 'none', name: '', message: '', url: '' }, assets: {}, credits: [{ who: '', role: '' }], shots: [] };
-  }
-  _patch(patch, immediate) {
-    this.setState((s) => ({ p: Object.assign({}, s.p || this._blank(), patch) }), () => this._queueSave(immediate));
-  }
-  _queueSave(immediate) {
-    clearTimeout(this._saveT);
-    this._saveT = setTimeout(() => this._flush(), immediate ? 0 : 700);
-  }
-  _flush() {
-    const p = this.state.p;
-    if (!p) return;
-    // the record is created on the first real keystroke, not on a type click
-    if (!p.id && !String(p.name || '').trim()) return;
-    const body = {
-      type: p.type, name: p.name, year: p.year, industry: p.industry, meta: p.meta,
-      statement: p.statement, background: p.background, concept: p.concept,
-      hosting: p.hosting, liveUrl: p.liveUrl, fill: p.fill, bundle: p.bundle,
-      assets: p.assets, credits: p.credits, shots: p.shots,
-    };
-    this.setState({ saveState: 'saving', saveErr: '' });
-    const done = (rec) => {
-      this.setState((s) => ({ p: Object.assign({}, s.p, { id: rec.id, slug: rec.slug, state: rec.state }), saveState: 'saved', savedAt: Date.now() }));
-      this._loadProjects();
-    };
-    const fail = (e) => this.setState({ saveState: 'error', saveErr: e.message });
-    if (p.id) KMAPI.projects.patch(p.id, body).then(done, fail);
-    else KMAPI.projects.create(body).then((rec) => KMAPI.projects.patch(rec.id, body)).then(done, fail);
+    if (!this.state.avail) this.setState({ avail: this._loadAvail() });
   }
 
-  _upl(key, v) { this.setState((s) => ({ upload: Object.assign({}, s.upload, { [key]: v }) })); }
-
-  _uploadAsset(key, file) {
-    this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: '' }) }));
-    this._upl(key, 0);
-    KMAPI.assets.upload(this.state.p && this.state.p.id, file, (pct) => this._upl(key, pct)).then(
-      (a) => {
-        this._upl(key, -1);
-        this._patch({ assets: Object.assign({}, (this.state.p || {}).assets, { [key]: { id: a.assetId, name: a.name, url: a.url, w: a.width, h: a.height } }) }, true);
-      },
-      (e) => { this._upl(key, -1); this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: e.message }) })); }
-    );
+  _defaultAvail() {
+    return { types: [{ name: 'Intro call', min: 30 }, { name: 'Project deep-dive', min: 60 }], tz: 'GST (UTC+4), Dubai', days: [true, true, true, true, true, false, false], start: '10:00', end: '18:00', interval: 30, notice: 12, blocked: [] };
   }
 
-  _pollBundle() {
-    const p = this.state.p;
-    KMAPI.bundle.status(p && p.id, p && p.slug).then((r) => {
-      this._patch({ bundle: Object.assign({}, (this.state.p || {}).bundle, { status: r.status, message: r.message || '', url: r.url || '' }) }, true);
-    });
-  }
-
-  /* ---------- availability ---------- */
   _loadAvail() {
-    this.setState({ availLoading: true, availErr: '' });
-    KMAPI.availability.get().then(
-      (a) => this.setState({ avail: a, availLoading: false }),
-      (e) => this.setState({ availLoading: false, availErr: e.message, avail: KMAPI.defaultAvail() })
-    );
-  }
-  _setAvail(patch) { this.setState((s) => ({ avail: Object.assign({}, s.avail || KMAPI.defaultAvail(), patch), availState: 'idle', availToast: '' })); }
-
-  /* ---------- bookings ---------- */
-  _loadBookings() {
-    this.setState({ bkLoading: true, bkErr: '' });
-    KMAPI.bookings.list().then(
-      (l) => this.setState({ bkList: l.map((b) => Object.assign({}, b, { status: b.status || 'new' })), bkLoading: false }),
-      (e) => this.setState({ bkLoading: false, bkErr: e.message })
-    );
+    const def = this._defaultAvail();
+    try { const raw = localStorage.getItem('kinomad-availability'); if (raw) return Object.assign({}, def, JSON.parse(raw)); } catch (_) {}
+    return def;
   }
 
-  /* ---------- helpers ---------- */
-  _ago(ts) {
-    if (!ts) return '';
-    const d = Math.floor((Date.now() - ts) / 1000);
-    if (d < 45) return 'just now';
-    if (d < 3600) return Math.floor(d / 60) + 'm ago';
-    if (d < 86400) return Math.floor(d / 3600) + 'h ago';
-    return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  _setAvail(patch) {
+    this.setState((s) => ({ avail: Object.assign({}, s.avail || this._defaultAvail(), patch), availToast: '' }));
   }
-  _fmt12(t) {
-    const p = String(t).split(':'), m = (+p[0]) * 60 + (+p[1] || 0);
-    let h = Math.floor(m / 60); const mm = m % 60; const ap = h >= 12 ? 'PM' : 'AM';
-    let hh = h % 12; if (hh === 0) hh = 12;
-    return hh + (mm ? ':' + String(mm).padStart(2, '0') : '') + ap;
-  }
-  _typeName(t) { return t === 'website' ? 'Website' : t === 'brand' ? 'Brand identity' : '3D & motion'; }
-  _typePage(t) { return t === 'website' ? 'Kinomad Website Page.dc.html' : t === 'brand' ? 'Kinomad Brand Page.dc.html' : 'Kinomad Motion Page.dc.html'; }
 
-  /* ---------- view bags ---------- */
-  _loginBag() {
-    const s = this.state;
+  _inboxView() {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem('kinomad-bookings') || '[]'); } catch (_) {}
+    list = list.slice().sort((a, b) => (b.at || 0) - (a.at || 0));
     return {
-      isLocked: !s.booting && !s.session,
-      isApp: !!s.session,
-      doLogout: () => KMAPI.session.logout().then(() => { window.location.href = 'Kinomad CRM Sign In.dc.html'; }),
-      sessEmail: s.session ? s.session.email : '',
-      failLabel: KMAPI.flags.fail ? 'API failing' : 'API healthy',
-      failFg: KMAPI.flags.fail ? 'var(--warn)' : 'var(--accent)',
-      failBd: KMAPI.flags.fail ? 'var(--warn)' : 'var(--line)',
-      toggleFail: () => { KMAPI.flags.fail = !KMAPI.flags.fail; this.forceUpdate(); },
-      skeletons: [{ delay: '0s' }, { delay: '0.12s' }, { delay: '0.24s' }, { delay: '0.36s' }],
+      inboxBadge: list.length ? '(' + list.length + ')' : '',
+      inboxCount: String(list.length),
+      hasBookings: list.length > 0,
+      noBookings: list.length === 0,
+      bookingsList: list.map((b) => ({
+        when: b.when || '—',
+        type: b.type || 'Call',
+        name: b.name || 'Unnamed',
+        email: b.email || '',
+        mailto: 'mailto:' + (b.email || ''),
+        note: b.note || 'No note',
+        received: b.at ? new Date(b.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '',
+      })),
+      clearBookings: () => { try { localStorage.setItem('kinomad-bookings', '[]'); } catch (_) {} this.forceUpdate(); },
     };
   }
 
-  _projectsBag() {
-    const s = this.state, list = s.pjList || [];
-    const types = [
-      { type: 'website', head: '// 01 WEBSITES', emptyMsg: 'No website case studies yet.' },
-      { type: 'brand', head: '// 02 BRAND IDENTITY', emptyMsg: 'No identity projects yet.' },
-      { type: 'three', head: '// 03 3D & MOTION', emptyMsg: 'No motion projects yet.' },
-    ];
-    const groups = types.map((g) => {
-      const rows = list.filter((p) => p.type === g.type);
-      return {
-        type: g.type, head: g.head, emptyMsg: g.emptyMsg,
-        count: rows.length + (rows.length === 1 ? ' project' : ' projects'),
-        empty: rows.length === 0,
-        rows: rows.map((p) => {
-          const pub = p.state === 'published';
-          const busy = s.pjBusy[p.id];
-          const conf = s.pjConfirm === p.id;
-          const hero = (p.assets || {}).hero;
-          return {
-            id: p.id, type: p.type,
-            name: p.name || 'Untitled project',
-            sub: (p.slug ? '/works/' + p.slug : 'no slug yet') + ' · ' + (p.year || 'no year') + ' · ' + (p.industry || 'no industry'),
-            pill: pub ? 'Published' : 'Draft',
-            pillFg: pub ? 'var(--accent)' : 'var(--mut)',
-            pillBd: pub ? 'var(--accent)' : 'var(--line)',
-            thumb: (hero && hero.url) || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', thumbShow: hero && hero.url ? 'block' : 'none', phShow: hero && hero.url ? 'none' : 'block',
-            updated: this._ago(p.updatedAt),
-            viewHref: this._typePage(p.type), viewShow: pub ? 'inline-block' : 'none',
-            toggleTo: pub ? 'draft' : 'published', toggleLabel: pub ? 'Unpublish' : 'Publish',
-            confirming: conf && !busy, idle: !conf && !busy, busy: !!busy, busyLabel: busy || '',
-            confirmMsg: 'Delete “' + (p.name || 'Untitled') + '” for good?',
-            bd: s.pjDrag === p.id ? 'var(--accent)' : 'var(--line)',
-            dropTop: s.pjOver === p.id && s.pjDrag !== p.id ? '2px solid var(--accent)' : '1px solid var(--line)',
-            op: s.pjDrag === p.id ? '0.45' : '1',
-          };
-        }),
-      };
-    });
-    return {
-      isProjects: s.view === 'projects',
-      groups, projBadge: list.length ? '(' + list.length + ')' : '',
-      pjLoading: s.pjLoading && !s.pjList,
-      pjError: !!s.pjErr, pjErrMsg: s.pjErr,
-      pjReady: !!s.pjList && !s.pjErr && list.length > 0,
-      pjEmptyAll: !!s.pjList && !s.pjErr && list.length === 0,
-      loadProjects: () => this._loadProjects(),
-      pjToast: s.pjToast || ' ', pjToastFg: s.pjToastErr ? 'var(--warn)' : 'var(--accent)',
-      newProject: () => this.setState({ view: 'work', p: this._blank('website'), saveState: 'idle', pubResult: '', pubMissing: [], upload: {} }),
-      newOfType: (e) => { const t = e.currentTarget.dataset.type; this.setState({ view: 'work', p: this._blank(t), saveState: 'idle', pubResult: '', pubMissing: [], upload: {} }); },
-      pjEdit: (e) => {
-        const id = e.currentTarget.dataset.id;
-        this._setBusy(id, 'Opening');
-        KMAPI.projects.get(id).then(
-          (rec) => { this._clearBusy(id); this.setState({ view: 'work', p: rec, saveState: 'idle', savedAt: rec.updatedAt, pubResult: '', pubMissing: [], upload: {} }); },
-          (err) => { this._clearBusy(id); this._toast(err.message, true); this._loadProjects(); }
-        );
-      },
-      pjToggleState: (e) => {
-        const id = e.currentTarget.dataset.id, to = e.currentTarget.dataset.to;
-        this._setBusy(id, to === 'published' ? 'Publishing' : 'Unpublishing');
-        const req = to === 'published' ? KMAPI.projects.publish(id) : KMAPI.projects.unpublish(id);
-        req.then(
-          (rec) => { this._clearBusy(id); this._toast(rec.name + (to === 'published' ? ' is live on the works page.' : ' is back to draft.')); this._loadProjects(); },
-          (err) => {
-            this._clearBusy(id);
-            const miss = err.missing ? ' Missing: ' + err.missing.map((m) => m.label).join(', ') + '.' : '';
-            this._toast(err.message + miss, true);
-          }
-        );
-      },
-      pjAskDelete: (e) => this.setState({ pjConfirm: e.currentTarget.dataset.id }),
-      pjCancelConfirm: () => this.setState({ pjConfirm: '' }),
-      pjDeleteGo: (e) => {
-        const id = e.currentTarget.dataset.id;
-        this.setState({ pjConfirm: '' });
-        this._setBusy(id, 'Deleting');
-        KMAPI.projects.remove(id).then(
-          () => { this._clearBusy(id); this._toast('Project deleted.'); if (this.state.p && this.state.p.id === id) this.setState({ p: null, view: 'projects' }); this._loadProjects(); },
-          (err) => { this._clearBusy(id); this._toast(err.message, true); }
-        );
-      },
-      pjDragStart: (e) => { this.setState({ pjDrag: e.currentTarget.dataset.id }); try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', e.currentTarget.dataset.id); } catch (_) {} },
-      pjDragOver: (e) => { e.preventDefault(); const id = e.currentTarget.dataset.id; if (id !== this.state.pjOver) this.setState({ pjOver: id }); },
-      pjDragEnd: () => this.setState({ pjDrag: null, pjOver: null }),
-      pjDrop: (e) => {
-        e.preventDefault();
-        const from = this.state.pjDrag, to = e.currentTarget.dataset.id, type = e.currentTarget.dataset.type;
-        this.setState({ pjDrag: null, pjOver: null });
-        if (!from || from === to) return;
-        const ids = (this.state.pjList || []).filter((p) => p.type === type).map((p) => p.id);
-        const fi = ids.indexOf(from), ti = ids.indexOf(to);
-        if (fi < 0 || ti < 0) return;
-        ids.splice(ti, 0, ids.splice(fi, 1)[0]);
-        const optimistic = (this.state.pjList || []).map((p) => p.type === type ? Object.assign({}, p, { position: ids.indexOf(p.id) }) : p)
-          .sort((a, b) => (a.position - b.position));
-        this.setState({ pjList: optimistic });
-        KMAPI.projects.reorder(type, ids).then(() => this._loadProjects(), (err) => { this._toast('Order not saved — ' + err.message, true); this._loadProjects(); });
-      },
-    };
-  }
-
-  _workBag() {
-    const s = this.state;
-    const p = s.p || this._blank();
-    const t = p.type;
-    const seg = (k) => ({ bg: t === k ? '#F1EFE7' : 'transparent', fg: t === k ? '#14130F' : '#F1EFE7' });
-    const w = seg('website'), b = seg('brand'), d = seg('three');
-    const locked = !!p.id;
-    const need = KMAPI.projects.requirements(p);
-    const okCount = need.filter((n) => n.ok).length;
-    const slug = p.slug;
-    const bundle = p.bundle || { status: 'none' };
-    const bStat = { none: 'Not uploaded', uploading: 'Uploading', unpacking: 'Unpacking…', ready: 'Live', error: 'Error' }[bundle.status] || 'Not uploaded';
-    const bFg = bundle.status === 'ready' ? 'var(--accent)' : bundle.status === 'error' ? 'var(--warn)' : 'rgba(241,239,231,0.45)';
-    const demo = 'https://demo.kinomadstudio.com/' + (slug || 'your-project');
-    const upl = s.upload, uerr = s.uploadErr;
-    const asset = (k) => (p.assets || {})[k];
-    const pct = (k) => Math.round(Math.max(0, upl[k] || 0) * 100) + '%';
-    const shots = (p.shots || []).map((sh, i) => {
-      const up = upl['shot' + i];
-      const uploading = up != null && up >= 0;
-      const err = uerr['shot' + i];
-      const custom = sh.ratio === 'custom';
-      const segs = [1, 2, 3, 4, 5, 6].map((n) => ({
-        n: n, label: n === sh.span ? String(n) : '',
-        title: n + ' of 6 columns',
-        bg: n <= (sh.span || 1) ? 'var(--accent)' : 'transparent',
-        fg: n <= (sh.span || 1) ? '#14130F' : 'var(--mut)',
-        bd: n <= (sh.span || 1) ? 'var(--accent)' : 'var(--line)',
-      }));
-      return {
-        i: i, name: sh.name || 'No file chosen', ratio: sh.ratio || '3/2',
-        cw: sh.cw || '', ch: sh.ch || '', customShow: custom ? 'flex' : 'none',
-        thumb: sh.img || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', thumbShow: sh.img ? 'block' : 'none', phShow: sh.img ? 'none' : 'grid',
-        metaText: err ? err : sh.w ? sh.w + '×' + sh.h + ' px · spans ' + (sh.span || 1) + '/6' : 'spans ' + (sh.span || 1) + '/6',
-        metaFg: err ? 'var(--warn)' : 'var(--mut)',
-        segs: segs,
-        barShow: (uploading || err) ? 'flex' : 'none',
-        pct: uploading ? Math.round(up * 100) + '%' : '100%',
-        barFg: err ? 'var(--warn)' : 'var(--accent)',
-        barLabel: err ? 'Upload failed' : 'Uploading ' + (sh.name || 'image'),
-        barRight: err ? 'Choose the file again' : Math.round((up || 0) * 100) + '%',
-        bd: s.shDrag === i ? 'var(--accent)' : 'var(--line)',
-        dropTop: s.shOver === i && s.shDrag !== i ? '2px solid var(--accent)' : '1px solid var(--line)',
-        op: s.shDrag === i ? '0.45' : '1',
-      };
-    });
-    const filled = (p.shots || []).filter((x) => x.img);
-    const gridCells = (p.shots || []).map((sh, i) => ({
-      span: s.gridMobile ? 6 : (sh.span || 1),
-      ratio: sh.ratio === 'custom' ? ((Number(sh.cw) || 3) + '/' + (Number(sh.ch) || 2)) : (sh.ratio || '3/2'),
-      thumb: sh.img || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', thumbShow: sh.img ? 'block' : 'none',
-      label: String(i + 1).padStart(2, '0'),
-    }));
-    const credits = (p.credits || []).map((c, i) => ({
-      i: i, who: c.who, role: c.role,
-      bd: s.crDrag === i ? 'var(--accent)' : 'transparent',
-      dropTop: s.crOver === i && s.crDrag !== i ? '2px solid var(--accent)' : '1px solid transparent',
-      bg: s.crDrag === i ? 'var(--panel)' : 'transparent',
-      op: s.crDrag === i ? '0.45' : '1',
-    }));
-    const saveMap = {
-      idle: { label: p.id ? 'Saved ' + this._ago(s.savedAt) : 'Not saved yet', fg: 'var(--mut)', pulse: 'none' },
-      saving: { label: 'Saving…', fg: 'var(--accent)', pulse: 'km-pulse 1s ease-in-out infinite' },
-      saved: { label: 'Saved ' + this._ago(s.savedAt), fg: 'var(--accent)', pulse: 'none' },
-      error: { label: 'Not saved', fg: 'var(--warn)', pulse: 'km-pulse 1.2s ease-in-out infinite' },
-    };
-    const sv = saveMap[s.saveState] || saveMap.idle;
-    const urlOk = /^https?:\/\/\S+\.\S+/.test(p.liveUrl || '');
-    return {
-      isWorkView: s.view === 'work',
-      workTabLabel: p.id ? 'Editing' : 'New project',
-      isWeb: t === 'website', isBrand: t === 'brand', is3d: t === 'three',
-      showShots: t === 'brand' || t === 'three',
-      tabWebBg: w.bg, tabWebFg: w.fg, tabBrandBg: b.bg, tabBrandFg: b.fg, tab3dBg: d.bg, tab3dFg: d.fg,
-      typeCur: locked ? 'default' : 'pointer', typePe: locked ? 'none' : 'auto',
-      typeLockOp: locked ? '0.55' : '1', typeLockShow: locked ? 'block' : 'none',
-      setType: (e) => this._patch({ type: e.currentTarget.dataset.type }),
-      fName: p.name, fYear: p.year, fIndustry: p.industry, fMeta: p.meta,
-      fStatement: p.statement, fBackground: p.background, fConcept: p.concept,
-      fFill: p.fill, fLiveUrl: p.liveUrl,
-      metaLabel: t === 'website' ? 'Category · shown under title' : t === 'brand' ? 'Deliverable' : 'Format',
-      metaPh: t === 'website' ? 'E-commerce · Design + Dev' : t === 'brand' ? 'Packaging' : 'Brand film',
-      field: (e) => this._patch({ [e.currentTarget.dataset.key]: e.currentTarget.value }),
-      slugValue: slug || (KMAPI.slugify(p.name) || 'set-a-name') + (p.name ? '' : ''),
-      slugFg: slug ? 'var(--fg)' : 'rgba(241,239,231,0.4)',
-      slugState: slug ? 'Frozen' : 'Pending first save',
-      slugStateFg: slug ? 'var(--accent)' : 'var(--mut)',
-      slugNote: slug ? 'The slug is public and permanent. Changing it needs a deliberate rename and a redirect from the old URL.' : 'Generated from the project name the first time this saves, then frozen.',
-      publicUrl: 'kinomadstudio.com/works/' + (slug || KMAPI.slugify(p.name) || '…'),
-      demoUrl: demo, demoRowShow: t === 'website' && p.hosting === 'hosted' ? 'flex' : 'none',
-      hostExtBg: p.hosting === 'external' ? '#F1EFE7' : 'transparent', hostExtFg: p.hosting === 'external' ? '#14130F' : '#F1EFE7',
-      hostHosBg: p.hosting === 'hosted' ? '#F1EFE7' : 'transparent', hostHosFg: p.hosting === 'hosted' ? '#14130F' : '#F1EFE7',
-      isExternal: t === 'website' && p.hosting === 'external',
-      isHosted: t === 'website' && p.hosting === 'hosted',
-      hostNote: p.hosting === 'external' ? 'The client runs the site. We link straight to it from the case study.' : 'We serve a static build from the studio demo host — for sites that have been taken down or replaced.',
-      setHosting: (e) => this._patch({ hosting: e.currentTarget.dataset.host }, true),
-      urlNote: p.liveUrl ? (urlOk ? 'Used for the “Visit site” link on the case study.' : 'Needs a full URL including https://') : 'Used for the “Visit site” link on the case study.',
-      urlNoteFg: p.liveUrl && !urlOk ? 'var(--warn)' : 'var(--mut)',
-      bundleCta: bundle.name ? 'Replace ' + bundle.name : 'Click to upload the site .zip',
-      bundleFileName: s.bundleName || bundle.name || '',
-      bundleBarShow: s.bundleProg >= 0 ? 'flex' : 'none',
-      bundlePct: Math.round(Math.max(0, s.bundleProg) * 100) + '%',
-      bundleStatus: bStat, bundleFg: bFg,
-      bundleBd: bundle.status === 'error' ? 'var(--warn)' : 'var(--line)',
-      bundlePulse: bundle.status === 'unpacking' ? 'km-pulse 1s ease-in-out infinite' : 'none',
-      bundleLinkShow: bundle.status === 'ready' ? 'inline' : 'none',
-      bundleMsgShow: bundle.status === 'error' ? 'inline' : 'none',
-      bundleMessage: bundle.message || '',
-      bundleRetryShow: bundle.status === 'error' ? 'inline-block' : 'none',
-      bundleRetry: () => { this._patch({ bundle: Object.assign({}, bundle, { status: 'unpacking', message: '' }) }, true); setTimeout(() => this._pollBundle(), 300); },
-      bundleFile: (e) => {
-        const f = e.currentTarget.files && e.currentTarget.files[0];
-        if (!f) return;
-        this.setState({ bundleProg: 0, bundleName: f.name });
-        KMAPI.bundle.upload(p.id, f, (v) => this.setState({ bundleProg: v })).then(
-          (r) => { this.setState({ bundleProg: -1 }); this._patch({ bundle: { status: 'unpacking', name: r.name, message: '', url: '' } }, true); setTimeout(() => this._pollBundle(), 400); },
-          (err) => { this.setState({ bundleProg: -1 }); this._patch({ bundle: { status: 'error', name: f.name, message: err.message, url: '' } }, true); }
-        );
-      },
-      heroThumb: (asset('hero') && asset('hero').url) || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', heroThumbShow: asset('hero') && asset('hero').url ? 'block' : 'none',
-      heroLabel: uerr.hero ? uerr.hero : asset('hero') ? asset('hero').name + ' · ' + asset('hero').w + '×' + asset('hero').h : 'Choose an image',
-      heroBarShow: (upl.hero != null && upl.hero >= 0) ? 'block' : 'none', heroPct: pct('hero'),
-      posterThumb: (asset('poster') && asset('poster').url) || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', posterThumbShow: asset('poster') && asset('poster').url ? 'block' : 'none',
-      posterLabel: asset('poster') ? asset('poster').name : 'Choose an image',
-      cardThumb: (asset('card') && asset('card').url) || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', cardThumbShow: asset('card') && asset('card').url ? 'block' : 'none',
-      cardLabel: asset('card') ? asset('card').name : 'Choose an image',
-      reelLabel: asset('reel') ? asset('reel').name : 'Click to upload reel video (optional)',
-      reelBarShow: (upl.reel != null && upl.reel >= 0) ? 'block' : 'none', reelPct: pct('reel'),
-      assetFile: (e) => { const k = e.currentTarget.dataset.key, f = e.currentTarget.files && e.currentTarget.files[0]; if (f) this._uploadAsset(k, f); },
-      shots: shots,
-      shotSummary: (() => {
-        const n = filled.length;
-        if (!n) return t === 'three' && asset('reel') ? 'reel only' : 'no shots yet';
-        return n + (n === 1 ? ' shot' : ' shots') + (t === 'three' ? (asset('reel') ? ' + reel' : ' · shots-only layout') : '');
-      })(),
-      addShot: () => this._patch({ shots: (p.shots || []).concat([{ img: '', name: '', span: 3, ratio: '3/2' }]) }),
-      rmShot: (e) => { const i = Number(e.currentTarget.dataset.idx); this._patch({ shots: (p.shots || []).filter((_, j) => j !== i) }, true); },
-      shotSpan: (e) => {
-        const i = Number(e.currentTarget.dataset.idx), n = Number(e.currentTarget.dataset.span);
-        this._patch({ shots: (p.shots || []).map((x, j) => j === i ? Object.assign({}, x, { span: n }) : x) });
-      },
-      shotField: (e) => {
-        const i = Number(e.currentTarget.dataset.idx), k = e.currentTarget.dataset.key, v = e.currentTarget.value;
-        this._patch({ shots: (p.shots || []).map((x, j) => j === i ? Object.assign({}, x, { [k]: v }) : x) });
-      },
-      shotFile: (e) => {
-        const i = Number(e.currentTarget.dataset.idx), f = e.currentTarget.files && e.currentTarget.files[0];
-        if (!f) return;
-        const key = 'shot' + i;
-        this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: 0 }), uploadErr: Object.assign({}, st.uploadErr, { [key]: '' }) }));
-        KMAPI.assets.upload(p.id, f, (v) => this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: v }) }))).then(
-          (a) => {
-            this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: -1 }) }));
-            // default the ratio from the image the API just measured
-            const g = (x, y) => y ? g(y, x % y) : x;
-            let ratio = '3/2';
-            if (a.width && a.height) {
-              const known = ['21/9', '2/1', '16/9', '16/10', '3/2', '4/3', '1/1', '4/5', '3/4', '9/16'];
-              const r = a.width / a.height;
-              let best = known[0], bd = Infinity;
-              known.forEach((k2) => { const pr = k2.split('/'); const diff = Math.abs((+pr[0] / +pr[1]) - r); if (diff < bd) { bd = diff; best = k2; } });
-              ratio = bd / r < 0.04 ? best : 'custom';
-              if (ratio === 'custom') { const dv = g(a.width, a.height) || 1; var cw = Math.round(a.width / dv), ch = Math.round(a.height / dv); if (cw > 40 || ch > 40) { cw = Math.round(r * 100) / 100; ch = 1; } }
-            }
-            const cur = this.state.p.shots || [];
-            this._patch({ shots: cur.map((x, j) => j === i ? Object.assign({}, x, { img: a.url, name: a.name, w: a.width, h: a.height, ratio: ratio, cw: typeof cw !== 'undefined' ? String(cw) : x.cw, ch: typeof ch !== 'undefined' ? String(ch) : x.ch }) : x) }, true);
-          },
-          (err) => this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: -1 }), uploadErr: Object.assign({}, st.uploadErr, { [key]: err.message }) }))
-        );
-      },
-      shDragStart: (e) => { this.setState({ shDrag: Number(e.currentTarget.dataset.idx) }); try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx); } catch (_) {} },
-      shDragOver: (e) => { e.preventDefault(); const i = Number(e.currentTarget.dataset.idx); if (i !== this.state.shOver) this.setState({ shOver: i }); },
-      shDragEnd: () => this.setState({ shDrag: -1, shOver: -1 }),
-      shDrop: (e) => {
-        e.preventDefault();
-        const from = this.state.shDrag, to = Number(e.currentTarget.dataset.idx);
-        this.setState({ shDrag: -1, shOver: -1 });
-        if (from < 0 || from === to) return;
-        const arr = (p.shots || []).slice();
-        arr.splice(to, 0, arr.splice(from, 1)[0]);
-        this._patch({ shots: arr }, true);
-      },
-      gridCells, gridEmpty: gridCells.length === 0,
-      gridMaxW: s.gridMobile ? '340px' : '100%',
-      gmDeskBg: s.gridMobile ? 'transparent' : 'var(--accent)', gmDeskFg: s.gridMobile ? 'var(--fg)' : '#14130F',
-      gmMobBg: s.gridMobile ? 'var(--accent)' : 'transparent', gmMobFg: s.gridMobile ? '#14130F' : 'var(--fg)',
-      setGridMode: (e) => this.setState({ gridMobile: e.currentTarget.dataset.m === '1' }),
-      credits,
-      creditField: (e) => {
-        const i = Number(e.currentTarget.dataset.idx), k = e.currentTarget.dataset.key, v = e.currentTarget.value;
-        this._patch({ credits: (p.credits || []).map((c, j) => j === i ? Object.assign({}, c, { [k]: v }) : c) });
-      },
-      addCredit: () => this._patch({ credits: (p.credits || []).concat([{ who: '', role: '' }]) }),
-      rmCredit: (e) => { const i = Number(e.currentTarget.dataset.idx); this._patch({ credits: (p.credits || []).length > 1 ? (p.credits || []).filter((_, j) => j !== i) : p.credits }, true); },
-      crDragStart: (e) => { this.setState({ crDrag: Number(e.currentTarget.dataset.idx) }); try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx); } catch (_) {} },
-      crDragOver: (e) => { e.preventDefault(); const i = Number(e.currentTarget.dataset.idx); if (i !== this.state.crOver) this.setState({ crOver: i }); },
-      crDragEnd: () => this.setState({ crDrag: -1, crOver: -1 }),
-      crDrop: (e) => {
-        e.preventDefault();
-        const from = this.state.crDrag, to = Number(e.currentTarget.dataset.idx);
-        this.setState({ crDrag: -1, crOver: -1 });
-        if (from < 0 || from === to) return;
-        const arr = (p.credits || []).slice();
-        arr.splice(to, 0, arr.splice(from, 1)[0]);
-        this._patch({ credits: arr }, true);
-      },
-      typeLabel: this._typeName(t), destPage: this._typePage(t),
-      destSection: t === 'website' ? '01 · Websites' : t === 'brand' ? '02 · Brand identity' : '03 · 3D & motion',
-      stateLabel: p.state === 'published' ? 'Published' : p.id ? 'Draft' : 'Unsaved',
-      stateFg: p.state === 'published' ? 'var(--accent)' : 'var(--mut)',
-      checklist: need.map((n) => ({ label: n.label, mark: n.ok ? '✓' : '', c: n.ok ? 'var(--accent)' : 'var(--mut)' })),
-      checkScore: okCount + '/' + need.length,
-      saveLabel: sv.label, saveFg: sv.fg, savePulse: sv.pulse,
-      saveErrShow: s.saveState === 'error' ? 'flex' : 'none', saveErrMsg: s.saveErr,
-      saveNow: () => this._flush(),
-      backToList: () => { clearTimeout(this._saveT); this._flush(); this.setState({ view: 'projects' }); },
-      pubLabel: s.pubBusy ? 'Publishing…' : p.state === 'published' ? 'Republish' : 'Publish to works ↗',
-      pubCur: s.pubBusy ? 'progress' : 'pointer', pubOp: s.pubBusy ? '0.6' : '1', pubPe: s.pubBusy ? 'none' : 'auto',
-      unpubShow: p.state === 'published' ? 'inline-block' : 'none',
-      pubPanelShow: s.pubResult ? 'flex' : 'none',
-      pubPanelBd: s.pubResult === 'ok' ? 'var(--accent)' : 'var(--warn)',
-      pubPanelTitle: s.pubResult === 'ok' ? 'Published' : s.pubResult === 'missing' ? 'The server rejected this publish' : 'Publish failed',
-      pubPanelBody: s.pubMsg,
-      pubMissing: s.pubMissing, pubMissingShow: s.pubMissing.length ? 'flex' : 'none',
-      pubLinkShow: s.pubResult === 'ok' ? 'inline-block' : 'none',
-      publicHref: this._typePage(t),
-      publish: () => {
-        clearTimeout(this._saveT);
-        this.setState({ pubBusy: true, pubResult: '', pubMissing: [], pubMsg: '' });
-        const body = { type: p.type, name: p.name, year: p.year, industry: p.industry, meta: p.meta, statement: p.statement, background: p.background, concept: p.concept, hosting: p.hosting, liveUrl: p.liveUrl, fill: p.fill, bundle: p.bundle, assets: p.assets, credits: p.credits, shots: p.shots };
-        const save = p.id ? KMAPI.projects.patch(p.id, body) : KMAPI.projects.create(body).then((r) => KMAPI.projects.patch(r.id, body));
-        save.then((rec) => {
-          this.setState((st) => ({ p: Object.assign({}, st.p, { id: rec.id, slug: rec.slug }), saveState: 'saved', savedAt: Date.now() }));
-          return KMAPI.projects.publish(rec.id);
-        }).then(
-          (rec) => { this.setState((st) => ({ p: Object.assign({}, st.p, { state: 'published' }), pubBusy: false, pubResult: 'ok', pubMsg: rec.name + ' is live at kinomadstudio.com/works/' + rec.slug + '. The works index and the landing page pick it up on next load.' })); this._loadProjects(); },
-          (err) => {
-            if (err.status === 422) this.setState({ pubBusy: false, pubResult: 'missing', pubMissing: err.missing || [], pubMsg: 'These fields are required before this project can go public. The checklist on the right tracks the same rules.' });
-            else this.setState({ pubBusy: false, pubResult: 'error', pubMsg: err.message });
-          }
-        );
-      },
-      unpublish: () => {
-        this.setState({ pubBusy: true });
-        KMAPI.projects.unpublish(p.id).then(
-          () => { this.setState((st) => ({ p: Object.assign({}, st.p, { state: 'draft' }), pubBusy: false, pubResult: 'ok', pubMissing: [], pubMsg: 'Back to draft. The case study is off the works page; nothing was deleted.' })); this._loadProjects(); },
-          (err) => this.setState({ pubBusy: false, pubResult: 'error', pubMsg: err.message })
-        );
-      },
-    };
-  }
-
-  _availBag() {
-    const s = this.state;
-    const a = s.avail || KMAPI.defaultAvail();
+  _availView() {
+    const a = this.state.avail || this._defaultAvail();
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const toMin = (t) => { const q = String(t).split(':'); return (+q[0]) * 60 + (+q[1] || 0); };
+    const toMin = (t) => { const p = String(t).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
     const openCount = a.days.filter(Boolean).length;
-    const windowMin = Math.max(0, toMin(a.end) - toMin(a.start));
-    const blockedDays = (a.blocked || []).reduce((n, b) => {
-      if (!b.from) return n;
-      const f = new Date(b.from + 'T00:00:00'), t2 = new Date((b.to || b.from) + 'T00:00:00');
-      return n + Math.max(1, Math.round((t2 - f) / 86400000) + 1);
-    }, 0);
+    const firstMin = (a.types[0] && a.types[0].min) || 30;
+    const window = Math.max(0, toMin(a.end) - toMin(a.start));
+    const slots = Math.max(0, Math.floor((window - firstMin) / (a.interval || 30)) + 1);
+    const fmt12 = (t) => { const m = toMin(t); let h = Math.floor(m / 60), mm = m % 60; const ap = h >= 12 ? 'PM' : 'AM'; let hh = h % 12; if (hh === 0) hh = 12; return hh + (mm ? ':' + String(mm).padStart(2, '0') : '') + ap; };
     return {
-      isAvailView: s.view === 'avail',
-      mtList: (a.types || []).map((t, i) => ({ i: i, name: t.name, min: String(t.min) })),
+      mtList: a.types.map((t) => ({ name: t.name, min: String(t.min) })),
       mtField: (e) => {
         const i = Number(e.currentTarget.dataset.idx), key = e.currentTarget.dataset.key;
         let v = e.currentTarget.value;
         if (key === 'min') v = v.replace(/[^0-9]/g, '') || '0';
-        this._setAvail({ types: a.types.map((t, j) => j === i ? Object.assign({}, t, { [key]: key === 'min' ? Number(v) : v }) : t) });
+        this.setState((s) => { const types = (s.avail || this._defaultAvail()).types.map((t, j) => j === i ? Object.assign({}, t, { [key]: key === 'min' ? Number(v) : v }) : t); return { avail: Object.assign({}, s.avail, { types }), availToast: '' }; });
       },
-      mtAdd: () => this._setAvail({ types: (a.types || []).concat([{ name: '', min: 30 }]) }),
-      mtRemove: (e) => { const i = Number(e.currentTarget.dataset.idx); this._setAvail({ types: a.types.length > 1 ? a.types.filter((_, j) => j !== i) : a.types }); },
-      dayList: dayNames.map((label, i) => ({ idx: i, label, on: a.days[i] ? 'true' : 'false', bg: a.days[i] ? 'var(--accent)' : 'transparent', fg: a.days[i] ? '#14130F' : '#F1EFE7', bd: a.days[i] ? 'var(--accent)' : 'var(--line)' })),
-      dayToggle: (e) => { const i = Number(e.currentTarget.dataset.idx); const days = a.days.slice(); days[i] = !days[i]; this._setAvail({ days }); },
-      aStart: a.start, aEnd: a.end, aInterval: String(a.interval), aNotice: String(a.notice), aBuffer: String(a.buffer || 0), aTz: a.tz,
-      availField: (e) => { const key = e.currentTarget.dataset.key; let v = e.currentTarget.value; if (key === 'interval' || key === 'notice' || key === 'buffer') v = Number(v); this._setAvail({ [key]: v }); },
-      tzOptions: KMAPI.zones.map((z) => ({ id: z, label: z.replace(/_/g, ' ') + ' · ' + KMAPI.tzOffsetLabel(z) })),
-      tzDerived: KMAPI.tzLabel(a.tz),
-      blockedList: (a.blocked || []).map((b, i) => {
-        const to = b.to || b.from;
-        const days = b.from ? Math.max(1, Math.round((new Date(to + 'T00:00:00') - new Date(b.from + 'T00:00:00')) / 86400000) + 1) : 0;
-        const bad = b.from && to && to < b.from;
-        return { i: i, from: b.from, to: to, note: bad ? 'End is before start' : days === 1 ? 'One day' : days + ' days', fg: bad ? 'var(--warn)' : 'var(--mut)' };
-      }),
-      noBlocked: (a.blocked || []).length === 0,
-      blockField: (e) => {
-        const i = Number(e.currentTarget.dataset.idx), k = e.currentTarget.dataset.key, v = e.currentTarget.value;
-        const blocked = (a.blocked || []).map((b, j) => {
-          if (j !== i) return b;
-          const nb = Object.assign({}, b, { [k]: v });
-          if (k === 'from' && (!nb.to || nb.to < v)) nb.to = v;
-          return nb;
-        });
-        this._setAvail({ blocked });
-      },
-      blockAdd: () => { const t = new Date(); const iso = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); this._setAvail({ blocked: (a.blocked || []).concat([{ from: iso, to: iso }]) }); },
-      blockRemove: (e) => { const i = Number(e.currentTarget.dataset.idx); this._setAvail({ blocked: (a.blocked || []).filter((_, j) => j !== i) }); },
+      mtAdd: () => this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { types: av.types.concat([{ name: '', min: 30 }]) }), availToast: '' }; }),
+      mtRemove: (e) => { const i = Number(e.currentTarget.dataset.idx); this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { types: av.types.length > 1 ? av.types.filter((_, j) => j !== i) : av.types }), availToast: '' }; }); },
+      dayList: dayNames.map((label, i) => ({ idx: i, label, bg: a.days[i] ? 'var(--accent)' : 'transparent', fg: a.days[i] ? '#14130F' : '#F1EFE7', bd: a.days[i] ? 'var(--accent)' : 'var(--line)' })),
+      dayToggle: (e) => { const i = Number(e.currentTarget.dataset.idx); this.setState((s) => { const av = s.avail || this._defaultAvail(); const days = av.days.slice(); days[i] = !days[i]; return { avail: Object.assign({}, av, { days }), availToast: '' }; }); },
+      aStart: a.start, aEnd: a.end, aInterval: String(a.interval), aNotice: String(a.notice), aTz: a.tz,
+      availField: (e) => { const key = e.currentTarget.dataset.key; let v = e.currentTarget.value; if (key === 'interval' || key === 'notice') v = Number(v); this._setAvail({ [key]: v }); },
+      blockedList: (a.blocked || []).map((date) => ({ date })),
+      blockField: (e) => { const i = Number(e.currentTarget.dataset.idx), v = e.currentTarget.value; this.setState((s) => { const av = s.avail || this._defaultAvail(); const blocked = (av.blocked || []).slice(); blocked[i] = v; return { avail: Object.assign({}, av, { blocked }), availToast: '' }; }); },
+      blockAdd: () => this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { blocked: (av.blocked || []).concat(['']) }), availToast: '' }; }),
+      blockRemove: (e) => { const i = Number(e.currentTarget.dataset.idx); this.setState((s) => { const av = s.avail || this._defaultAvail(); return { avail: Object.assign({}, av, { blocked: (av.blocked || []).filter((_, j) => j !== i) }), availToast: '' }; }); },
       openDaysLabel: openCount === 7 ? 'Every day' : openCount === 0 ? 'None set' : dayNames.filter((_, i) => a.days[i]).join(', '),
-      hoursLabel: this._fmt12(a.start) + ' – ' + this._fmt12(a.end),
-      blockedSummary: blockedDays ? blockedDays + (blockedDays === 1 ? ' day' : ' days') : 'None',
-      slotsByType: (a.types || []).map((t) => {
-        const dur = (Number(t.min) || 30) + (Number(a.buffer) || 0);
-        const n = windowMin >= dur ? Math.floor((windowMin - dur) / (a.interval || 30)) + 1 : 0;
-        return { name: t.name || 'Untitled type', detail: n + ' × ' + t.min + 'min' + (a.buffer ? ' +' + a.buffer : '') };
-      }),
-      availToast: s.availToast || ' ',
-      availToastFg: s.availState === 'error' ? 'var(--warn)' : 'var(--accent)',
-      avBtn: s.availState === 'saving' ? 'Saving…' : 'Save availability',
-      avCur: s.availState === 'saving' ? 'progress' : 'pointer',
-      avOp: s.availState === 'saving' ? '0.6' : '1',
-      avPe: s.availState === 'saving' ? 'none' : 'auto',
-      avRetryShow: s.availState === 'error' ? 'inline-block' : 'none',
+      hoursLabel: fmt12(a.start) + ' – ' + fmt12(a.end),
+      slotsPerDay: String(slots),
+      mtCount: String(a.types.length),
+      availToast: this.state.availToast || ' ',
+      availToastOp: this.state.availToast ? '1' : '0',
       saveAvail: () => {
-        this.setState({ availState: 'saving', availToast: '' });
-        KMAPI.availability.save(this.state.avail).then(
-          (saved) => this.setState({ avail: saved, availState: 'saved', availToast: 'Saved — the scheduler now uses these hours.' }),
-          (err) => this.setState({ availState: 'error', availToast: err.message })
-        );
+        const av = Object.assign({}, this.state.avail || this._defaultAvail());
+        av.types = av.types.filter((t) => t.name.trim()).map((t) => ({ name: t.name.trim(), min: Number(t.min) || 30 }));
+        if (!av.types.length) av.types = [{ name: 'Intro call', min: 30 }];
+        av.blocked = (av.blocked || []).filter(Boolean);
+        try { localStorage.setItem('kinomad-availability', JSON.stringify(av)); } catch (_) {}
+        this.setState({ avail: av, availToast: 'Saved — the scheduler now uses these hours' });
+        clearTimeout(this._at); this._at = setTimeout(() => this.setState({ availToast: '' }), 4000);
       },
-    };
-  }
-
-  _inboxBag() {
-    const s = this.state;
-    const all = s.bkList || [];
-    const counts = { all: all.length, new: 0, confirmed: 0, cancelled: 0 };
-    all.forEach((b) => { counts[b.status] = (counts[b.status] || 0) + 1; });
-    const rows = all.filter((b) => s.bkFilter === 'all' ? true : b.status === s.bkFilter);
-    const filters = [
-      { id: 'all', label: 'All ' + counts.all },
-      { id: 'new', label: 'New ' + counts.new },
-      { id: 'confirmed', label: 'Confirmed ' + counts.confirmed },
-      { id: 'cancelled', label: 'Cancelled ' + counts.cancelled },
-    ].map((f) => ({ id: f.id, label: f.label, bg: s.bkFilter === f.id ? 'var(--accent)' : 'transparent', fg: s.bkFilter === f.id ? '#14130F' : '#F1EFE7' }));
-    const emptyCopy = {
-      all: ['No bookings yet', 'Calls booked from the landing page scheduler land here.'],
-      new: ['Nothing new', 'Every booking has been confirmed or cancelled.'],
-      confirmed: ['Nothing confirmed yet', 'Confirm a new booking and it moves here.'],
-      cancelled: ['No cancellations', 'Cancelled calls stay here so the slot history is auditable.'],
-    }[s.bkFilter];
-    return {
-      isInboxView: s.view === 'inbox',
-      inboxBadge: counts.new ? '(' + counts.new + ')' : '',
-      bkFilters: filters,
-      setBkFilter: (e) => this.setState({ bkFilter: e.currentTarget.dataset.f, bkConfirm: null }),
-      loadBookings: () => this._loadBookings(),
-      bkLoading: s.bkLoading && !s.bkList,
-      bkError: !!s.bkErr, bkErrMsg: s.bkErr,
-      bkHasRows: !s.bkErr && rows.length > 0,
-      bkEmpty: !!s.bkList && !s.bkErr && rows.length === 0,
-      bkEmptyTitle: emptyCopy[0], bkEmptyBody: emptyCopy[1],
-      bookingsList: rows.map((b) => {
-        const cancelled = b.status === 'cancelled';
-        const busy = s.bkBusy[b.id];
-        const conf = s.bkConfirm && s.bkConfirm.id === b.id;
-        const d = new Date(String(b.startsAt).replace(' ', 'T'));
-        return {
-          id: b.id,
-          when: isNaN(d) ? (b.when || '—') : d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ', ' + this._fmt12(String(b.startsAt).slice(11, 16)),
-          type: b.typeName || b.type || 'Call',
-          status: b.status === 'new' ? 'New' : b.status === 'confirmed' ? 'Confirmed' : 'Cancelled',
-          pillFg: b.status === 'confirmed' ? 'var(--accent)' : cancelled ? 'var(--warn)' : 'var(--fg)',
-          pillBd: b.status === 'confirmed' ? 'var(--accent)' : cancelled ? 'var(--warn)' : 'var(--line)',
-          name: b.name || 'Unnamed', email: b.email || '', mailto: 'mailto:' + (b.email || ''),
-          note: b.note || 'No note',
-          received: 'Booked ' + this._ago(b.at),
-          bd: conf ? 'var(--warn)' : 'var(--line)',
-          op: cancelled ? '0.6' : '1',
-          idle: !busy && !conf, busy: !!busy, confirming: !!conf,
-          confirmShow: b.status === 'new' ? 'inline-block' : 'none',
-          reopenShow: cancelled ? 'inline-block' : 'none',
-          cancelShow: cancelled ? 'none' : 'inline-block',
-          archiveShow: cancelled ? 'inline-block' : 'none',
-          confirmMsg: conf && s.bkConfirm.kind === 'archive' ? 'Remove this record?' : 'Cancel and free the slot?',
-          confirmYes: conf && s.bkConfirm.kind === 'archive' ? 'Archive' : 'Cancel call',
-        };
-      }),
-      bkSetStatus: (e) => {
-        const id = e.currentTarget.dataset.id, to = e.currentTarget.dataset.to;
-        this.setState((st) => ({ bkBusy: Object.assign({}, st.bkBusy, { [id]: 1 }) }));
-        KMAPI.bookings.setStatus(id, to).then(
-          (rec) => { this.setState((st) => { const bb = Object.assign({}, st.bkBusy); delete bb[id]; return { bkBusy: bb, bkList: (st.bkList || []).map((x) => x.id === id ? rec : x) }; }); this._bkToast(to === 'confirmed' ? 'Confirmed — an invite goes out to ' + rec.email + '.' : 'Moved back to new.'); },
-          (err) => { this.setState((st) => { const bb = Object.assign({}, st.bkBusy); delete bb[id]; return { bkBusy: bb }; }); this._bkToast(err.message, true); }
-        );
-      },
-      bkAskCancel: (e) => this.setState({ bkConfirm: { id: e.currentTarget.dataset.id, kind: 'cancel' } }),
-      bkAskArchive: (e) => this.setState({ bkConfirm: { id: e.currentTarget.dataset.id, kind: 'archive' } }),
-      bkCancelConfirm: () => this.setState({ bkConfirm: null }),
-      bkConfirmGo: (e) => {
-        const id = e.currentTarget.dataset.id;
-        const kind = (this.state.bkConfirm || {}).kind;
-        this.setState((st) => ({ bkConfirm: null, bkBusy: Object.assign({}, st.bkBusy, { [id]: 1 }) }));
-        const req = kind === 'archive' ? KMAPI.bookings.remove(id) : KMAPI.bookings.setStatus(id, 'cancelled');
-        req.then(
-          () => { this.setState((st) => { const bb = Object.assign({}, st.bkBusy); delete bb[id]; return { bkBusy: bb }; }); this._bkToast(kind === 'archive' ? 'Booking archived.' : 'Cancelled — the slot is open again.'); this._loadBookings(); },
-          (err) => { this.setState((st) => { const bb = Object.assign({}, st.bkBusy); delete bb[id]; return { bkBusy: bb }; }); this._bkToast(err.message, true); }
-        );
-      },
-      bkToast: s.bkToast || ' ', bkToastFg: s.bkToastErr ? 'var(--warn)' : 'var(--accent)',
     };
   }
 
   renderVals() {
-    const s = this.state;
-    const v = s.view;
-    const p = s.p;
-    const titles = {
-      projects: 'Projects',
-      work: p && p.id ? (p.name || 'Untitled project') : 'New project',
-      avail: 'Booking availability',
-      inbox: 'Bookings',
-    };
-    const subs = {
-      projects: 'Everything the studio has made, draft or live. Drag to set the order they appear in on the works page.',
-      work: p && p.id ? 'Editing an existing record. Changes save as you type.' : 'A new draft. It saves the moment you start typing and stays a draft until you publish.',
-      avail: 'These settings drive the “Book a call” scheduler on the landing page.',
-      inbox: 'Calls booked from the landing page. Confirming sends the invite.',
-    };
+    const t = this.state.type;
+    const f = this.state.fields;
+    const files = this.state.files;
+    const seg = (key) => ({ bg: t === key ? '#F1EFE7' : 'transparent', fg: t === key ? '#14130F' : '#F1EFE7' });
+    const w = seg('website'), b = seg('brand'), d = seg('three');
+    const typeLabel = t === 'website' ? 'Website' : t === 'brand' ? 'Brand identity' : '3D & motion';
+    const destPage = t === 'website' ? 'Kinomad Website Page.dc.html' : t === 'brand' ? 'Kinomad Brand Page.dc.html' : 'Kinomad Motion Page.dc.html';
+    const liveUrl = 'http://localhost:' + (f.port || '3001');
+    const need = [
+      { key: 'name', label: 'Project name', ok: !!f.name },
+      { key: 'statement', label: 'Statement', ok: !!f.statement },
+      { key: 'copy', label: 'Background & concept', ok: !!f.background && !!f.concept },
+      { key: 'credits', label: 'At least one credit', ok: this.state.credits.some((c) => c.who) },
+    ];
+    if (t === 'website') {
+      need.push({ key: 'liveUrl', label: 'Live website URL', ok: !!f.liveUrl });
+      need.push({ key: 'files', label: 'Site files (.zip)', ok: !!files.siteFiles });
+      need.push({ key: 'hero', label: 'Hero image', ok: !!files.heroImg });
+    }
+    if (t === 'brand') need.push({ key: 'shots', label: 'At least one shot', ok: this.state.shots.filter((x) => x.img).length >= 1 });
+    if (t === 'three') {
+      const filled = this.state.shots.filter((x) => x.img).length;
+      need.push({ key: 'shots', label: files.reel ? 'Shots (optional with a reel)' : 'At least one shot', ok: !!files.reel || filled >= 1 });
+      need.push({ key: 'poster', label: files.reel ? 'Poster frame' : 'Poster frame (reel only)', ok: !!files.poster || !files.reel });
+    }
     return {
-      ...this._loginBag(),
-      ...this._projectsBag(),
-      ...this._workBag(),
-      ...this._availBag(),
-      ...this._inboxBag(),
-      crmTitle: titles[v], crmSub: subs[v],
-      setView: (e) => {
-        const nv = e.currentTarget.dataset.view;
-        if (nv === 'work' && !this.state.p) return this.setState({ view: 'work', p: this._blank('website') });
-        this.setState({ view: nv });
+      view: this.state.view,
+      isWorkView: this.state.view === 'work',
+      isAvailView: this.state.view === 'avail',
+      isInboxView: this.state.view === 'inbox',
+      crmTitle: this.state.view === 'work' ? 'New project' : this.state.view === 'avail' ? 'Booking availability' : 'Bookings',
+      vwWorkBg: this.state.view === 'work' ? 'var(--accent)' : 'transparent',
+      vwWorkFg: this.state.view === 'work' ? '#14130F' : '#F1EFE7',
+      vwWorkFg: this.state.view === 'work' ? '#14130F' : '#F1EFE7',
+      vwAvailBg: this.state.view === 'avail' ? 'var(--accent)' : 'transparent',
+      vwAvailFg: this.state.view === 'avail' ? '#14130F' : '#F1EFE7',
+      vwInboxBg: this.state.view === 'inbox' ? 'var(--accent)' : 'transparent',
+      vwInboxFg: this.state.view === 'inbox' ? '#14130F' : '#F1EFE7',
+      setView: (e) => this.setState({ view: e.currentTarget.dataset.view }),
+      ...this._availView(),
+      ...this._inboxView(),
+      isWeb: t === 'website', isBrand: t === 'brand', is3d: t === 'three',
+      tabWebBg: w.bg, tabWebFg: w.fg, tabBrandBg: b.bg, tabBrandFg: b.fg, tab3dBg: d.bg, tab3dFg: d.fg,
+      fName: f.name, fYear: f.year, fIndustry: f.industry, fMeta: f.meta,
+      fStatement: f.statement, fBackground: f.background, fConcept: f.concept,
+      fPort: f.port, fFill: f.fill, fLiveUrl: f.liveUrl,
+      metaLabel: t === 'website' ? 'Category · shown under title' : t === 'brand' ? 'Deliverable' : 'Format',
+      metaPh: t === 'website' ? 'E-commerce · Design + Dev' : t === 'brand' ? 'Packaging' : 'Brand film',
+      typeLabel, destPage,
+      destSection: t === 'website' ? '01 · Websites' : t === 'brand' ? '02 · Brand identity' : '03 · 3D & motion',
+      liveUrl,
+      runFg: this.state.running ? 'var(--accent)' : 'rgba(241,239,231,0.45)',
+      runLabel: this.state.running ? 'Running' : 'Stopped',
+      runBtn: this.state.running ? 'Stop local server' : 'Start local server',
+      siteFilesLabel: files.siteFiles ? files.siteFiles : 'Click to upload site files',
+      reelLabel: files.reel ? files.reel : 'Click to upload reel video (optional)',
+      shots: this.state.shots,
+      showShots: t === 'brand' || t === 'three',
+      shotSummary: (() => {
+        const n = this.state.shots.filter((x) => x.img).length;
+        if (!n) return t === 'three' && files.reel ? 'reel only' : 'no shots yet';
+        if (t !== 'three') return n + (n === 1 ? ' shot' : ' shots');
+        return n + (n === 1 ? ' shot' : ' shots') + (files.reel ? ' + reel' : ' · shots-only layout');
+      })(),
+      credits: this.state.credits,
+      checklist: need.map((n) => ({ label: n.label, mark: n.ok ? '✓' : '', c: n.ok ? 'var(--accent)' : 'var(--mut)' })),
+      toastMsg: this.state.toast || ' ',
+      toastOp: this.state.toast ? '1' : '0',
+      setType: (e) => this.setState({ type: e.currentTarget.dataset.type }),
+      field: (e) => {
+        const key = e.currentTarget.dataset.key;
+        const val = e.currentTarget.value;
+        this.setState((s) => ({ fields: Object.assign({}, s.fields, { [key]: val }) }));
       },
-      vwProjBg: v === 'projects' ? 'var(--accent)' : 'transparent', vwProjFg: v === 'projects' ? '#14130F' : '#F1EFE7',
-      vwWorkBg: v === 'work' ? 'var(--accent)' : 'transparent', vwWorkFg: v === 'work' ? '#14130F' : '#F1EFE7',
-      vwAvailBg: v === 'avail' ? 'var(--accent)' : 'transparent', vwAvailFg: v === 'avail' ? '#14130F' : '#F1EFE7',
-      vwInboxBg: v === 'inbox' ? 'var(--accent)' : 'transparent', vwInboxFg: v === 'inbox' ? '#14130F' : '#F1EFE7',
+      file: (e) => {
+        const key = e.currentTarget.dataset.key;
+        const list = e.currentTarget.files;
+        const name = list && list.length ? (list.length > 1 ? list.length + ' files selected' : list[0].name) : '';
+        this.setState((s) => ({ files: Object.assign({}, s.files, { [key]: name, [key + 'Count']: list ? list.length : 0 }) }));
+      },
+      creditField: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        const key = e.currentTarget.dataset.key;
+        const val = e.currentTarget.value;
+        this.setState((s) => ({ credits: s.credits.map((c, j) => (j === i ? Object.assign({}, c, { [key]: val }) : c)) }));
+      },
+      addCredit: () => this.setState((s) => ({ credits: s.credits.concat([{ who: '', role: '' }]) })),
+      shotField: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        const key = e.currentTarget.dataset.key;
+        const val = e.currentTarget.value;
+        this.setState((s) => ({ shots: s.shots.map((x, j) => (j === i ? Object.assign({}, x, { [key]: val }) : x)) }));
+      },
+      shotFile: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        const list = e.currentTarget.files;
+        const name = list && list.length ? list[0].name : '';
+        this.setState((s) => ({ shots: s.shots.map((x, j) => (j === i ? Object.assign({}, x, { img: name }) : x)) }));
+      },
+      addShot: () => this.setState((s) => ({ shots: s.shots.concat([{ img: '', size: 'Half', ratio: '3/2' }]) })),
+      rmShot: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        this.setState((s) => ({ shots: s.shots.length > 1 ? s.shots.filter((_, j) => j !== i) : s.shots }));
+      },
+      rmCredit: (e) => {
+        const i = Number(e.currentTarget.dataset.idx);
+        this.setState((s) => ({ credits: s.credits.length > 1 ? s.credits.filter((_, j) => j !== i) : s.credits }));
+      },
+      toggleRun: () => this.setState((s) => ({ running: !s.running })),
+      publish: () => {
+        const missing = need.filter((n) => !n.ok);
+        this.setState({ toast: missing.length ? 'Missing: ' + missing.map((m) => m.label).join(', ') : 'Published — live on the works page' });
+        clearTimeout(this._tt);
+        this._tt = setTimeout(() => this.setState({ toast: '' }), 4000);
+      },
     };
   }
 }
-
 </script>
 </body>
 </html>
