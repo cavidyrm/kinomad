@@ -7,7 +7,7 @@ touches every subsystem (records, images, file bundles, a local run, publish, an
 so once it works the brand and 3D flows are subsets of it.
 
 Companion documents:
-- `CRM-LOCAL-RUN.md` — deep dive on the zip upload, unpack guards and localhost preview server.
+- `CRM-HOSTED-BUNDLES.md` — deep dive on the zip upload, unpack guards and localhost preview server.
 - `README.md` — the front-end handoff, page by page, plus production URL routing.
 
 ---
@@ -16,7 +16,7 @@ Companion documents:
 
 1. Hold a **draft** project the moment the studio starts typing, so nothing is lost on refresh.
 2. Accept **image and video uploads** and give back stable ids the record can reference.
-3. Accept a **`.zip` of the client's built site**, unpack it safely, and serve it on a local port
+3. Accept a **`.zip` of the client's built site**, unpack it safely, and serve it from the demo host
    for internal QA and archiving.
 4. **Validate and publish** — a published project appears on the Works page and gets a detail page.
 5. Serve the **public site's** project data.
@@ -55,7 +55,7 @@ server/
     routes/
       admin/projects.ts      # CRUD + publish
       admin/assets.ts        # image/video upload
-      admin/bundle.ts        # zip upload, unpack, start/stop   → CRM-LOCAL-RUN.md
+      admin/bundle.ts        # zip upload, unpack, start/stop   → CRM-HOSTED-BUNDLES.md
       admin/bookings.ts      # inbox
       admin/availability.ts  # scheduler config
       public/projects.ts     # what the website reads
@@ -120,7 +120,8 @@ create table shots (
   id         text primary key,
   project_id text not null references projects(id) on delete cascade,
   asset_id   text not null references assets(id),
-  size       text not null,   -- 'Third' | 'Half' | 'Two thirds' | 'Full'
+  span       smallint not null check (span between 1 and 6),
+  ratio      text not null,     -- 'w/h', e.g. '16/9', '2/1', '9/16', or any custom pair
   ratio      text not null,   -- '21/9' | '16/9' | '3/2' | '4/3' | '1/1' | '4/5'
   position   integer not null
 );
@@ -155,9 +156,12 @@ create table availability (      -- single row
 );
 ```
 
-`shots.size` maps to a grid span on a `repeat(6, 1fr)` grid with `3px` gaps:
-`Third → 2`, `Half → 3`, `Two thirds → 4`, `Full → 6`. Below 780px every shot is `span 6`. The
-detail pages already implement this — the API just stores the label.
+`shots.span` is the column count on a `repeat(6, 1fr)` grid with `3px` gaps — **any integer 1–6**,
+not a four-value label. `shots.ratio` is a free `w/h` pair: validate the shape (`^\d+(\.\d+)?/\d+(\.\d+)?$`,
+both sides positive, ratio between 0.2 and 6) rather than matching an enum — the CRM offers ten presets
+plus a custom field, and the detail pages render whatever arrives. Below 780px every shot is `span 6`.
+The CRM defaults `ratio` from the dimensions returned by the asset upload, so `POST /assets` must keep
+returning `width` and `height`.
 
 ### Field map — CRM state → API → column
 
@@ -173,14 +177,14 @@ detail pages already implement this — the API just stores the label.
 | `fields.concept` | `concept` | `concept` |
 | `fields.fill` | `fill` | `fill` |
 | `fields.liveUrl` | `liveUrl` | `live_url` |
-| `fields.port` | `localPort` | `local_port` |
 | `files.heroImg` | `heroAssetId` | `hero_asset_id` |
 | `files.siteFiles` | — (bundle upload) | `bundle_id` |
 | `files.reel` | `reelAssetId` | `reel_asset_id` |
 | `files.poster` | `posterAssetId` | `poster_asset_id` |
 | `credits[]` | `credits[]` | `credits` table |
 | `shots[]` | `shots[]` | `shots` table |
-| `running` | derived from `GET /bundle` | — (runtime only) |
+| `hosting` | `hosting` (`external` \| `hosted`) | `hosting` |
+| `bundle.status` | derived from `GET /bundle` | `bundle_status` |
 
 There is **no separate card image**. The hero asset is used for both the Works card and the top of
 the detail page — the CRM labels it "Hero image · card & page top".
@@ -202,9 +206,7 @@ hero image chosen                ──▶  POST /api/admin/projects/:id/assets 
 site .zip chosen                 ──▶  POST /api/admin/projects/:id/bundle  (multipart)
                                  ◀──  202 {bundleId, status:'unpacking'}
 poll every 1s                    ──▶  GET  /api/admin/projects/:id/bundle
-                                 ◀──  200 {status:'ready'}
-"Start local server"             ──▶  POST .../bundle/start {port:3001}
-                                 ◀──  200 {url:'http://localhost:3001'}
+                                 ◀──  200 {status:'ready', url:'https://demo.kinomadstudio.com/aurelia'}
 "Publish to works"               ──▶  POST /api/admin/projects/:id/publish
                                  ◀──  200 {project} | 422 {missing:[...]}
 ```
@@ -212,8 +214,12 @@ poll every 1s                    ──▶  GET  /api/admin/projects/:id/bundle
 Two rules that matter:
 
 - **The draft exists before the first upload.** Assets and bundles are keyed by project id, so the
-  record has to come first. Create it on entering the form, not on save. Sweep drafts with no
-  `name` and no assets after 7 days.
+  record has to come first. The CRM creates it on the **first real keystroke** — not on opening the
+  form, which would litter the index with empty rows. Sweep drafts with no `name` and no assets
+  after 7 days.
+- **The slug is returned by the server and then frozen.** Derive it from `name` on first save,
+  resolve collisions with a `-2`/`-3` suffix, and reject later changes to it — the CRM shows it
+  read-only alongside its public URL. A rename is a migration plus a redirect, not a `PATCH`.
 - **`PATCH` is a partial merge**, never a whole-object replace. The CRM autosaves individual fields;
   a replace would race with an in-flight upload and blank out `heroAssetId`.
 
@@ -223,6 +229,19 @@ Two rules that matter:
 
 All `/api/admin/*` routes require a valid session (§9). All responses are JSON. Errors are
 `{ error: { code, message, fields? } }`.
+
+### Session
+
+| Method | Route | Body → Response |
+| --- | --- | --- |
+| `POST` | `/api/session` | `{ email, password }` → `{ user }` + `Set-Cookie`; `401` on bad credentials |
+| `DELETE` | `/api/session` | → `204`, cookie cleared |
+| `GET` | `/api/session` | → `{ user }` or `401` — lets `/admin` decide between rendering and redirecting |
+
+`/admin/login` is the only unauthenticated admin route. Every other `/admin` request without a
+valid session **redirects** there server-side (the prototype shows a *Session required* gate instead,
+because a design file cannot redirect). A `401` from any `/api/admin/*` call mid-session means the
+session expired — send the user back to `/admin/login`, preserving the intended path.
 
 ### Projects
 
@@ -282,9 +301,10 @@ ids are content-addressed or random, never sequential.
 
 ### Bundle (website only)
 
-`POST|GET|DELETE /api/admin/projects/:id/bundle`, `POST .../bundle/start`, `POST .../bundle/stop`.
-Full behaviour — extraction guards, web-root detection, SPA fallback, port registry, loopback
-binding — is in **`CRM-LOCAL-RUN.md` §4**. Do not implement it from this summary.
+`POST|GET|DELETE /api/admin/projects/:id/bundle`. There are no `start`/`stop` routes — serving is a
+consequence of a successful unpack, keyed by slug on the demo host, not a user action.
+Full behaviour — extraction guards, web-root detection, SPA fallback, demo-host mounting, origin
+isolation — is in **`CRM-HOSTED-BUNDLES.md` §4**. Do not implement it from this summary.
 
 ### Public
 
@@ -315,7 +335,9 @@ back to it. In production both sides talk to this service.
   "end": "18:00",
   "interval": 30,
   "notice": 12,
-  "blocked": ["2026-08-11"]
+  "blocked": [{ "from": "2026-08-11", "to": "2026-08-18" }],
+  "buffer": 15,
+  "tz": "Asia/Dubai"
 }
 ```
 
@@ -323,10 +345,16 @@ back to it. In production both sides talk to this service.
 display string `"GST (UTC+4), Dubai"` — the prototype shows the label, the server needs the zone,
 and Dubai has no DST today but the code should not assume that.
 
+`GET /api/public/busy?date=YYYY-MM-DD` returns the taken slots for one day as studio-local `HH:MM`
+strings, counting every booking that is not `cancelled`. The modal fetches it alongside the
+availability config and greys those times out; without it the scheduler offers slots that are gone.
+
 `POST /api/public/bookings` takes `{ typeName, startsAt, name, email, note }` and must, server-side:
 
 1. Recompute the slot grid from `availability` — **never trust the client's slot**.
-2. Reject a slot outside working days/hours, inside `blocked`, or under the notice window.
+2. Reject a slot outside working days/hours, inside a `blocked` range (inclusive of both ends), or
+   under the notice window. Slot length is the meeting type's `min` **plus `buffer`** — the grid
+   differs per meeting type, so recompute it for the type being booked.
 3. Reject a slot that overlaps an existing non-cancelled booking (unique index on `starts_at`,
    catch the conflict, return `409`).
 4. Rate-limit by IP and by email — 5/hour. This endpoint is unauthenticated.
@@ -348,7 +376,7 @@ and at least one credit with both `who` and `role`.
 
 | Type | Additional |
 | --- | --- |
-| Website | valid absolute `http(s)` `liveUrl`; bundle uploaded with `bundleStatus === 'ready'`; hero image |
+| Website | `hosting:'external'` → valid absolute `http(s)` `liveUrl`; `hosting:'hosted'` → bundle `status === 'ready'`; hero image |
 | Brand identity | hero image; at least one shot |
 | 3D & motion | reel **optional** — with a reel, a poster frame is required; without one, at least one shot (the detail page then renders the shots-only layout) |
 
@@ -364,11 +392,12 @@ Unpublish keeps the record and clears `published_at`.
 The uploaded bundles are the sharp edge — they are untrusted third-party code the studio is choosing
 to execute in a browser.
 
-- **Never serve a bundle from the CRM's origin.** They are on `localhost:300x` precisely so a
+- **Never serve a bundle from the CRM's origin.** They are on `demo.kinomadstudio.com` precisely so a
   malicious bundle cannot read the admin session cookie. Do not "simplify" this into a
   `/preview/:id` path on the main app.
-- Bind bundle servers to `127.0.0.1` only. Never `0.0.0.0`.
-- Enforce the zip-slip and zip-bomb guards during extraction (`CRM-LOCAL-RUN.md` §4). Test them —
+- Serve bundles only from the demo host, with no studio cookies scoped to it and a restrictive CSP.
+  If the archives must not be publicly reachable, gate the host behind the same session.
+- Enforce the zip-slip and zip-bomb guards during extraction (`CRM-HOSTED-BUNDLES.md` §4). Test them —
   acceptance check 4 exists for a reason.
 - Validate `liveUrl` against an `http(s)` allowlist before ever rendering it as an `href`. A stored
   `javascript:` URL is a stored XSS on the public case study.
@@ -420,7 +449,7 @@ if needed — publish validation just has to stop requiring a bundle until they 
 
 ## 12. Acceptance checks
 
-Beyond the eight in `CRM-LOCAL-RUN.md` §8:
+Beyond the eight in `CRM-HOSTED-BUNDLES.md` §8:
 
 1. Start a new website project, type a name, hard-refresh → the draft and its name survive.
 2. Upload a 20 MP hero JPEG → derivatives at 640/1280/1920/2560 in AVIF and WebP; the public card

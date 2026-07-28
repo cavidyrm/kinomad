@@ -13,6 +13,8 @@
 <link href="assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
 <link href="assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
 <meta content="#0D0D0D" name="theme-color">
+<script src="./km-routes.js"></script>
+<script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=gambetta@400,401,500,501,700,701&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth;scrollbar-width:none}
@@ -773,6 +775,12 @@ class Component extends DCLogic {
     else document.body.style.setProperty('--bg', bg);
   }
 
+  /* Link builder — clean URL when deployed, filename in the design tool. */
+  _href(file, slug) {
+    if (window.KMROUTES) return KMROUTES.href(file, slug);
+    return file + (slug ? '?project=' + encodeURIComponent(slug) : '');
+  }
+
   renderVals() {
     const webs = (this._webs || (this._webs = [
       { id: 'web-aurelia', imgId: 'web-aurelia-img', src: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Aurelia, website hero screen', name: 'Aurelia', meta: 'E-commerce · Design + Dev · 2026', desc: 'A slow-fashion storefront rebuilt around feel: art direction, UX and full build.' },
@@ -781,7 +789,7 @@ class Component extends DCLogic {
       { id: 'web-ostro', imgId: 'web-ostro-img', src: 'https://images.pexels.com/photos/17077374/pexels-photo-17077374.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Ostro, portfolio site', name: 'Ostro', meta: 'Portfolio · Web design · 2025', desc: 'An architecture portfolio where the buildings do the talking.' },
       { id: 'web-kepler', imgId: 'web-kepler-img', src: 'https://images.pexels.com/photos/34167277/pexels-photo-34167277.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Kepler Labs, startup site', name: 'Kepler Labs', meta: 'AI startup · Design + Dev · 2024', desc: 'Launch site for an AI startup, from nothing to live in three weeks.' },
     ])).map((x, i) => Object.assign({}, x, {
-      href: 'Kinomad Website Page.dc.html?project=' + x.id,
+      href: this._href('Kinomad Website Page.dc.html', x.id),
       num: '0' + (i + 1),
       industry: x.meta.split(' · ')[0],
       year: x.meta.split(' · ')[2],
@@ -813,7 +821,7 @@ class Component extends DCLogic {
       { id: 'three-d-terraforma', imgId: 'three-d-terraforma-img', src: 'https://images.pexels.com/photos/12627677/pexels-photo-12627677.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Terraforma, arch viz', name: 'Terraforma', meta: 'Arch viz · 2025', num: '02', industry: 'Architecture', year: '2025', statement: 'An unbuilt masterplan you can walk through before ground breaks.' },
       { id: 'three-d-orbital', imgId: 'three-d-orbital-img', src: 'https://images.pexels.com/photos/28628510/pexels-photo-28628510.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Orbital, animation still', name: 'Orbital', meta: 'Brand film · 2024', num: '03', industry: 'Brand film', year: '2024', statement: 'A brand film where the logo never appears until you already understand the company.' },
     ])).map((x) => Object.assign({}, x, {
-      href: 'Kinomad Motion Page.dc.html?project=' + x.id,
+      href: this._href('Kinomad Motion Page.dc.html', x.id),
       openCls: (this.state.device !== 'Desktop' && this.state.tapCard === x.id) ? 'km-webcard-open' : '',
     }));
     this._sampleBrandColors(brandsBase);
@@ -880,7 +888,8 @@ class Component extends DCLogic {
         if (e.composedPath && e.composedPath().some((n) => n.tagName === 'BUTTON' || n.tagName === 'INPUT')) return;
         const id = e.currentTarget.dataset.brand;
         if (this.state.device !== 'Desktop' && this.state.hovBrand !== id) { this.setState({ hovBrand: id }); return; }
-        window.location.href = 'Kinomad Brand Page.dc.html?project=' + id;
+        if (window.KMROUTES) KMROUTES.go('Kinomad Brand Page.dc.html', id);
+        else window.location.href = 'Kinomad Brand Page.dc.html?project=' + id;
       },
       brandEnter: (e) => this.setState({ hovBrand: e.currentTarget.dataset.brand }),
       brandLeave: () => this.setState({ hovBrand: null }),

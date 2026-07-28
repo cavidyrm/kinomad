@@ -13,6 +13,8 @@
 <link href="assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
 <link href="assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
 <meta content="#0D0D0D" name="theme-color">
+<script src="./km-routes.js"></script>
+<script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=gambetta@400,401,500,501,700,701&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth;scrollbar-width:none}
@@ -586,13 +588,19 @@ class Component extends DCLogic {
     ]);
   }
 
+  /* Link builder — clean URL when deployed, filename in the design tool. */
+  _href(file, slug) {
+    if (window.KMROUTES) return KMROUTES.href(file, slug);
+    return file + (slug ? '?project=' + encodeURIComponent(slug) : '');
+  }
+
   renderVals() {
     const cases = this._cases();
     let pid = 'web-aurelia';
-    try { pid = new URLSearchParams(window.location.search).get('project') || pid; } catch (e) {}
+    try { pid = (window.KMROUTES ? KMROUTES.slug() : new URLSearchParams(window.location.search).get('project')) || pid; } catch (e) {}
     const c = cases.find((x) => x.id === pid) || cases[0];
     const others = cases.filter((x) => x.id !== c.id).map((x) => ({
-      name: x.name, num: x.num, href: 'Kinomad Website Page.dc.html?project=' + x.id,
+      name: x.name, num: x.num, href: this._href('Kinomad Website Page.dc.html', x.id),
     }));
     const seg = (name) => (this.props.device || 'Desktop') === name
       ? { bg: 'var(--accent)', fg: '#14130F' }
