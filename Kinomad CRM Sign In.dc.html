@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Sign in — Kinomad CRM</title>
+<link href="assets/favicon.svg" rel="icon" type="image/svg+xml">
+<link href="assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
+<link href="assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
+<meta content="#0D0D0D" name="theme-color">
+<script src="./km-routes.js"></script>
+<script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
+<meta content="noindex, nofollow" name="robots">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
+<script src="./km-api.js"></script>
+<script>/* deploy safety: a relative path breaks on nested routes like /works/slug — retry from the site root */
+if(!window.KMAPI){var s=document.createElement('script');s.src='/km-api.js';s.onload=function(){window.dispatchEvent(new Event('kmapi-ready'));};document.head.appendChild(s);}</script>
+<style>
+body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
+a:hover{color:var(--accent)}
+::selection{background:var(--accent);color:#14130F}
+input,button{font-family:'General Sans',ui-sans-serif,system-ui,sans-serif}
+input:focus{outline:none;border-color:var(--accent)!important}
+.km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
+.km-cta:hover{background-size:100% 100%;color:#14130F}
+@keyframes km-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes km-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+</style>
+</helmet>
+
+<main data-screen-label="CRM sign in" style="min-height:100svh;container:page / inline-size;box-sizing:border-box;display:grid;place-items:center;padding:clamp(20px,4cqw,60px);position:relative;overflow:hidden">
+  <span aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(120px,26cqw,360px);font-weight:700;letter-spacing:-0.04em;color:rgba(241,239,231,0.028);white-space:nowrap;pointer-events:none">KINOMAD</span>
+
+  <div style="position:relative;width:min(400px,100%);display:flex;flex-direction:column;gap:20px;background:var(--panel);border:1px solid var(--line);padding:clamp(28px,3cqw,40px);animation:km-rise 0.6s cubic-bezier(0.16,1,0.3,1) both">
+    <div style="display:flex;align-items:center;gap:12px">
+      <img src="assets/logo-light.svg" alt="" style="width:28px;height:auto;display:block">
+      <span style="font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.18em;color:var(--mut)">STUDIO CRM//</span>
+    </div>
+
+    <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+      <form onSubmit="{{ doLogin }}" style="display:flex;flex-direction:column;gap:20px">
+        <h1 style="margin:0;font-size:clamp(28px,3.4cqw,40px);font-weight:700;letter-spacing:-0.025em;line-height:1;text-transform:uppercase">Sign in</h1>
+        <label style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--mut)">Email</span>
+          <input type="email" autocomplete="username" value="{{ lgEmail }}" data-key="lgEmail" onChange="{{ lgField }}" placeholder="you@kinomadstudio.com" style="background:#0d0d0d;border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--mut)">Password</span>
+          <input type="password" autocomplete="current-password" value="{{ lgPw }}" data-key="lgPw" onChange="{{ lgField }}" placeholder="••••••••" style="background:#0d0d0d;border:1px solid var(--line);color:var(--fg);font-size:15px;font-weight:500;padding:13px 16px;transition:border-color 0.25s ease">
+        </label>
+        <div role="alert" style="font-size:13px;font-weight:500;color:var(--warn);line-height:1.5;border:1px solid var(--warn);padding:12px 14px;display:{{ apiNoteShow }}">{{ apiNote }}</div>
+        <div role="alert" aria-live="polite" style="font-size:13px;font-weight:600;color:var(--warn);min-height:16px;line-height:1.4">{{ lgErr }}</div>
+        <button type="submit" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 24px;cursor:{{ lgCur }};opacity:{{ lgOp }};pointer-events:{{ lgPe }}">{{ lgBtn }}</button>
+      </form>
+    </sc-if>
+
+    <sc-if value="{{ showSigned }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <h1 style="margin:0;font-size:clamp(24px,2.8cqw,34px);font-weight:700;letter-spacing:-0.025em;line-height:1.05;text-transform:uppercase">Already signed in</h1>
+        <span style="font-size:14px;color:var(--mut);font-weight:500;line-height:1.55">This browser holds a live session for <span style="color:var(--fg);font-weight:600">{{ sessEmail }}</span>.</span>
+        <a href="Kinomad CRM.dc.html" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 24px;text-align:center">Open the CRM ↗</a>
+        <button onClick="{{ doLogout }}" style="border:1px solid var(--line);background:transparent;color:var(--fg);font-weight:600;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;padding:13px 20px;cursor:pointer;transition:border-color 0.25s ease,color 0.25s ease" style-hover="border-color:var(--warn);color:var(--warn)">Sign out instead</button>
+      </div>
+    </sc-if>
+
+    <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.5;border-top:1px solid var(--line);padding-top:16px">Prototype: any valid email and a password of four characters or more opens the CRM. In production this page is the only unauthenticated route under <span style="font-family:'Chillax',sans-serif">/admin</span>.</span>
+  </div>
+</main>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1100,&quot;height&quot;:760},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;options&quot;:[&quot;#2bcdee&quot;,&quot;#D9FF3D&quot;,&quot;#FF6B4A&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { booting: true, session: null, lgEmail: '', lgPw: '', lgErr: '', lgBusy: false, apiMissing: false };
+
+  componentDidMount() {
+    let accent = null;
+    try { accent = localStorage.getItem('kinomad-accent'); } catch (_) {}
+    document.body.style.setProperty('--accent', accent || this.props.accent || '#2bcdee');
+    if (!window.KMAPI) {
+      // the root-path fallback load may still be in flight
+      this._apiWait = setTimeout(() => this.setState({ booting: false, apiMissing: true }), 2500);
+      window.addEventListener('kmapi-ready', this._onApi = () => {
+        clearTimeout(this._apiWait);
+        this.setState({ booting: false, apiMissing: false, session: KMAPI.session.current() });
+      });
+      return;
+    }
+    this.setState({ booting: false, session: KMAPI.session.current(), apiMissing: false });
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._apiWait);
+    if (this._onApi) window.removeEventListener('kmapi-ready', this._onApi);
+  }
+
+  renderVals() {
+    const s = this.state;
+    return {
+      showForm: !s.booting && !s.session,
+      apiNote: s.apiMissing ? 'The API client (km-api.js) did not load, so signing in cannot work. Check that it is served at a path this route can resolve.' : '',
+      apiNoteShow: s.apiMissing ? 'block' : 'none',
+      showSigned: !!s.session,
+      sessEmail: s.session ? s.session.email : '',
+      lgEmail: s.lgEmail, lgPw: s.lgPw, lgErr: s.lgErr || ' ',
+      lgBtn: s.lgBusy ? 'Signing in…' : 'Sign in',
+      lgCur: s.lgBusy ? 'progress' : 'pointer',
+      lgOp: s.lgBusy ? '0.6' : '1',
+      lgPe: s.lgBusy ? 'none' : 'auto',
+      lgField: (e) => this.setState({ [e.currentTarget.dataset.key]: e.currentTarget.value, lgErr: '' }),
+      doLogin: (e) => {
+        e.preventDefault();
+        if (this.state.lgBusy) return;
+        if (!window.KMAPI) return this.setState({ lgErr: 'The API client did not load — sign-in is unavailable.' });
+        this.setState({ lgBusy: true, lgErr: '' });
+        KMAPI.session.login(this.state.lgEmail, this.state.lgPw).then(
+          () => { if (window.KMROUTES) KMROUTES.go('Kinomad CRM.dc.html'); else window.location.href = 'Kinomad CRM.dc.html'; },
+          (err) => this.setState({ lgBusy: false, lgErr: err.message })
+        );
+      },
+      doLogout: () => KMAPI.session.logout().then(() => this.setState({ session: null, lgPw: '', lgErr: '' })),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 .git
 .github
-uploads
-screenshots
+deploy
+README.md
 *.md
 !README.md

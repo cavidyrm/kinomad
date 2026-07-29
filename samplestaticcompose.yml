@@ -1,21 +1,25 @@
-# Same as docker-compose.yml — kept in the repo for reference.
+# Same as docker-compose.yml — kept in repo for reference.
 services:
   app:
-    image: ghcr.io/cavidyrm/ironpulse:latest
-    container_name: ironpulse
+    image: ghcr.io/cavidyrm/kinomad:latest
+    container_name: kinomad
     restart: unless-stopped
     ports:
-      - "3007:80"
+      - "3006:80"
     networks:
       - traefik-public
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-public"
-      - "traefik.http.services.ironpulse.loadbalancer.server.port=80"
-      - "traefik.http.routers.ironpulse.rule=Host(`ironpulse.com`) || Host(`www.ironpulse.com`)"
-      - "traefik.http.routers.ironpulse.entrypoints=websecure"
-      - "traefik.http.routers.ironpulse.tls=true"
-      - "traefik.http.routers.ironpulse.tls.certresolver=myresolver"
+      - "traefik.http.services.kinomad.loadbalancer.server.port=80"
+      - "traefik.http.routers.kinomad.rule=Host(`kinomadstudio.com`) || Host(`www.kinomadstudio.com`)"
+      - "traefik.http.routers.kinomad.entrypoints=websecure"
+      - "traefik.http.routers.kinomad.tls=true"
+      - "traefik.http.routers.kinomad.tls.certresolver=myresolver"
+      - "traefik.http.routers.kinomad-http.rule=Host(`kinomadstudio.com`) || Host(`www.kinomadstudio.com`)"
+      - "traefik.http.routers.kinomad-http.entrypoints=web"
+      - "traefik.http.routers.kinomad-http.middlewares=kinomad-redirect-https"
+      - "traefik.http.middlewares.kinomad-redirect-https.redirectscheme.scheme=https"
 
 networks:
   traefik-public:

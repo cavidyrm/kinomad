@@ -1,98 +1,141 @@
-# Deploying IRONPULSE
+# Deploying this handoff
 
-Same pipeline as `cavidyrm/kinomad`: a push to `main` builds a static nginx image,
-pushes it to GHCR, then restarts the container on the server over SSH. Nothing is
-built client-side — the site is flat HTML, one stylesheet, one script, and PNGs.
+The repo (`cavidyrm/kinomad`) builds a static nginx image, pushes it to
+`ghcr.io/cavidyrm/kinomad:latest`, and restarts the container on the server over SSH.
+Nothing about that pipeline needs to change. Replace two files and add the new ones.
 
-## Repo layout
+## What broke on the last deploy
 
-| Path | Role |
+**`KMAPI is not defined`, booking modal renders empty.** The `Dockerfile` copied pages
+with an explicit per-file whitelist:
+
+```dockerfile
+COPY support.js image-slot.js /usr/share/nginx/html/
+COPY ["Kinomad Landing.dc.html", "/usr/share/nginx/html/Kinomad Landing.dc.html"]
+…
+```
+
+`km-api.js` was never added to that list, so the image shipped without it. The pages
+requested it, got the SPA fallback (`try_files … /index.html` returns HTML with a 200),
+the browser parsed HTML as JavaScript, and `window.KMAPI` was never defined. The error
+surfaced inside the scheduler because that is the only thing on the landing page that
+reads it.
+
+**`Kinomad Privacy.dc.html` was also missing** from the same whitelist — the privacy
+notice has been 404ing since it was added. The footer links to it on every page.
+
+The replacement `Dockerfile` copies by glob (`*.js`, `*.dc.html`) and then **asserts**
+every required file is present, so the build fails loudly instead of the site failing
+quietly. A forgotten `COPY` line cannot happen again.
+
+## Files to replace
+
+| From here | Repo path |
 | --- | --- |
-| `index.html` | the landing page (nginx index) |
-| `404.html` | not-found page, wired to `error_page 404` |
-| `industry.css` | design-system stylesheet |
-| `image-slot.js` | image placeholder component |
-| `assets/` | hero, coach, program and floor photography |
-| `robots.txt`, `sitemap.xml` | crawl directives |
-| `Dockerfile` | nginx:1.27-alpine + glob copy + presence assertions |
-| `nginx.conf` | routing, caching, 404, security headers |
-| `docker-compose.yml` | Traefik labels + host port 3007 |
-| `.github/workflows/deploy.yml` | build → GHCR → SSH restart |
+| `deploy/Dockerfile` | `Dockerfile` |
+| `deploy/nginx.conf` | `nginx.conf` |
 
-## Git workflow
+`docker-compose.yml`, `samplestaticcompose.yml`, `.dockerignore` and
+`.github/workflows/deploy.yml` are unchanged — keep the ones in the repo.
 
-```
-main                 production. Every push deploys. Protect it.
-  └── feat/<thing>   short-lived branch, one change
-```
+## Files to add at the repo root
 
-1. `git switch -c feat/pricing-copy`
-2. Commit in small steps. Conventional prefixes: `feat:`, `fix:`, `copy:`, `chore:`.
-3. Open a PR. CI builds the image but does **not** deploy from a branch.
-4. Squash-merge to `main` → the deploy job runs.
+- `km-api.js` — the API client every page loads. **This is the file that was missing.**
+- `km-routes.js` — the canonical route table, and the link rewriting that turns the
+  design-tool filenames into clean URLs when the page is served from a host.
+- `Kinomad CRM Sign In.dc.html` — the admin sign-in page.
 
-Recommended branch protection on `main`: require the build to pass, require one
-review, disallow force-push. A revert is a new commit, which redeploys the previous
-content — there is no rollback button, so keep commits small.
+Every page is replaced in this drop, because all nine now load `km-routes.js`.
 
-## One-time server setup
+And replace with the versions in this folder: `Kinomad Landing.dc.html`,
+`Kinomad CRM.dc.html`, plus `README.md`, `BACKEND-GUIDE.md`, `CRM-HOSTED-BUNDLES.md`
+(this replaces `CRM-LOCAL-RUN.md` — hosted bundles are unpacked server-side now, there is
+no local server to start, so delete the old file).
 
-```bash
-mkdir -p /opt/ironpulse && cd /opt/ironpulse
-# copy docker-compose.yml here
-docker network create traefik-public   # if it does not already exist
-docker login ghcr.io -u <user> -p <ghcr-token>
-docker compose up -d
-```
+## Routing
 
-## Required GitHub secrets
+The new `nginx.conf` adds the clean URLs the README documents, without renaming any file:
 
-| Secret | Value |
+| URL | Serves |
 | --- | --- |
-| `SERVER_HOST` | server IP or hostname |
-| `SERVER_USER` | SSH user |
-| `SERVER_SSH_KEY` | private key for that user |
-| `GHCR_TOKEN` | PAT with `read:packages`, used by the server to pull |
-| `APP_DIR` | e.g. `/opt/ironpulse` — must match where the compose file lives |
+| `/` | `Kinomad Landing.dc.html` (also copied to `index.html`) |
+| `/works` | `Kinomad Works.dc.html` |
+| `/website/<slug>` | `Kinomad Website Page.dc.html`, rendering that project |
+| `/brand/<slug>` | `Kinomad Brand Page.dc.html` |
+| `/motion/<slug>` | `Kinomad Motion Page.dc.html` |
+| `/privacy` | `Kinomad Privacy.dc.html` |
+| `/admin` | `Kinomad CRM.dc.html` |
+| `/admin/login` | `Kinomad CRM Sign In.dc.html` |
 
-`GITHUB_TOKEN` is provided automatically and is what pushes the image.
+The bare `/website`, `/brand` and `/motion` also resolve, showing the first project of
+that type. Direct filename URLs keep working too.
 
-## Two deliberate choices in the config
+**How the pages know.** `km-routes.js` holds the route table and, only when the page is
+served from a host (the URL does not end in `.dc.html`), rewrites every internal link to
+its clean form, sets `<link rel="canonical">`, and reads the project slug from the path
+instead of `?project=`. In a design tool or a `file://` checkout it does nothing, so one
+set of files works in both places. If the script fails to load, links fall back to the
+filename URLs, which nginx still serves — degraded, not broken.
 
-**Glob copies, then assertions.** The Dockerfile copies `*.html *.css *.js *.txt *.xml`
-and `assets/`, then asserts the required files exist in the image. A new file dropped
-next to the others ships automatically; a deleted or renamed dependency fails the build
-loudly instead of the site failing quietly in a browser.
+**Why the type prefix.** `/works/<slug>` needs to know a project's type to pick a
+template, and only the API knows that. `/brand/vantar` is resolvable by a static server
+today. When the backend renders project pages, switch to `/works/<slug>` and 301 these.
 
-**No SPA fallback.** `try_files \$uri \$uri/ =404` — a missing script returns 404, not
-200-with-HTML. An HTML body served where JavaScript was requested is the classic way a
-missing file disguises itself as a runtime error.
+Two things to know about paths:
 
-## Before you point DNS at it
+1. **Depth matters.** The pages reference `assets/…` and `./km-api.js` relatively, so a
+   route one level deep resolves them under that level. `/admin/login` is the only such
+   route, and the config aliases `/admin/assets/` and `/admin/*.js` back to the root.
+   `/works/<slug>` will have the same problem when the backend starts rendering per-slug
+   pages — at that point either switch the pages to root-absolute paths (`/assets/…`,
+   `/km-api.js`) or add `<base href="/">` to each page's `<head>`.
+2. **Belt and braces.** All three pages that need `km-api.js` load it relatively and then
+   retry from `/km-api.js` if `window.KMAPI` is still undefined, so a wrong base path
+   degrades instead of breaking. The pages also fail gracefully if the client never
+   arrives: the landing scheduler falls back to published hours and refuses to submit, the
+   CRM shows a *Console failed to load* screen, sign-in blocks with an inline notice.
 
-Placeholders still in the content (see `README.md`):
+`try_files … /index.html` was also removed from the catch-all. A missing asset now returns
+a real 404 instead of 200-with-HTML, which is what disguised the missing script as a
+JavaScript error.
 
-- `https://ironpulse.com/` in canonical, Open Graph, Twitter, JSON-LD, `sitemap.xml`
-- address `220 Forge Street, Building C`, phone `(503) 555-0142` (twice — also in JSON-LD)
-- coach names, bios, prices, class schedule
-- both forms are front-end only: add `action`/`method` or POST via fetch, and reject any
-  submission where the honeypot field `company_hp` is non-empty
-- analytics snippet before `</head>`; privacy policy and cookie consent are not included
+## Before the backend exists
 
-Also swap `ironpulse.com` in `docker-compose.yml` for the real domain, and
-`ghcr.io/cavidyrm/ironpulse` for the real image name if the repo is named differently.
+`km-api.js` is a **prototype stand-in** — it stores projects, availability and bookings in
+the visitor's own browser. It is safe to deploy (nothing leaves the browser, no secrets)
+and it makes the CRM and scheduler demonstrable, but:
+
+- Bookings made on the live site are only visible in the browser that made them. The
+  studio will not see them in the CRM.
+- Anyone can open `/admin/login` and sign in with any valid email and a 4-character
+  password.
+
+If the site is going public before the API is ready, either keep `/admin*` off the public
+build, or put HTTP basic auth in front of it:
+
+```nginx
+location ~ ^/admin {
+    auth_basic "Kinomad";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    try_files "/Kinomad CRM.dc.html" =404;
+}
+```
+
+Swapping in the real service is described in `BACKEND-GUIDE.md`: replace the bodies of the
+methods on `window.KMAPI` with `fetch` calls. The routes, payloads and status codes the UI
+already handles (401, 404, 409, 422, 503) are the contract.
 
 ## Sanity check after deploying
 
 ```bash
-curl -sI https://ironpulse.com/                    | head -n1   # 200
-curl -sI https://ironpulse.com/industry.css        | head -n1   # 200
-curl -s  https://ironpulse.com/image-slot.js       | head -c 40 # JS, not "<!DOCTYPE html>"
-curl -sI https://ironpulse.com/assets/hero.png     | head -n1   # 200
-curl -sI https://ironpulse.com/pricing             | head -n1   # 301 → /#pricing
-curl -sI https://ironpulse.com/nope                | head -n1   # 404, not 200
-curl -sI https://ironpulse.com/robots.txt          | head -n1   # 200
+curl -sI https://kinomadstudio.com/km-api.js | head -n1        # 200, not 404
+curl -s  https://kinomadstudio.com/km-api.js | head -c 40      # JS, not "<!DOCTYPE html>"
+curl -sI https://kinomadstudio.com/privacy | head -n1          # 200
+curl -sI https://kinomadstudio.com/admin/login | head -n1      # 200
+curl -sI https://kinomadstudio.com/brand/vantar | head -n1      # 200
+curl -sI https://kinomadstudio.com/admin/km-api.js | head -n1   # 200 — depth-safe rule
+curl -sI https://kinomadstudio.com/nope | head -n1              # 404, not 200
 ```
 
-Then load the page and confirm the hero photo, the program panels and the Lucide icons
-render — those are the three things that depend on files outside `index.html`.
+Then open the landing page, click **Book a call**, and confirm the calendar and time
+column render. That path is the one that failed before.
