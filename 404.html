@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — IRONPULSE</title>
+<link rel="stylesheet" href="industry.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --color-accent: #00E5FF;
+    --color-accent-200: #7df3ff;
+    --color-accent-300: #4fe0f5;
+    --color-accent-600: #0a94a6;
+    --color-accent-700: #0d7182;
+    --color-accent-900: #05141a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  html{scrollbar-width:none;-ms-overflow-style:none;}
+  html::-webkit-scrollbar{display:none;}
+  body{
+    background:#050506;
+    color:#f0f2f3;
+    font-family:"Barlow",system-ui,sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    overflow-x:hidden;
+  }
+  .kfont{font-family:var(--font-heading),"Barlow Condensed",sans-serif;}
+  a{color:var(--color-accent);text-decoration:none;}
+  a:hover{color:var(--color-accent-200);}
+
+  /* faint blueprint grid on the ground */
+  .grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.5;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(120% 90% at 50% 40%, #000 30%, transparent 78%);
+    -webkit-mask-image:radial-gradient(120% 90% at 50% 40%, #000 30%, transparent 78%);
+  }
+
+  /* top status bar */
+  .hud{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:16px;
+    padding:18px 40px;border-bottom:1px solid rgba(0,229,255,0.16);}
+  .hud .brand{display:inline-flex;align-items:center;gap:10px;text-transform:uppercase;
+    letter-spacing:0.05em;font-family:var(--font-heading),sans-serif;font-weight:600;font-size:20px;color:#fff;}
+  .hud .code{margin-left:auto;font-family:var(--font-heading),sans-serif;text-transform:uppercase;
+    letter-spacing:0.24em;font-size:12px;color:var(--color-accent-300);}
+
+  main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;gap:26px;}
+
+  .eyebrow{font-family:var(--font-heading),sans-serif;font-size:13px;letter-spacing:0.34em;
+    text-transform:uppercase;color:var(--color-accent-300);margin:0;}
+
+  /* glitching 404 */
+  .four{position:relative;font-family:var(--font-heading),sans-serif;font-weight:600;
+    text-transform:uppercase;font-size:clamp(120px,26vw,320px);line-height:0.82;letter-spacing:0.02em;
+    margin:0;color:#f2f5f6;}
+  .four .layer{position:absolute;inset:0;margin:0;}
+  .four .r{color:#00E5FF;mix-blend-mode:screen;animation:g-r 3.2s steps(1) infinite;}
+  .four .b{color:#ff3b6b;mix-blend-mode:screen;animation:g-b 3.2s steps(1) infinite;}
+  @keyframes g-r{0%,17%,100%{clip-path:inset(0 0 0 0);transform:translate(0,0);opacity:0;}
+    19%{clip-path:inset(16% 0 54% 0);transform:translate(-6px,0);opacity:.9;}
+    22%{clip-path:inset(62% 0 12% 0);transform:translate(5px,0);opacity:.9;}
+    25%{opacity:0;transform:translate(0,0);}
+    68%{clip-path:inset(40% 0 40% 0);transform:translate(-4px,0);opacity:.8;}70%{opacity:0;}}
+  @keyframes g-b{0%,17%,100%{clip-path:inset(0 0 0 0);transform:translate(0,0);opacity:0;}
+    19%{clip-path:inset(48% 0 20% 0);transform:translate(6px,0);opacity:.9;}
+    22%{clip-path:inset(8% 0 70% 0);transform:translate(-5px,0);opacity:.9;}
+    25%{opacity:0;transform:translate(0,0);}
+    68%{clip-path:inset(20% 0 60% 0);transform:translate(4px,0);opacity:.8;}70%{opacity:0;}}
+
+  /* scan line sweeping the numerals */
+  .four .scan{position:absolute;left:-4%;right:-4%;height:3px;top:0;
+    background:linear-gradient(90deg,transparent,var(--color-accent),transparent);
+    box-shadow:0 0 14px var(--color-accent);opacity:0.7;animation:scan 4s linear infinite;}
+  @keyframes scan{0%{top:-6%;}100%{top:106%;}}
+
+  h1{font-family:var(--font-heading),sans-serif;text-transform:uppercase;font-weight:600;
+    font-size:clamp(28px,4vw,44px);letter-spacing:0.02em;margin:0;color:#fff;}
+  p.lead{max-width:52ch;margin:0;font-size:17px;line-height:1.6;color:rgba(255,255,255,0.7);}
+
+  .actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+  .b{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-heading),sans-serif;
+    text-transform:uppercase;letter-spacing:0.12em;font-size:14px;font-weight:700;
+    padding:15px 26px;border:1px solid;cursor:pointer;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease,background .3s ease,color .3s ease;position:relative;overflow:hidden;}
+  .b i{width:16px;height:16px;transition:transform .3s ease;}
+  .b-primary{background:var(--color-accent);color:#001417;border-color:var(--color-accent);}
+  .b-primary:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,229,255,0.4);}
+  .b-primary:hover i{transform:translateX(4px);}
+  .b-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,0.35);}
+  .b-ghost:hover{border-color:var(--color-accent);color:var(--color-accent);transform:translateY(-3px);}
+
+  /* suggested links row */
+  .jumps{display:flex;gap:8px 26px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+  .jumps a{font-family:var(--font-heading),sans-serif;text-transform:uppercase;letter-spacing:0.14em;
+    font-size:13px;color:rgba(255,255,255,0.55);display:inline-flex;align-items:center;gap:7px;transition:color .25s ease;}
+  .jumps a::before{content:"";width:5px;height:5px;background:var(--color-accent-700);transform:rotate(45deg);transition:background .25s ease,box-shadow .25s ease;}
+  .jumps a:hover{color:#fff;}
+  .jumps a:hover::before{background:var(--color-accent);box-shadow:0 0 8px var(--color-accent);}
+
+  footer{position:relative;z-index:2;padding:22px 40px;border-top:1px solid rgba(0,229,255,0.16);
+    display:flex;gap:20px;align-items:center;flex-wrap:wrap;font-size:12px;color:rgba(255,255,255,0.4);
+    font-family:var(--font-heading),sans-serif;letter-spacing:0.14em;text-transform:uppercase;}
+  footer .right{margin-left:auto;}
+
+  @media (max-width:640px){
+    .hud,footer{padding-left:20px;padding-right:20px;}
+    main{padding:110px 18px 60px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div class="hud">
+  <span class="brand">
+    <svg width="22" height="22" viewBox="0 0 100 100" fill="currentColor" style="flex:none;color:var(--color-accent)"><circle cx="50" cy="50" r="6"/><circle cx="35" cy="42" r="3.5"/><circle cx="65" cy="42" r="3.5"/><circle cx="35" cy="58" r="3.5"/><circle cx="65" cy="58" r="3.5"/><circle cx="50" cy="34" r="3"/><circle cx="50" cy="66" r="3"/><circle cx="30" cy="50" r="2.4"/><circle cx="70" cy="50" r="2.4"/><circle cx="42" cy="30" r="1.8"/><circle cx="58" cy="30" r="1.8"/><circle cx="42" cy="70" r="1.8"/><circle cx="58" cy="70" r="1.8"/></svg>
+    Iron<span style="color:rgba(255,255,255,0.55)">pulse</span>
+  </span>
+  <span class="code">ERR · SIGNAL LOST</span>
+</div>
+
+<main>
+  <p class="eyebrow">Off the training floor</p>
+
+  <div class="four blueprint" style="padding:10px 40px;">
+    <span class="base">404</span>
+    <span class="layer r">404</span>
+    <span class="layer b">404</span>
+    <span class="scan"></span>
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+  </div>
+
+  <h1>This rep doesn't exist.</h1>
+  <p class="lead">The page you were reaching for has been re-racked, renamed, or was never on the program. Let's get you back to the floor.</p>
+
+  <div class="actions">
+    <a class="b b-primary" href="/">Back to home <i data-lucide="arrow-right"></i></a>
+    <a class="b b-ghost" href="/#contact">Contact us <i data-lucide="mail"></i></a>
+  </div>
+
+  <div class="jumps">
+    <a href="/#programs">Programs</a>
+    <a href="/#trainers">Coaches</a>
+    <a href="/#schedule">Schedule</a>
+    <a href="/#pricing">Membership</a>
+  </div>
+</main>
+
+<footer>
+  <span>© 2024 Ironpulse Strength Co.</span>
+  <span class="right">Error 404 — Not Found</span>
+</footer>
+
+<script>lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });</script>
+</body>
+</html>
