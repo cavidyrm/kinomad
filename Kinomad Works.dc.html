@@ -332,7 +332,10 @@ body.dev.dragging #frame{cursor:grabbing}
 <section data-screen-label="3D" id="three-d" style="padding:0 clamp(20px,4cqw,64px) clamp(64px,9cqw,130px);scroll-margin-top:70px">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding:20px 0 clamp(28px,4cqw,56px)">
     <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">3D &amp; motion</h2>
-    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">03 · 03 PROJECTS//</span>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;padding-bottom:6px">
+      <a href="reels.html" style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--accent)">Watch live reels ↗</a>
+      <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut)">03 · 03 PROJECTS//</span>
+    </div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(24px,3cqw,40px)">
     <sc-for list="{{ threes }}" as="tp" hint-placeholder-count="3">

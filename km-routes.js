@@ -21,6 +21,7 @@
   var ROUTES = {
     'Kinomad Landing.dc.html': '/',
     'Kinomad Works.dc.html': '/works',
+    'reels.html': '/reels',
     'Kinomad Website Page.dc.html': '/website',
     'Kinomad Brand Page.dc.html': '/brand',
     'Kinomad Motion Page.dc.html': '/motion',

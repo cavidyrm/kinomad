@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Motion Reels — Kinomad Studio</title>
+  <link href="assets/favicon.svg" rel="icon" type="image/svg+xml">
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=gambetta@400,500,700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0d1016; --fg:#f1efe7; --mut:rgba(241,239,231,.6); --accent:#d9ff3d; --line:rgba(241,239,231,.12); }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--fg); font-family:'General Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+    a { color:var(--fg); text-decoration:none; }
+    a:hover { color:var(--accent); }
+    .wrap { max-width:1200px; margin:0 auto; padding:96px 24px 64px; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:48px; }
+    header h1 { margin:0; font-size:clamp(28px,4vw,48px); letter-spacing:-.02em; text-transform:uppercase; }
+    .badge { font-size:11px; letter-spacing:.12em; text-transform:uppercase; padding:6px 10px; border:1px solid var(--line); color:var(--mut); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:24px; }
+    .card { border:1px solid var(--line); background:#141922; overflow:hidden; }
+    .media { position:relative; aspect-ratio:16/9; background:#050505; }
+    .media video, .media img { width:100%; height:100%; object-fit:cover; display:block; }
+    .status { position:absolute; top:10px; left:10px; font-size:10px; letter-spacing:.1em; text-transform:uppercase; padding:5px 8px; background:rgba(0,0,0,.72); border:1px solid var(--line); }
+    .status.ready { color:var(--accent); }
+    .status.processing { color:#f5c542; }
+    .status.error, .status.skipped { color:#ff6b6b; }
+    .body { padding:18px 18px 20px; }
+    .body h2 { margin:0 0 8px; font-size:22px; letter-spacing:-.01em; }
+    .meta { color:var(--mut); font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:10px; }
+    .statement { font-family:'Gambetta',serif; font-size:15px; line-height:1.45; color:var(--mut); margin:0 0 14px; }
+    .links { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+    .empty, .error, .loading { padding:48px 24px; text-align:center; color:var(--mut); border:1px dashed var(--line); }
+    .refresh { background:var(--fg); color:var(--bg); border:none; padding:10px 16px; font:inherit; font-size:12px; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+    .refresh:hover { background:var(--accent); color:#14130f; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="badge">Live from API</div>
+        <h1>Motion reels</h1>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button class="refresh" id="refresh">Refresh</button>
+        <a href="/works">← Works</a>
+      </div>
+    </header>
+    <div id="state" class="loading">Loading published reels…</div>
+    <div id="grid" class="grid" hidden></div>
+  </div>
+  <script>
+    var pollTimer = null;
+
+    function statusClass(s) {
+      return 'status ' + (s || 'none');
+    }
+
+    function renderReels(reels) {
+      var state = document.getElementById('state');
+      var grid = document.getElementById('grid');
+      if (!reels.length) {
+        state.className = 'empty';
+        state.textContent = 'No published motion reels yet. Upload a reel in the CRM, publish the project, then refresh.';
+        grid.hidden = true;
+        return;
+      }
+      state.hidden = true;
+      grid.hidden = false;
+      grid.innerHTML = reels.map(function (r) {
+        var src = r.transcodeStatus === 'ready' ? r.streamUrl : r.originalUrl;
+        var poster = r.posterUrl || '';
+        return '<article class="card" data-status="' + (r.transcodeStatus || '') + '">' +
+          '<div class="media">' +
+            '<span class="' + statusClass(r.transcodeStatus) + '">' + (r.transcodeStatus || 'none') + '</span>' +
+            '<video controls preload="metadata" poster="' + poster + '" src="' + src + '"></video>' +
+          '</div>' +
+          '<div class="body">' +
+            '<div class="meta">' + (r.year || '') + ' · ' + (r.industry || r.meta || 'Motion') + '</div>' +
+            '<h2>' + escapeHtml(r.name || r.slug) + '</h2>' +
+            '<p class="statement">' + escapeHtml(r.statement || '') + '</p>' +
+            '<div class="links">' +
+              '<a href="' + (r.motionUrl || '#') + '">Case study</a>' +
+              '<a href="' + r.originalUrl + '" target="_blank" rel="noopener">Original</a>' +
+              (r.transcodeStatus === 'ready' ? '<a href="' + r.streamUrl + '" target="_blank" rel="noopener">Stream</a>' : '') +
+            '</div>' +
+            (r.transcodeError ? '<p class="statement" style="color:#ff6b6b;margin-top:10px">' + escapeHtml(r.transcodeError) + '</p>' : '') +
+          '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, function (c) {
+        return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+      });
+    }
+
+    function load() {
+      var state = document.getElementById('state');
+      state.hidden = false;
+      state.className = 'loading';
+      state.textContent = 'Loading published reels…';
+      fetch('/api/public/reels', { credentials: 'same-origin' })
+        .then(function (res) { return res.json().then(function (d) { if (!res.ok) throw new Error((d.error && d.error.message) || 'Failed'); return d; }); })
+        .then(function (data) {
+          renderReels(data.reels || []);
+          var processing = (data.reels || []).some(function (r) { return r.transcodeStatus === 'processing'; });
+          clearTimeout(pollTimer);
+          if (processing) pollTimer = setTimeout(load, 4000);
+        })
+        .catch(function (err) {
+          state.hidden = false;
+          state.className = 'error';
+          state.textContent = err.message || 'Could not load reels.';
+          document.getElementById('grid').hidden = true;
+        });
+    }
+
+    document.getElementById('refresh').addEventListener('click', load);
+    load();
+  </script>
+</body>
+</html>
