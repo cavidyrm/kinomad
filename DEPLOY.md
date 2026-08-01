@@ -1,7 +1,7 @@
 # Deploying this handoff
 
 The repo (`cavidyrm/kinomad`) builds a static nginx image, pushes it to
-`ghcr.io/cavidyrm/kinomad:latest`, and restarts the container on the server over SSH.
+`ghcr.io/cavidyrm/kinomad-frontend:latest`, and restarts the container on the server over SSH.
 Nothing about that pipeline needs to change. Replace two files and add the new ones.
 
 ## What broke on the last deploy

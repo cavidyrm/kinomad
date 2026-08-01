@@ -1,7 +1,7 @@
 # Same as docker-compose.yml — kept in repo for reference.
 services:
   app:
-    image: ghcr.io/cavidyrm/kinomad:latest
+    image: ghcr.io/cavidyrm/kinomad-frontend:latest
     container_name: kinomad
     restart: unless-stopped
     ports:

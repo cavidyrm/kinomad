@@ -6,7 +6,7 @@
 # On the server: copy to APP_DIR (e.g. /opt/kinomad). Set GitHub secret APP_DIR to the same path.
 services:
   app:
-    image: ghcr.io/cavidyrm/kinomad:latest
+    image: ghcr.io/cavidyrm/kinomad-frontend:latest
     container_name: kinomad
     restart: unless-stopped
     ports:
