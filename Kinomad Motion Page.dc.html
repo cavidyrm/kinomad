@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script src="/support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <title>Motion Design — Kinomad Studio</title>
-<link href="assets/favicon.svg" rel="icon" type="image/svg+xml">
-<link href="assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
-<link href="assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
+<link href="/assets/favicon.svg" rel="icon" type="image/svg+xml">
+<link href="/assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
+<link href="/assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
 <meta content="#0D0D0D" name="theme-color">
-<script src="./km-routes.js"></script>
+<script src="/km-routes.js"></script>
+<script src="/km-api.js"></script>
 <script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
+<script>if(!window.KMAPI){var ka=document.createElement('script');ka.src='/km-api.js';ka.onload=function(){window.dispatchEvent(new Event('kmapi-ready'));};document.head.appendChild(ka);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=gambetta@400,401,500,501,700,701&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth;scrollbar-width:none}
@@ -149,7 +151,7 @@ body.dev.dragging #frame{cursor:grabbing}
   <div data-r="shotgrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px">
     <sc-for list="{{ shots }}" as="sh" hint-placeholder-count="5">
       <figure style="position:relative;margin:0;background:var(--card);grid-column:span {{ sh.span }};aspect-ratio:{{ sh.ratio }}">
-        <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ sh.imgId }}" src="{{ sh.src }}" shape="rect" radius="0" placeholder="{{ sh.ph }}" style="position:absolute;inset:0;width:100%;height:100%" hint-size="100%,100%"></x-import>
+        <x-import component-from-global-scope="image-slot" from="/image-slot.js" id="{{ sh.imgId }}" src="{{ sh.src }}" shape="rect" radius="0" placeholder="{{ sh.ph }}" style="position:absolute;inset:0;width:100%;height:100%" hint-size="100%,100%"></x-import>
       </figure>
     </sc-for>
   </div>
@@ -266,6 +268,21 @@ class Component extends DCLogic {
         localStorage.setItem(key, String(reel.currentTime));
       });
     }
+    this._loadCases();
+  }
+
+  _loadCases() {
+    const self = this;
+    const fallback = () => { self._caseData = self._fallbackCases(); self.forceUpdate(); };
+    const start = () => {
+      if (!window.KMAPI || !KMAPI.public) return fallback();
+      KMAPI.public.listByType('three').then(
+        (cases) => { self._caseData = cases && cases.length ? cases : self._fallbackCases(); self.forceUpdate(); },
+        fallback
+      );
+    };
+    if (window.KMAPI) start();
+    else window.addEventListener('kmapi-ready', start, { once: true });
   }
 
   componentWillUnmount() {
@@ -479,7 +496,11 @@ class Component extends DCLogic {
   }
 
   _cases() {
-    return this._caseData || (this._caseData = [
+    return this._caseData || this._fallbackCases();
+  }
+
+  _fallbackCases() {
+    return [
       {
         id: 'three-d-solstice', num: '01', name: 'Solstice', industry: 'Consumer hardware', year: '2026',
         statement: 'Solstice is a product film that makes an unreleased speaker feel like you have already held it.',
@@ -547,9 +568,9 @@ class Component extends DCLogic {
     const cases = this._cases();
     let pid = 'three-d-solstice';
     try { pid = (window.KMROUTES ? KMROUTES.slug() : new URLSearchParams(window.location.search).get('project')) || pid; } catch (e) {}
-    const c = cases.find((x) => x.id === pid) || cases[0];
-    const others = cases.filter((x) => x.id !== c.id).map((x) => ({
-      name: x.name, num: x.num, href: this._href('Kinomad Motion Page.dc.html', x.id),
+    const c = (window.KMAPI && KMAPI.public ? KMAPI.public.matchCase(cases, pid) : cases.find((x) => x.id === pid || x.slug === pid)) || cases[0];
+    const others = cases.filter((x) => x.id !== c.id && x.slug !== c.slug).map((x) => ({
+      name: x.name, num: x.num, href: this._href('Kinomad Motion Page.dc.html', x.slug || x.id),
     }));
     const seg = (name) => (this.props.device || 'Desktop') === name
       ? { bg: 'var(--accent)', fg: '#14130F' }

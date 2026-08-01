@@ -285,6 +285,69 @@
     },
   };
 
+  function assetUrl(assetId) {
+    return assetId ? '/api/assets/' + encodeURIComponent(assetId) + '/file' : '';
+  }
+
+  function padNum(n, i) {
+    var v = n != null && n !== '' ? n : i + 1;
+    return String(v).padStart(2, '0');
+  }
+
+  function projectToCase(p, i) {
+    var slug = p.slug || p.id;
+    var hero = (p.assets && (p.assets.hero || p.assets.card)) || '';
+    var poster = (p.assets && p.assets.poster) || hero;
+    var reel = (p.assets && p.assets.reel) || '';
+    var live = p.liveUrl || (p.bundle && p.bundle.url) || '#';
+    return {
+      id: slug,
+      slug: slug,
+      num: padNum(p.position, i),
+      name: p.name || '',
+      industry: p.industry || '',
+      year: p.year || '',
+      url: live,
+      statement: p.statement || '',
+      background: p.background || '',
+      concept: p.concept || '',
+      heroId: hero || ('hero-' + slug),
+      heroSrc: assetUrl(hero) || assetUrl(poster),
+      heroPh: (p.name || 'Project') + ', hero',
+      reelSrc: assetUrl(reel),
+      credits: (p.credits || []).filter(function (c) { return c.who || c.role; }),
+      shots: (p.shots || []).map(function (s, j) {
+        return {
+          imgId: s.id || ('shot-' + slug + '-' + j),
+          src: assetUrl(s.assetId || s.img),
+          ph: (p.name || 'Project') + ', shot ' + (j + 1),
+          span: s.span || 6,
+          ratio: s.ratio || '16/9',
+        };
+      }),
+    };
+  }
+
+  var publicApi = {
+    list: function () {
+      return jsonFetch('GET', '/public/projects').then(function (data) { return data.projects || []; });
+    },
+    get: function (slug) {
+      return jsonFetch('GET', '/public/projects/' + encodeURIComponent(slug)).then(function (data) { return data.project; });
+    },
+    listByType: function (type) {
+      return publicApi.list().then(function (list) {
+        return list.filter(function (p) { return p.type === type; }).map(projectToCase);
+      });
+    },
+    matchCase: function (cases, pid) {
+      if (!cases || !cases.length) return null;
+      return cases.find(function (x) { return x.slug === pid || x.id === pid; }) || cases[0];
+    },
+    assetUrl: assetUrl,
+    toCase: projectToCase,
+  };
+
   window.KMAPI = {
     flags: flags,
     zones: ZONES,
@@ -304,5 +367,6 @@
     bundle: bundle,
     availability: availability,
     bookings: bookings,
+    public: publicApi,
   };
 })();
