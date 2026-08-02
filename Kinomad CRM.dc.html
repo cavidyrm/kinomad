@@ -17,8 +17,11 @@
 <script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
 <script src="./km-api.js"></script>
-<script>/* deploy safety: a relative path breaks on nested routes like /works/slug — retry from the site root */
-if(!window.KMAPI){var s=document.createElement('script');s.src='/km-api.js';s.onload=function(){window.dispatchEvent(new Event('kmapi-ready'));};document.head.appendChild(s);}</script>
+<script src="./km-auth.js"></script>
+<script>/* deploy safety: relative paths break on nested routes — retry from site root */
+(function(){var n=0,d=function(){if(!n&&window.KMAPI&&window.KMAUTH)window.dispatchEvent(new Event('kmapi-ready'));};
+if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js';a.onload=function(){n--;d();};document.head.appendChild(a);}
+if(!window.KMAUTH){n++;var b=document.createElement('script');b.src='/km-auth.js';b.onload=function(){n--;d();};document.head.appendChild(b);}})();</script>
 <style>
 html{scroll-behavior:smooth}
 body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -61,7 +64,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
         <span style="font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.18em;color:var(--mut)">STUDIO CRM//</span>
       </div>
       <h1 style="margin:0;font-size:clamp(24px,2.8cqw,34px);font-weight:700;letter-spacing:-0.025em;line-height:1.05;text-transform:uppercase">Session required</h1>
-      <span style="font-size:14px;color:var(--mut);font-weight:500;line-height:1.55;text-wrap:pretty">There is no live session in this browser. In production this route redirects straight to the sign-in page.</span>
+      <span style="font-size:14px;color:var(--mut);font-weight:500;line-height:1.55;text-wrap:pretty">Checking your session… If you are not signed in, you will be redirected to the sign-in page.</span>
       <a href="Kinomad CRM Sign In.dc.html" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 24px;text-align:center">Go to sign in ↗</a>
     </div>
   </div>
@@ -785,19 +788,22 @@ class Component extends DCLogic {
   componentDidMount() {
     const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
     document.body.style.setProperty('--accent', g('kinomad-accent') ?? this.props.accent ?? '#2bcdee');
-    if (!window.KMAPI) {
-      // the root-path fallback load may still be in flight
-      this._apiWait = setTimeout(() => this.setState({ booting: false }), 2500);
+    const start = () => {
+      KMAUTH.bootRequireAuth().then(
+        (sess) => this.setState({ booting: false, session: sess }, () => { if (sess) this._bootData(); }),
+        () => this.setState({ booting: false, session: null })
+      );
+    };
+    if (!window.KMAUTH) {
+      this._apiWait = setTimeout(() => this.setState({ booting: false }), 8000);
       window.addEventListener('kmapi-ready', this._onApi = () => {
         clearTimeout(this._apiWait);
-        const sess = KMAPI.session.current();
-        this.setState({ booting: false, session: sess }, () => { if (sess) this._bootData(); });
+        start();
       });
       this._clock = setInterval(() => this.setState((st) => ({ tick: st.tick + 1 })), 15000);
       return;
     }
-    const s = KMAPI.session.current();
-    this.setState({ booting: false, session: s }, () => { if (s) this._bootData(); });
+    start();
     this._clock = setInterval(() => this.setState((st) => ({ tick: st.tick + 1 })), 15000);
   }
   componentWillUnmount() {
@@ -932,7 +938,7 @@ class Component extends DCLogic {
       isDead: false,
       isLocked: !s.booting && !s.session,
       isApp: !!s.session,
-      doLogout: () => KMAPI.session.logout().then(() => { if (window.KMROUTES) KMROUTES.go('Kinomad CRM Sign In.dc.html'); else window.location.href = 'Kinomad CRM Sign In.dc.html'; }),
+      doLogout: () => KMAUTH.logout(),
       sessEmail: s.session ? s.session.email : '',
       failLabel: KMAPI.flags.fail ? 'API failing' : 'API healthy',
       failFg: KMAPI.flags.fail ? 'var(--warn)' : 'var(--accent)',

@@ -18,8 +18,11 @@
 <meta content="noindex, nofollow" name="robots">
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
 <script src="./km-api.js"></script>
-<script>/* deploy safety: a relative path breaks on nested routes like /works/slug — retry from the site root */
-if(!window.KMAPI){var s=document.createElement('script');s.src='/km-api.js';s.onload=function(){window.dispatchEvent(new Event('kmapi-ready'));};document.head.appendChild(s);}</script>
+<script src="./km-auth.js"></script>
+<script>/* deploy safety: relative paths break on nested routes — retry from site root */
+(function(){var n=0,d=function(){if(!n&&window.KMAPI&&window.KMAUTH)window.dispatchEvent(new Event('kmapi-ready'));};
+if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js';a.onload=function(){n--;d();};document.head.appendChild(a);}
+if(!window.KMAUTH){n++;var b=document.createElement('script');b.src='/km-auth.js';b.onload=function(){n--;d();};document.head.appendChild(b);}})();</script>
 <style>
 body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
@@ -71,7 +74,7 @@ input:focus{outline:none;border-color:var(--accent)!important}
       </div>
     </sc-if>
 
-    <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.5;border-top:1px solid var(--line);padding-top:16px">Prototype: any valid email and a password of four characters or more opens the CRM. In production this page is the only unauthenticated route under <span style="font-family:'Chillax',sans-serif">/admin</span>.</span>
+    <span style="font-size:12px;color:var(--mut);font-weight:500;line-height:1.5;border-top:1px solid var(--line);padding-top:16px">Sign in with the <span style="font-family:'Chillax',sans-serif">ADMIN_EMAIL</span> and <span style="font-family:'Chillax',sans-serif">ADMIN_PASSWORD</span> values from the server environment. This page is the only unauthenticated route under <span style="font-family:'Chillax',sans-serif">/admin</span>.</span>
   </div>
 </main>
 
@@ -84,16 +87,21 @@ class Component extends DCLogic {
     let accent = null;
     try { accent = localStorage.getItem('kinomad-accent'); } catch (_) {}
     document.body.style.setProperty('--accent', accent || this.props.accent || '#2bcdee');
-    if (!window.KMAPI) {
-      // the root-path fallback load may still be in flight
-      this._apiWait = setTimeout(() => this.setState({ booting: false, apiMissing: true }), 2500);
+    const start = () => {
+      KMAUTH.bootGuest().then(
+        (sess) => this.setState({ booting: false, apiMissing: false, session: sess }),
+        () => this.setState({ booting: false, apiMissing: false, session: null })
+      );
+    };
+    if (!window.KMAUTH) {
+      this._apiWait = setTimeout(() => this.setState({ booting: false, apiMissing: true }), 8000);
       window.addEventListener('kmapi-ready', this._onApi = () => {
         clearTimeout(this._apiWait);
-        this.setState({ booting: false, apiMissing: false, session: KMAPI.session.current() });
+        start();
       });
       return;
     }
-    this.setState({ booting: false, session: KMAPI.session.current(), apiMissing: false });
+    start();
   }
 
   componentWillUnmount() {
@@ -118,14 +126,14 @@ class Component extends DCLogic {
       doLogin: (e) => {
         e.preventDefault();
         if (this.state.lgBusy) return;
-        if (!window.KMAPI) return this.setState({ lgErr: 'The API client did not load — sign-in is unavailable.' });
+        if (!window.KMAUTH) return this.setState({ lgErr: 'The API client did not load — sign-in is unavailable.' });
         this.setState({ lgBusy: true, lgErr: '' });
-        KMAPI.session.login(this.state.lgEmail, this.state.lgPw).then(
-          () => { if (window.KMROUTES) KMROUTES.go('Kinomad CRM.dc.html'); else window.location.href = 'Kinomad CRM.dc.html'; },
+        KMAUTH.login(this.state.lgEmail, this.state.lgPw).then(
+          () => KMAUTH.goAdmin(),
           (err) => this.setState({ lgBusy: false, lgErr: err.message })
         );
       },
-      doLogout: () => KMAPI.session.logout().then(() => this.setState({ session: null, lgPw: '', lgErr: '' })),
+      doLogout: () => KMAUTH.logout().then(() => this.setState({ session: null, lgPw: '', lgErr: '' })),
     };
   }
 }

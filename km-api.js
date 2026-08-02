@@ -3,6 +3,42 @@
   var API = '/api';
 
   var flags = { fail: false, latency: 0 };
+  var SESSION_KEY = 'kinomad_admin_token';
+
+  function readStoredSession() {
+    try {
+      var raw = sessionStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      var s = JSON.parse(raw);
+      if (s.exp && s.exp < Date.now()) {
+        sessionStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+      return s;
+    } catch (_) { return null; }
+  }
+
+  function storeSession(user, token) {
+    var existing = readStoredSession();
+    var sess = {
+      email: user.email,
+      name: user.name,
+      token: token || (existing && existing.token) || '',
+      exp: Date.now() + 30 * 86400000,
+    };
+    try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(sess)); } catch (_) {}
+    return sess;
+  }
+
+  function clearStoredSession() {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
+  }
+
+  function authHeaders() {
+    var s = readStoredSession();
+    if (s && s.token) return { Authorization: 'Bearer ' + s.token };
+    return {};
+  }
 
   function wait(ms) {
     return new Promise(function (r) { setTimeout(r, ms == null ? flags.latency : ms); });
@@ -32,7 +68,7 @@
       var opts = {
         method: method,
         credentials: 'include',
-        headers: { Accept: 'application/json' },
+        headers: Object.assign({ Accept: 'application/json' }, authHeaders()),
       };
       if (body !== undefined) {
         opts.headers['Content-Type'] = 'application/json';
@@ -42,7 +78,13 @@
     }).then(function (res) {
       if (res.status === 204) return null;
       return res.json().catch(function () { return null; }).then(function (data) {
-        if (!res.ok) parseError(res, data);
+        if (!res.ok) {
+          if (res.status === 401 && path.indexOf('/admin') === 0) {
+            clearStoredSession();
+            try { window.dispatchEvent(new Event('km-auth-expired')); } catch (_) {}
+          }
+          parseError(res, data);
+        }
         return data;
       });
     });
@@ -56,6 +98,8 @@
         xhr.open(method, API + path, true);
         xhr.withCredentials = true;
         xhr.responseType = 'json';
+        var auth = authHeaders();
+        if (auth.Authorization) xhr.setRequestHeader('Authorization', auth.Authorization);
         xhr.upload.onprogress = function (ev) {
           if (onProgress && ev.lengthComputable) onProgress(ev.loaded / ev.total);
         };
@@ -65,6 +109,10 @@
             try { data = JSON.parse(data); } catch (_) { data = null; }
           }
           if (xhr.status >= 200 && xhr.status < 300) return resolve(data);
+          if (xhr.status === 401 && path.indexOf('/admin') === 0) {
+            clearStoredSession();
+            try { window.dispatchEvent(new Event('km-auth-expired')); } catch (_) {}
+          }
           try { parseError({ status: xhr.status }, data); } catch (e) { reject(e); }
         };
         xhr.onerror = function () { reject(fail(503, 'Upload failed — connection lost.')); };
@@ -188,22 +236,45 @@
   }
 
   var session = {
+    local: readStoredSession,
     current: function () {
+      var local = readStoredSession();
+      if (!local || !local.token) {
+        clearStoredSession();
+        return Promise.resolve(null);
+      }
       return jsonFetch('GET', '/session').then(function (data) {
-        if (!data || !data.user) return null;
-        return { email: data.user.email, name: data.user.name, exp: Date.now() + 86400000 };
+        if (!data || !data.user) {
+          clearStoredSession();
+          return null;
+        }
+        return storeSession(data.user, local.token);
       }).catch(function (e) {
-        if (e.status === 401) return null;
+        if (e.status === 401) {
+          clearStoredSession();
+          return null;
+        }
         throw e;
       });
     },
     login: function (email, password) {
       return jsonFetch('POST', '/session', { email: email, password: password }).then(function (data) {
-        return { email: data.user.email, name: data.user.name, exp: Date.now() + 86400000 };
+        if (!data || !data.user || !data.token) {
+          throw fail(502, 'Sign-in succeeded but no session token was returned. Redeploy the API.');
+        }
+        storeSession(data.user, data.token);
+        return jsonFetch('GET', '/session').then(function (check) {
+          if (!check || !check.user) {
+            clearStoredSession();
+            throw fail(401, 'Sign-in could not be verified. Check ADMIN_EMAIL and ADMIN_PASSWORD on the server.');
+          }
+          return storeSession(check.user, data.token);
+        });
       });
     },
     logout: function () {
-      return jsonFetch('DELETE', '/session').then(function () { return true; });
+      clearStoredSession();
+      return jsonFetch('DELETE', '/session').then(function () { return true; }).catch(function () { return true; });
     },
   };
 

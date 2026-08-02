@@ -19,7 +19,7 @@ RUN cp "/usr/share/nginx/html/Kinomad Landing.dc.html" /usr/share/nginx/html/ind
 
 # Fail the build rather than the site if a required file is missing.
 RUN set -e; cd /usr/share/nginx/html; \
-    for f in "km-api.js" "km-routes.js" "support.js" "image-slot.js" "reels.html" \
+    for f in "km-api.js" "km-auth.js" "km-routes.js" "support.js" "image-slot.js" "reels.html" \
              "Kinomad Landing.dc.html" "Kinomad Works.dc.html" "Kinomad Privacy.dc.html" \
              "Kinomad Website Page.dc.html" "Kinomad Brand Page.dc.html" "Kinomad Motion Page.dc.html" \
              "Kinomad CRM.dc.html" "Kinomad CRM Sign In.dc.html" "Kinomad 404.dc.html" \
