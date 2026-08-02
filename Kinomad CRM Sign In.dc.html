@@ -129,7 +129,7 @@ class Component extends DCLogic {
         if (!window.KMAUTH) return this.setState({ lgErr: 'The API client did not load — sign-in is unavailable.' });
         this.setState({ lgBusy: true, lgErr: '' });
         KMAUTH.login(this.state.lgEmail, this.state.lgPw).then(
-          () => KMAUTH.goAdmin(),
+          (sess) => { if (sess && sess.token) KMAUTH.goAdmin(); },
           (err) => this.setState({ lgBusy: false, lgErr: err.message })
         );
       },

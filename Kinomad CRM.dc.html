@@ -55,18 +55,9 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
   </div>
 </sc-if>
 
-<sc-if value="{{ isLocked }}" hint-placeholder-val="{{ false }}">
-  <div style="min-height:100svh;display:grid;place-items:center;padding:clamp(20px,4cqw,60px);position:relative;overflow:hidden">
-    <span aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(120px,26cqw,360px);font-weight:700;letter-spacing:-0.04em;color:rgba(241,239,231,0.028);white-space:nowrap;pointer-events:none">KINOMAD</span>
-    <div style="position:relative;width:min(400px,100%);display:flex;flex-direction:column;gap:18px;background:var(--panel);border:1px solid var(--line);padding:clamp(28px,3cqw,40px);animation:km-rise 0.6s cubic-bezier(0.16,1,0.3,1) both">
-      <div style="display:flex;align-items:center;gap:12px">
-        <img src="assets/logo-light.svg" alt="" style="width:28px;height:auto;display:block">
-        <span style="font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.18em;color:var(--mut)">STUDIO CRM//</span>
-      </div>
-      <h1 style="margin:0;font-size:clamp(24px,2.8cqw,34px);font-weight:700;letter-spacing:-0.025em;line-height:1.05;text-transform:uppercase">Session required</h1>
-      <span style="font-size:14px;color:var(--mut);font-weight:500;line-height:1.55;text-wrap:pretty">Checking your session… If you are not signed in, you will be redirected to the sign-in page.</span>
-      <a href="Kinomad CRM Sign In.dc.html" class="km-cta" style="border:none;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 24px;text-align:center">Go to sign in ↗</a>
-    </div>
+<sc-if value="{{ isBooting }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100svh;display:grid;place-items:center;padding:clamp(20px,4cqw,60px)">
+    <span style="font-size:14px;color:var(--mut);font-weight:500;letter-spacing:0.06em">Loading studio console…</span>
   </div>
 </sc-if>
 
@@ -795,7 +786,11 @@ class Component extends DCLogic {
       );
     };
     if (!window.KMAUTH) {
-      this._apiWait = setTimeout(() => this.setState({ booting: false }), 8000);
+      this._apiWait = setTimeout(() => {
+        if (window.KMAUTH) KMAUTH.goLogin();
+        else if (window.KMROUTES) window.location.href = KMROUTES.href('Kinomad CRM Sign In.dc.html');
+        else window.location.href = 'Kinomad CRM Sign In.dc.html';
+      }, 8000);
       window.addEventListener('kmapi-ready', this._onApi = () => {
         clearTimeout(this._apiWait);
         start();
@@ -936,7 +931,8 @@ class Component extends DCLogic {
     const s = this.state;
     return {
       isDead: false,
-      isLocked: !s.booting && !s.session,
+      isBooting: s.booting,
+      isLocked: false,
       isApp: !!s.session,
       doLogout: () => KMAUTH.logout(),
       sessEmail: s.session ? s.session.email : '',

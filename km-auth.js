@@ -1,6 +1,4 @@
-/* Kinomad admin auth — single entry point for sign-in and CRM gating.
-   Avoids cookie/proxy bugs by requiring a bearer token and verifying it with
-   the API before any redirect or admin UI is shown. */
+/* Kinomad admin auth — token in localStorage, no cookies. */
 (function () {
   'use strict';
 
@@ -34,25 +32,18 @@
 
   function hang() { return new Promise(function () {}); }
 
-  /** CRM: verify token with API; redirect to sign-in when missing or invalid. */
   function bootRequireAuth() {
     return waitForAPI().then(function () {
-      return KMAPI.session.current();
-    }).then(function (sess) {
+      var sess = KMAPI.session.local();
       if (sess && sess.token) return sess;
-      if (window.KMROUTES && KMROUTES.deployed && KMROUTES.deployed()) {
-        goLogin();
-        return hang();
-      }
-      return null;
+      goLogin();
+      return hang();
     });
   }
 
-  /** Sign-in: if already authenticated, go straight to the CRM. */
   function bootGuest() {
     return waitForAPI().then(function () {
-      return KMAPI.session.current();
-    }).then(function (sess) {
+      var sess = KMAPI.session.local();
       if (sess && sess.token) {
         goAdmin();
         return hang();
@@ -61,7 +52,6 @@
     }).catch(function () { return null; });
   }
 
-  /** Sign in, verify token works, then return the session. */
   function login(email, password) {
     return waitForAPI().then(function () {
       return KMAPI.session.login(email, password);
@@ -77,7 +67,7 @@
   }
 
   window.addEventListener('km-auth-expired', function () {
-    if (window.KMROUTES && KMROUTES.deployed && KMROUTES.deployed()) goLogin();
+    goLogin();
   });
 
   window.KMAUTH = {

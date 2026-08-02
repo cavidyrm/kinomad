@@ -7,11 +7,11 @@
 
   function readStoredSession() {
     try {
-      var raw = sessionStorage.getItem(SESSION_KEY);
+      var raw = localStorage.getItem(SESSION_KEY);
       if (!raw) return null;
       var s = JSON.parse(raw);
       if (s.exp && s.exp < Date.now()) {
-        sessionStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(SESSION_KEY);
         return null;
       }
       return s;
@@ -19,19 +19,18 @@
   }
 
   function storeSession(user, token) {
-    var existing = readStoredSession();
     var sess = {
       email: user.email,
       name: user.name,
-      token: token || (existing && existing.token) || '',
+      token: token || '',
       exp: Date.now() + 30 * 86400000,
     };
-    try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(sess)); } catch (_) {}
+    try { localStorage.setItem(SESSION_KEY, JSON.stringify(sess)); } catch (_) {}
     return sess;
   }
 
   function clearStoredSession() {
-    try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
+    try { localStorage.removeItem(SESSION_KEY); } catch (_) {}
   }
 
   function authHeaders() {
@@ -67,7 +66,6 @@
       if (flags.fail) throw fail(503, 'Network request failed — the studio API did not respond.');
       var opts = {
         method: method,
-        credentials: 'include',
         headers: Object.assign({ Accept: 'application/json' }, authHeaders()),
       };
       if (body !== undefined) {
@@ -96,7 +94,6 @@
       return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
         xhr.open(method, API + path, true);
-        xhr.withCredentials = true;
         xhr.responseType = 'json';
         var auth = authHeaders();
         if (auth.Authorization) xhr.setRequestHeader('Authorization', auth.Authorization);
@@ -243,38 +240,19 @@
         clearStoredSession();
         return Promise.resolve(null);
       }
-      return jsonFetch('GET', '/session').then(function (data) {
-        if (!data || !data.user) {
-          clearStoredSession();
-          return null;
-        }
-        return storeSession(data.user, local.token);
-      }).catch(function (e) {
-        if (e.status === 401) {
-          clearStoredSession();
-          return null;
-        }
-        throw e;
-      });
+      return Promise.resolve(local);
     },
     login: function (email, password) {
       return jsonFetch('POST', '/session', { email: email, password: password }).then(function (data) {
         if (!data || !data.user || !data.token) {
-          throw fail(502, 'Sign-in succeeded but no session token was returned. Redeploy the API.');
+          throw fail(502, 'Sign-in failed — the API did not return a token.');
         }
-        storeSession(data.user, data.token);
-        return jsonFetch('GET', '/session').then(function (check) {
-          if (!check || !check.user) {
-            clearStoredSession();
-            throw fail(401, 'Sign-in could not be verified. Check ADMIN_EMAIL and ADMIN_PASSWORD on the server.');
-          }
-          return storeSession(check.user, data.token);
-        });
+        return storeSession(data.user, data.token);
       });
     },
     logout: function () {
       clearStoredSession();
-      return jsonFetch('DELETE', '/session').then(function () { return true; }).catch(function () { return true; });
+      return Promise.resolve(true);
     },
   };
 
