@@ -273,7 +273,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
                 <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(22px,2.4cqw,36px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
                   <input type="file" accept=".zip" data-key="bundle" onChange="{{ bundleFile }}" style="display:none">
                   <span style="font-size:15px;font-weight:600">{{ bundleCta }}</span>
-                  <span style="font-size:13px;color:var(--mut);font-weight:500">Drop the built site as a .zip with index.html at the archive root. We unpack it and serve it from the demo host.</span>
+                  <span style="font-size:13px;color:var(--mut);font-weight:500">Drop the built site as a .zip with index.html or index.dc.html at the archive root. We unpack it and serve it from the demo host.</span>
                 </label>
 
                 <div style="display:flex;flex-direction:column;gap:7px;display:{{ bundleBarShow }}">

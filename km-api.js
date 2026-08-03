@@ -356,6 +356,8 @@
       name: p.name || '',
       industry: p.industry || '',
       year: p.year || '',
+      meta: p.meta || '',
+      fill: p.fill || '',
       url: live,
       statement: p.statement || '',
       background: p.background || '',

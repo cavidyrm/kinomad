@@ -15,6 +15,7 @@
 <meta content="#0D0D0D" name="theme-color">
 <script src="./km-routes.js"></script>
 <script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
+<script>if(!window.KMAPI){var ka=document.createElement('script');ka.src='/km-api.js';ka.onload=function(){window.dispatchEvent(new Event('kmapi-ready'));};document.head.appendChild(ka);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=gambetta@400,401,500,501,700,701&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth;scrollbar-width:none}
@@ -220,15 +221,15 @@ body.dev.dragging #frame{cursor:grabbing}
   <h1 id="km-works-title" style="margin:0;display:flex;align-items:flex-end;justify-content:space-between;font-size:clamp(72px,20.5cqw,340px);line-height:0.78;letter-spacing:-0.045em;font-weight:700;text-transform:uppercase;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) both"><span style="flex:1;display:flex;justify-content:space-between;align-items:flex-end"><span>W</span><span>O</span><span>R</span><span>K</span><span>S</span></span></h1>
   <div style="border-top:2px solid var(--fg);margin-top:clamp(20px,2.6cqw,40px)"></div>
   <div data-r="wmeta" style="display:grid;grid-template-columns:minmax(120px,0.8fr) minmax(0,1.4fr) minmax(160px,1fr) auto;gap:clamp(24px,4cqw,72px);align-items:start;padding-top:18px;animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.15s both">
-    <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600">Selected works · 11</span>
+    <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600">Selected works · {{ totalCount }}</span>
     <div style="display:flex;flex-direction:column;gap:14px">
       <span style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--mut)">Why</span>
       <p style="margin:0;max-width:440px;font-family:'Gambetta',serif;font-style:italic;font-size:15px;line-height:1.55;font-weight:500;color:var(--mut);text-wrap:pretty">Every project here started as someone's dream. Websites, brand identities and 3D worlds, carefully designed, built and shipped by Kinomad.</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:12px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;align-items:flex-start">
-      <a href="#websites">Websites · 05</a>
-      <a href="#brand">Brand identity · 03</a>
-      <a href="#three-d">3D · 03</a>
+      <a href="#websites">Websites · {{ webCountPad }}</a>
+      <a href="#brand">Brand identity · {{ brandCountPad }}</a>
+      <a href="#three-d">3D · {{ threeCountPad }}</a>
     </div>
     <span style="font-size:12px;letter-spacing:0.14em;font-weight:600;justify-self:end">© 2026</span>
   </div>
@@ -237,7 +238,7 @@ body.dev.dragging #frame{cursor:grabbing}
 <section data-screen-label="Websites" id="websites" style="padding:0 0 clamp(64px,9cqw,130px)">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);margin:0 clamp(20px,4cqw,64px);padding:20px 0 clamp(28px,4cqw,56px)">
     <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">Websites</h2>
-    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">01 · 05 PROJECTS//</span>
+    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">01 · {{ webCountPad }} PROJECTS//</span>
   </div>
 
   <sc-for list="{{ webs }}" as="wp" hint-placeholder-count="5">
@@ -283,7 +284,7 @@ body.dev.dragging #frame{cursor:grabbing}
 <section data-screen-label="Brand identity" id="brand" style="padding:0 clamp(20px,4cqw,64px) clamp(64px,9cqw,130px);scroll-margin-top:70px">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);padding:20px 0 clamp(28px,4cqw,56px)">
     <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">Brand identity</h2>
-    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">02 · 03 PROJECTS//</span>
+    <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut);padding-bottom:6px">02 · {{ brandCountPad }} PROJECTS//</span>
   </div>
   <div style="display:flex;flex-direction:column;gap:clamp(44px,5.5cqw,80px)">
     <sc-for list="{{ brands }}" as="bp" hint-placeholder-count="3">
@@ -334,7 +335,7 @@ body.dev.dragging #frame{cursor:grabbing}
     <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">3D &amp; motion</h2>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;padding-bottom:6px">
       <a href="reels.html" style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--accent)">Watch live reels ↗</a>
-      <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut)">03 · 03 PROJECTS//</span>
+      <span style="font-family:'Gambetta',serif;font-size:13px;letter-spacing:0.14em;color:var(--mut)">03 · {{ threeCountPad }} PROJECTS//</span>
     </div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(24px,3cqw,40px)">
@@ -443,6 +444,129 @@ class Component extends DCLogic {
     this._clockTimer = setInterval(() => this._tick(), 1000);
     this._tick();
     this._initCursor();
+    this._loadProjects();
+  }
+
+  _loadProjects() {
+    const self = this;
+    const useFallback = () => {
+      if (self._projectsLoaded) return;
+      self._webs = self._fallbackWebs();
+      self._brands = self._fallbackBrands();
+      self._threes = self._fallbackThrees();
+      self.forceUpdate();
+    };
+    const start = () => {
+      if (!window.KMAPI || !KMAPI.public) return useFallback();
+      Promise.all([
+        KMAPI.public.listByType('website'),
+        KMAPI.public.listByType('brand'),
+        KMAPI.public.listByType('three'),
+      ]).then(
+        ([webs, brands, threes]) => {
+          if (!webs.length && !brands.length && !threes.length) return useFallback();
+          self._projectsLoaded = true;
+          self._webs = webs.map((c) => self._mapWeb(c));
+          self._brands = brands.map((c) => self._mapBrand(c));
+          self._threes = threes.map((c) => self._mapThree(c));
+          self.forceUpdate();
+        },
+        useFallback
+      );
+    };
+    if (window.KMAPI) start();
+    else window.addEventListener('kmapi-ready', start, { once: true });
+  }
+
+  _mapWeb(c) {
+    const meta = [c.industry, c.meta || 'Design + Dev', c.year].filter(Boolean).join(' · ');
+    return {
+      id: c.slug || c.id,
+      imgId: c.heroId,
+      src: c.heroSrc,
+      ph: c.heroPh,
+      name: c.name,
+      meta,
+      desc: c.statement,
+      industry: c.industry,
+      year: c.year,
+      url: c.url,
+      num: c.num,
+    };
+  }
+
+  _mapBrand(c) {
+    const imgs = (c.shots && c.shots.length ? c.shots : [{ imgId: c.heroId, src: c.heroSrc, ph: c.heroPh }]).slice(0, 4);
+    return {
+      id: c.slug || c.id,
+      name: c.name,
+      meta: [c.industry, c.year].filter(Boolean).join(' · '),
+      statement: c.statement,
+      industry: c.industry,
+      year: c.year,
+      fill: c.fill,
+      imgs,
+    };
+  }
+
+  _mapThree(c) {
+    return {
+      id: c.slug || c.id,
+      imgId: c.heroId,
+      src: c.heroSrc,
+      ph: c.heroPh,
+      name: c.name,
+      meta: [c.meta, c.year].filter(Boolean).join(' · '),
+      num: c.num,
+      industry: c.industry,
+      year: c.year,
+      statement: c.statement,
+    };
+  }
+
+  _fallbackWebs() {
+    return [
+      { id: 'web-aurelia', imgId: 'web-aurelia-img', src: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Aurelia, website hero screen', name: 'Aurelia', meta: 'E-commerce · Design + Dev · 2026', desc: 'A slow-fashion storefront rebuilt around feel: art direction, UX and full build.', industry: 'E-commerce', year: '2026' },
+      { id: 'web-nomadair', imgId: 'web-nomadair-img', src: 'https://images.pexels.com/photos/34088260/pexels-photo-34088260.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Nomad Air, website screens', name: 'Nomad Air', meta: 'Travel platform · Web design · 2025', desc: 'A travel platform that makes booking feel like the trip already started.', industry: 'Travel platform', year: '2025' },
+      { id: 'web-fieldnote', imgId: 'web-fieldnote-img', src: 'https://images.pexels.com/photos/34804003/pexels-photo-34804003.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Fieldnote, marketing site', name: 'Fieldnote', meta: 'SaaS · Web design · 2025', desc: 'A SaaS marketing site that explains a complex product in one scroll.', industry: 'SaaS', year: '2025' },
+      { id: 'web-ostro', imgId: 'web-ostro-img', src: 'https://images.pexels.com/photos/17077374/pexels-photo-17077374.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Ostro, portfolio site', name: 'Ostro', meta: 'Portfolio · Web design · 2025', desc: 'An architecture portfolio where the buildings do the talking.', industry: 'Portfolio', year: '2025' },
+      { id: 'web-kepler', imgId: 'web-kepler-img', src: 'https://images.pexels.com/photos/34167277/pexels-photo-34167277.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Kepler Labs, startup site', name: 'Kepler Labs', meta: 'AI startup · Design + Dev · 2024', desc: 'Launch site for an AI startup, from nothing to live in three weeks.', industry: 'AI startup', year: '2024' },
+    ];
+  }
+
+  _fallbackBrands() {
+    return [
+      { id: 'brand-vantar', name: 'Vantar', meta: 'Fintech · 2026', statement: 'Vantar is a fintech on a mission to make everyday banking feel calm, clear and quietly confident.', industry: 'Fintech', year: '2026', imgs: [
+        { imgId: 'brand-vantar-img', src: 'https://images.pexels.com/photos/6244/designer-board-typo-word.jpg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, identity spread' },
+        { imgId: 'brand-vantar-img-2', src: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, collateral in use' },
+        { imgId: 'brand-vantar-img-3', src: 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, app / product shot' },
+        { imgId: 'brand-vantar-img-4', src: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, signage / environment' },
+      ] },
+      { id: 'brand-mono', name: 'Mono Coffee', meta: 'Packaging · 2025', statement: 'Mono is a single-origin roaster that believes one great bean, done right, beats a hundred blends.', industry: 'Packaging', year: '2025', imgs: [
+        { imgId: 'brand-mono-img', src: 'https://images.pexels.com/photos/4623113/pexels-photo-4623113.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, packaging' },
+        { imgId: 'brand-mono-img-2', src: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, in the café' },
+        { imgId: 'brand-mono-img-3', src: 'https://images.pexels.com/photos/606545/pexels-photo-606545.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, beans / detail' },
+        { imgId: 'brand-mono-img-4', src: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, cup / lifestyle' },
+      ] },
+      { id: 'brand-halcyon', name: 'Halcyon', meta: 'Wellness · 2024', statement: 'Halcyon is a wellness brand for people who are tired of wellness brands shouting at them.', industry: 'Wellness', year: '2024', imgs: [
+        { imgId: 'brand-halcyon-img', src: 'https://images.pexels.com/photos/8545636/pexels-photo-8545636.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, brand system' },
+        { imgId: 'brand-halcyon-img-2', src: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, product line' },
+        { imgId: 'brand-halcyon-img-3', src: 'https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, ritual / detail' },
+        { imgId: 'brand-halcyon-img-4', src: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, in use / lifestyle' },
+      ] },
+    ];
+  }
+
+  _fallbackThrees() {
+    return [
+      { id: 'three-d-solstice', imgId: 'three-d-solstice-img', src: 'https://images.pexels.com/photos/13180245/pexels-photo-13180245.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Solstice, product render', name: 'Solstice', meta: 'Product viz · 2026', num: '01', industry: 'Consumer hardware', year: '2026', statement: 'A product film that makes an unreleased speaker feel like you have already held it.' },
+      { id: 'three-d-terraforma', imgId: 'three-d-terraforma-img', src: 'https://images.pexels.com/photos/12627677/pexels-photo-12627677.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Terraforma, arch viz', name: 'Terraforma', meta: 'Arch viz · 2025', num: '02', industry: 'Architecture', year: '2025', statement: 'An unbuilt masterplan you can walk through before ground breaks.' },
+      { id: 'three-d-orbital', imgId: 'three-d-orbital-img', src: 'https://images.pexels.com/photos/28628510/pexels-photo-28628510.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Orbital, animation still', name: 'Orbital', meta: 'Brand film · 2024', num: '03', industry: 'Brand film', year: '2024', statement: 'A brand film where the logo never appears until you already understand the company.' },
+    ];
+  }
+
+  _countPad(n) {
+    return String(n).padStart(2, '0');
   }
 
   _reduced() {
@@ -785,52 +909,26 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const webs = (this._webs || (this._webs = [
-      { id: 'web-aurelia', imgId: 'web-aurelia-img', src: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Aurelia, website hero screen', name: 'Aurelia', meta: 'E-commerce · Design + Dev · 2026', desc: 'A slow-fashion storefront rebuilt around feel: art direction, UX and full build.' },
-      { id: 'web-nomadair', imgId: 'web-nomadair-img', src: 'https://images.pexels.com/photos/34088260/pexels-photo-34088260.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Nomad Air, website screens', name: 'Nomad Air', meta: 'Travel platform · Web design · 2025', desc: 'A travel platform that makes booking feel like the trip already started.' },
-      { id: 'web-fieldnote', imgId: 'web-fieldnote-img', src: 'https://images.pexels.com/photos/34804003/pexels-photo-34804003.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Fieldnote, marketing site', name: 'Fieldnote', meta: 'SaaS · Web design · 2025', desc: 'A SaaS marketing site that explains a complex product in one scroll.' },
-      { id: 'web-ostro', imgId: 'web-ostro-img', src: 'https://images.pexels.com/photos/17077374/pexels-photo-17077374.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Ostro, portfolio site', name: 'Ostro', meta: 'Portfolio · Web design · 2025', desc: 'An architecture portfolio where the buildings do the talking.' },
-      { id: 'web-kepler', imgId: 'web-kepler-img', src: 'https://images.pexels.com/photos/34167277/pexels-photo-34167277.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Kepler Labs, startup site', name: 'Kepler Labs', meta: 'AI startup · Design + Dev · 2024', desc: 'Launch site for an AI startup, from nothing to live in three weeks.' },
-    ])).map((x, i) => Object.assign({}, x, {
+    const websBase = this._webs || this._fallbackWebs();
+    const brandsBase = this._brands || this._fallbackBrands();
+    const threesBase = this._threes || this._fallbackThrees();
+    const webs = websBase.map((x, i) => Object.assign({}, x, {
       href: this._href('Kinomad Website Page.dc.html', x.id),
-      num: '0' + (i + 1),
-      industry: x.meta.split(' · ')[0],
-      year: x.meta.split(' · ')[2],
-      url: 'http://localhost:300' + (i + 1),
+      num: x.num || ('0' + (i + 1)),
+      industry: x.industry || (x.meta ? x.meta.split(' · ')[0] : ''),
+      year: x.year || (x.meta ? x.meta.split(' · ')[2] : ''),
+      url: x.url || '#',
       openCls: (this.state.device !== 'Desktop' && this.state.tapCard === x.id) ? 'km-webcard-open' : '',
     }));
-    const brandsBase = this._brands || (this._brands = [
-      { id: 'brand-vantar', name: 'Vantar', meta: 'Fintech · 2026', statement: 'Vantar is a fintech on a mission to make everyday banking feel calm, clear and quietly confident.', imgs: [
-        { imgId: 'brand-vantar-img', src: 'https://images.pexels.com/photos/6244/designer-board-typo-word.jpg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, identity spread' },
-        { imgId: 'brand-vantar-img-2', src: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, collateral in use' },
-        { imgId: 'brand-vantar-img-3', src: 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, app / product shot' },
-        { imgId: 'brand-vantar-img-4', src: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Vantar, signage / environment' },
-      ] },
-      { id: 'brand-mono', name: 'Mono Coffee', meta: 'Packaging · 2025', statement: 'Mono is a single-origin roaster that believes one great bean, done right, beats a hundred blends.', imgs: [
-        { imgId: 'brand-mono-img', src: 'https://images.pexels.com/photos/4623113/pexels-photo-4623113.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, packaging' },
-        { imgId: 'brand-mono-img-2', src: 'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, in the café' },
-        { imgId: 'brand-mono-img-3', src: 'https://images.pexels.com/photos/606545/pexels-photo-606545.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, beans / detail' },
-        { imgId: 'brand-mono-img-4', src: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Mono Coffee, cup / lifestyle' },
-      ] },
-      { id: 'brand-halcyon', name: 'Halcyon', meta: 'Wellness · 2024', statement: 'Halcyon is a wellness brand for people who are tired of wellness brands shouting at them.', imgs: [
-        { imgId: 'brand-halcyon-img', src: 'https://images.pexels.com/photos/8545636/pexels-photo-8545636.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, brand system' },
-        { imgId: 'brand-halcyon-img-2', src: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, product line' },
-        { imgId: 'brand-halcyon-img-3', src: 'https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, ritual / detail' },
-        { imgId: 'brand-halcyon-img-4', src: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg?auto=compress&cs=tinysrgb&w=1280', ph: 'Halcyon, in use / lifestyle' },
-      ] },
-    ]);
-    const threes = (this._threes || (this._threes = [
-      { id: 'three-d-solstice', imgId: 'three-d-solstice-img', src: 'https://images.pexels.com/photos/13180245/pexels-photo-13180245.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Solstice, product render', name: 'Solstice', meta: 'Product viz · 2026', num: '01', industry: 'Consumer hardware', year: '2026', statement: 'A product film that makes an unreleased speaker feel like you have already held it.' },
-      { id: 'three-d-terraforma', imgId: 'three-d-terraforma-img', src: 'https://images.pexels.com/photos/12627677/pexels-photo-12627677.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Terraforma, arch viz', name: 'Terraforma', meta: 'Arch viz · 2025', num: '02', industry: 'Architecture', year: '2025', statement: 'An unbuilt masterplan you can walk through before ground breaks.' },
-      { id: 'three-d-orbital', imgId: 'three-d-orbital-img', src: 'https://images.pexels.com/photos/28628510/pexels-photo-28628510.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Orbital, animation still', name: 'Orbital', meta: 'Brand film · 2024', num: '03', industry: 'Brand film', year: '2024', statement: 'A brand film where the logo never appears until you already understand the company.' },
-    ])).map((x) => Object.assign({}, x, {
+    const threes = threesBase.map((x, i) => Object.assign({}, x, {
       href: this._href('Kinomad Motion Page.dc.html', x.id),
+      num: x.num || ('0' + (i + 1)),
       openCls: (this.state.device !== 'Desktop' && this.state.tapCard === x.id) ? 'km-webcard-open' : '',
     }));
     this._sampleBrandColors(brandsBase);
     const fallback = { 'brand-vantar': '#5B79A6', 'brand-mono': '#6B4A32', 'brand-halcyon': '#96A58C' };
-    const brands = brandsBase.map((b) => {
-      const fill = (this.state.brandColors || {})[b.id] || fallback[b.id] || 'var(--accent)';
+    const brands = brandsBase.map((b, i) => {
+      const fill = b.fill || (this.state.brandColors || {})[b.id] || fallback[b.id] || 'var(--accent)';
       let fg = '#F1EFE7';
       const m = /^#([0-9a-f]{6})$/i.exec(fill);
       if (m) {
@@ -839,11 +937,11 @@ class Component extends DCLogic {
         fg = lum > 0.62 ? '#14130F' : '#F1EFE7';
       }
       const hov = this.state.hovBrand === b.id;
-      const mp = b.meta.split(' · ');
       return {
         ...b, fill, fillFg: fg,
-        num: '0' + (brandsBase.indexOf(b) + 1),
-        industry: mp[0], year: mp[1],
+        num: b.num || ('0' + (i + 1)),
+        industry: b.industry || (b.meta ? b.meta.split(' · ')[0] : ''),
+        year: b.year || (b.meta ? b.meta.split(' · ')[1] : ''),
         nameOp: hov ? '1' : '0',
         nameTy: hov ? '0px' : '14px',
         imgs: b.imgs.map((im, i) => ({ ...im, clip: hov ? 'inset(0 0 0 0)' : 'inset(100% 0 0 0)', delay: (i * 0.09).toFixed(2) + 's' })),
@@ -854,6 +952,10 @@ class Component extends DCLogic {
       : { bg: 'transparent', fg: 'rgba(241,239,231,0.7)' };
     return {
       ...this._bkView(),
+      totalCount: webs.length + brands.length + threes.length,
+      webCountPad: this._countPad(webs.length),
+      brandCountPad: this._countPad(brands.length),
+      threeCountPad: this._countPad(threes.length),
       cardTap: (e) => {
         if (this.state.device === 'Desktop') return;
         const id = e.currentTarget.id;
