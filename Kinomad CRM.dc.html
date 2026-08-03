@@ -853,7 +853,7 @@ class Component extends DCLogic {
     };
     this.setState({ saveState: 'saving', saveErr: '' });
     const done = (rec) => {
-      this.setState((s) => ({ p: Object.assign({}, s.p, { id: rec.id, slug: rec.slug, state: rec.state }), saveState: 'saved', savedAt: Date.now() }));
+      this.setState((s) => ({ p: Object.assign({}, s.p, rec), saveState: 'saved', savedAt: rec.updatedAt || Date.now() }));
       this._loadProjects();
     };
     const fail = (e) => this.setState({ saveState: 'error', saveErr: e.message });
@@ -864,6 +864,11 @@ class Component extends DCLogic {
   _upl(key, v) { this.setState((s) => ({ upload: Object.assign({}, s.upload, { [key]: v }) })); }
 
   _uploadAsset(key, file) {
+    const p = this.state.p;
+    if (!p || !p.id) {
+      this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: 'Save the project name first so we can create a draft.' }) }));
+      return;
+    }
     this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: '' }) }));
     this._upl(key, 0);
     KMAPI.assets.upload(this.state.p && this.state.p.id, file, (pct) => this._upl(key, pct)).then(
@@ -1277,10 +1282,10 @@ class Component extends DCLogic {
         const body = { type: p.type, name: p.name, year: p.year, industry: p.industry, meta: p.meta, statement: p.statement, background: p.background, concept: p.concept, hosting: p.hosting, liveUrl: p.liveUrl, fill: p.fill, bundle: p.bundle, assets: p.assets, credits: p.credits, shots: p.shots };
         const save = p.id ? KMAPI.projects.patch(p.id, body) : KMAPI.projects.create(body).then((r) => KMAPI.projects.patch(r.id, body));
         save.then((rec) => {
-          this.setState((st) => ({ p: Object.assign({}, st.p, { id: rec.id, slug: rec.slug }), saveState: 'saved', savedAt: Date.now() }));
+          this.setState((st) => ({ p: Object.assign({}, st.p, rec), saveState: 'saved', savedAt: rec.updatedAt || Date.now() }));
           return KMAPI.projects.publish(rec.id);
         }).then(
-          (rec) => { this.setState((st) => ({ p: Object.assign({}, st.p, { state: 'published' }), pubBusy: false, pubResult: 'ok', pubMsg: rec.name + ' is live at kinomadstudio.com/works/' + rec.slug + '. The works index and the landing page pick it up on next load.' })); this._loadProjects(); },
+          (rec) => { this.setState((st) => ({ p: Object.assign({}, st.p, rec), pubBusy: false, pubResult: 'ok', pubMsg: rec.name + ' is live at kinomadstudio.com/works/' + rec.slug + '. The works index and the landing page pick it up on next load.' })); this._loadProjects(); },
           (err) => {
             if (err.status === 422) this.setState({ pubBusy: false, pubResult: 'missing', pubMissing: err.missing || [], pubMsg: 'These fields are required before this project can go public. The checklist on the right tracks the same rules.' });
             else this.setState({ pubBusy: false, pubResult: 'error', pubMsg: err.message });

@@ -203,7 +203,82 @@
       .replace(/['']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
   }
 
+  function assetRef(assets, key) {
+    var a = assets && assets[key];
+    if (!a) return '';
+    if (typeof a === 'string') return a;
+    return a.id || a.assetId || '';
+  }
+
+  function normalizeAssets(assets) {
+    if (!assets) return {};
+    var out = {};
+    ['hero', 'card', 'reel', 'poster'].forEach(function (k) {
+      var v = assets[k];
+      if (!v) return;
+      if (typeof v === 'string') {
+        out[k] = { id: v, url: assetUrl(v), name: 'Uploaded image', w: 0, h: 0 };
+      } else {
+        out[k] = v;
+      }
+    });
+    return out;
+  }
+
+  function normalizeProject(p) {
+    if (!p) return p;
+    var copy = Object.assign({}, p);
+    copy.assets = normalizeAssets(copy.assets);
+    return copy;
+  }
+
+  /** CRM editor state → partial PATCH body the Go API expects. */
+  function toPatchBody(p) {
+    var assets = p.assets || {};
+    var body = {
+      name: p.name,
+      year: p.year,
+      industry: p.industry,
+      meta: p.meta,
+      statement: p.statement,
+      background: p.background,
+      concept: p.concept,
+      hosting: p.hosting,
+      liveUrl: p.liveUrl,
+      fill: p.fill,
+    };
+    var heroKey = p.type === 'three' ? 'card' : 'hero';
+    var heroId = assetRef(assets, heroKey);
+    if (heroId) body.heroAssetId = heroId;
+    var reelId = assetRef(assets, 'reel');
+    if (reelId) body.reelAssetId = reelId;
+    var posterId = assetRef(assets, 'poster');
+    if (posterId) body.posterAssetId = posterId;
+    if (p.credits) {
+      body.credits = p.credits.map(function (c) { return { who: c.who, role: c.role }; });
+    }
+    if (p.shots) {
+      body.shots = p.shots
+        .filter(function (s) { return s.assetId || s.img; })
+        .map(function (s, i) {
+          return {
+            id: s.id || '',
+            assetId: s.assetId || s.img,
+            span: s.span || 6,
+            ratio: s.ratio || '16/9',
+            order: s.order != null ? s.order : i,
+          };
+        });
+    }
+    return body;
+  }
+
+  function hasAsset(assets, key) {
+    return !!assetRef(assets, key);
+  }
+
   function requirements(p) {
+    var assets = p.assets || {};
     var need = [
       { key: 'name', label: 'Project name', ok: !!p.name },
       { key: 'year', label: 'Year', ok: /^\d{4}$/.test(String(p.year || '')) },
@@ -217,17 +292,17 @@
     if (p.type === 'website') {
       if (p.hosting === 'hosted') need.push({ key: 'bundle', label: 'Site bundle unpacked', ok: (p.bundle || {}).status === 'ready' });
       else need.push({ key: 'liveUrl', label: 'Live website URL', ok: /^https?:\/\/\S+\.\S+/.test(p.liveUrl || '') });
-      need.push({ key: 'hero', label: 'Hero image', ok: !!(p.assets || {}).hero });
+      need.push({ key: 'hero', label: 'Hero image', ok: hasAsset(assets, 'hero') });
     }
     if (p.type === 'brand') {
-      need.push({ key: 'hero', label: 'Hero image', ok: !!(p.assets || {}).hero });
+      need.push({ key: 'hero', label: 'Hero image', ok: hasAsset(assets, 'hero') });
       need.push({ key: 'shots', label: 'At least one shot', ok: shots.length >= 1 });
     }
     if (p.type === 'three') {
-      var reel = !!(p.assets || {}).reel;
+      var reel = hasAsset(assets, 'reel');
       need.push({ key: 'shots', label: reel ? 'Shots (optional with a reel)' : 'At least one shot', ok: reel || shots.length >= 1 });
-      need.push({ key: 'poster', label: reel ? 'Poster frame' : 'Poster frame (reel only)', ok: !!(p.assets || {}).poster || !reel });
-      need.push({ key: 'card', label: 'Card image', ok: !!(p.assets || {}).card });
+      need.push({ key: 'poster', label: reel ? 'Poster frame' : 'Poster frame (reel only)', ok: hasAsset(assets, 'poster') || !reel });
+      need.push({ key: 'card', label: 'Card image', ok: hasAsset(assets, 'card') });
     }
     return need;
   }
@@ -258,30 +333,44 @@
 
   var projects = {
     list: function () {
-      return jsonFetch('GET', '/admin/projects').then(function (data) { return data.projects || []; });
+      return jsonFetch('GET', '/admin/projects').then(function (data) {
+        return (data.projects || []).map(normalizeProject);
+      });
     },
     get: function (id) {
-      return jsonFetch('GET', '/admin/projects/' + encodeURIComponent(id)).then(function (data) { return data.project; });
+      return jsonFetch('GET', '/admin/projects/' + encodeURIComponent(id)).then(function (data) {
+        return normalizeProject(data.project);
+      });
     },
     create: function (body) {
-      return jsonFetch('POST', '/admin/projects', { type: (body || {}).type || 'website' }).then(function (data) { return data.project; });
+      return jsonFetch('POST', '/admin/projects', { type: (body || {}).type || 'website' }).then(function (data) {
+        return normalizeProject(data.project);
+      });
     },
     patch: function (id, body) {
-      return jsonFetch('PATCH', '/admin/projects/' + encodeURIComponent(id), body).then(function (data) { return data.project; });
+      return jsonFetch('PATCH', '/admin/projects/' + encodeURIComponent(id), toPatchBody(body)).then(function (data) {
+        return normalizeProject(data.project);
+      });
     },
     remove: function (id) {
       return jsonFetch('DELETE', '/admin/projects/' + encodeURIComponent(id)).then(function () { return true; });
     },
     publish: function (id) {
-      return jsonFetch('POST', '/admin/projects/' + encodeURIComponent(id) + '/publish').then(function (data) { return data.project; });
+      return jsonFetch('POST', '/admin/projects/' + encodeURIComponent(id) + '/publish').then(function (data) {
+        return normalizeProject(data.project);
+      });
     },
     unpublish: function (id) {
-      return jsonFetch('POST', '/admin/projects/' + encodeURIComponent(id) + '/unpublish').then(function (data) { return data.project; });
+      return jsonFetch('POST', '/admin/projects/' + encodeURIComponent(id) + '/unpublish').then(function (data) {
+        return normalizeProject(data.project);
+      });
     },
     reorder: function (type, ids) {
       return jsonFetch('PATCH', '/admin/projects/reorder', { type: type, ids: ids }).then(function () { return true; });
     },
     requirements: requirements,
+    toPatchBody: toPatchBody,
+    normalize: normalizeProject,
   };
 
   var assets = {
@@ -345,9 +434,9 @@
 
   function projectToCase(p, i) {
     var slug = p.slug || p.id;
-    var hero = (p.assets && (p.assets.hero || p.assets.card)) || '';
-    var poster = (p.assets && p.assets.poster) || hero;
-    var reel = (p.assets && p.assets.reel) || '';
+    var hero = assetRef(p.assets, 'hero') || assetRef(p.assets, 'card') || '';
+    var poster = assetRef(p.assets, 'poster') || hero;
+    var reel = assetRef(p.assets, 'reel') || '';
     var live = p.liveUrl || (p.bundle && p.bundle.url) || '#';
     return {
       id: slug,
