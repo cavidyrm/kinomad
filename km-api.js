@@ -88,7 +88,7 @@
     });
   }
 
-  function uploadWithProgress(method, path, file, onProgress) {
+  function uploadWithProgress(method, path, file, onProgress, extraFields) {
     return wait().then(function () {
       if (flags.fail) throw fail(503, 'Upload failed — the studio API did not respond.');
       return new Promise(function (resolve, reject) {
@@ -115,6 +115,11 @@
         xhr.onerror = function () { reject(fail(503, 'Upload failed — connection lost.')); };
         var fd = new FormData();
         fd.append('file', file);
+        if (extraFields) {
+          Object.keys(extraFields).forEach(function (k) {
+            if (extraFields[k] != null && extraFields[k] !== '') fd.append(k, extraFields[k]);
+          });
+        }
         xhr.send(fd);
       });
     });
@@ -374,8 +379,8 @@
   };
 
   var assets = {
-    upload: function (projectId, file, onProgress) {
-      return uploadWithProgress('POST', '/admin/projects/' + encodeURIComponent(projectId) + '/assets', file, onProgress);
+    upload: function (projectId, file, onProgress, slot) {
+      return uploadWithProgress('POST', '/admin/projects/' + encodeURIComponent(projectId) + '/assets', file, onProgress, slot ? { slot: slot } : null);
     },
   };
 

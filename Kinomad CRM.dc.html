@@ -16,11 +16,11 @@
 <script src="./km-routes.js"></script>
 <script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
-<script src="./km-api.js"></script>
+<script src="./km-api.js?v=3"></script>
 <script src="./km-auth.js"></script>
 <script>/* deploy safety: relative paths break on nested routes — retry from site root */
 (function(){var n=0,d=function(){if(!n&&window.KMAPI&&window.KMAUTH)window.dispatchEvent(new Event('kmapi-ready'));};
-if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js';a.onload=function(){n--;d();};document.head.appendChild(a);}
+if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js?v=3';a.onload=function(){n--;d();};document.head.appendChild(a);}
 if(!window.KMAUTH){n++;var b=document.createElement('script');b.src='/km-auth.js';b.onload=function(){n--;d();};document.head.appendChild(b);}})();</script>
 <style>
 html{scroll-behavior:smooth}
@@ -871,12 +871,17 @@ class Component extends DCLogic {
     }
     this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: '' }) }));
     this._upl(key, 0);
-    KMAPI.assets.upload(this.state.p && this.state.p.id, file, (pct) => this._upl(key, pct)).then(
+    KMAPI.assets.upload(p.id, file, (pct) => this._upl(key, pct), key).then(
       (a) => {
         this._upl(key, -1);
-        this._patch({ assets: Object.assign({}, (this.state.p || {}).assets, { [key]: { id: a.assetId, name: a.name, url: a.url, w: a.width, h: a.height } }) }, true);
+        const assetObj = { id: a.assetId, name: a.name, url: a.url, w: a.width, h: a.height };
+        this._patch({ assets: Object.assign({}, (this.state.p || {}).assets, { [key]: assetObj }) }, true);
+        return KMAPI.projects.get(p.id);
       },
       (e) => { this._upl(key, -1); this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: e.message }) })); }
+    ).then(
+      (rec) => { if (rec) this.setState((s) => ({ p: Object.assign({}, s.p, rec) })); },
+      () => {}
     );
   }
 
