@@ -1068,7 +1068,7 @@ class Component extends DCLogic {
     const bundle = p.bundle || { status: 'none' };
     const bStat = { none: 'Not uploaded', uploading: 'Uploading', unpacking: 'Unpacking…', ready: 'Live', error: 'Error' }[bundle.status] || 'Not uploaded';
     const bFg = bundle.status === 'ready' ? 'var(--accent)' : bundle.status === 'error' ? 'var(--warn)' : 'rgba(241,239,231,0.45)';
-    const demo = 'https://demo.kinomadstudio.com/' + (slug || 'your-project');
+    const demo = (typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'https://kinomadstudio.com') + '/demo/' + (slug || 'your-project');
     const upl = s.upload, uerr = s.uploadErr;
     const asset = (k) => (p.assets || {})[k];
     const pct = (k) => Math.round(Math.max(0, upl[k] || 0) * 100) + '%';
