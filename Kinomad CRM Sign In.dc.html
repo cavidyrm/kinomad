@@ -24,7 +24,7 @@
 if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js?v=3';a.onload=function(){n--;d();};document.head.appendChild(a);}
 if(!window.KMAUTH){n++;var b=document.createElement('script');b.src='/km-auth.js';b.onload=function(){n--;d();};document.head.appendChild(b);}})();</script>
 <style>
-body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;--bg:#1a1a1a;--panel:#050505;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#639392;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent)}
 ::selection{background:var(--accent);color:#14130F}
@@ -39,7 +39,7 @@ input:focus{outline:none;border-color:var(--accent)!important}
 </style>
 </helmet>
 
-<main data-screen-label="CRM sign in" style="min-height:100svh;container:page / inline-size;box-sizing:border-box;display:grid;place-items:center;padding:clamp(20px,4cqw,60px);position:relative;overflow:hidden">
+<main data-screen-label="CRM sign in" style="width:var(--frame-w,100%);margin-inline:auto;min-height:100svh;container:page / inline-size;box-sizing:border-box;display:grid;place-items:center;padding:clamp(20px,4cqw,60px);position:relative;overflow:hidden">
   <span aria-hidden="true" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(120px,26cqw,360px);font-weight:700;letter-spacing:-0.04em;color:rgba(241,239,231,0.028);white-space:nowrap;pointer-events:none">KINOMAD</span>
 
   <div style="position:relative;width:min(400px,100%);display:flex;flex-direction:column;gap:20px;background:var(--panel);border:1px solid var(--line);padding:clamp(28px,3cqw,40px);animation:km-rise 0.6s cubic-bezier(0.16,1,0.3,1) both">
@@ -79,14 +79,12 @@ input:focus{outline:none;border-color:var(--accent)!important}
 </main>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1100,&quot;height&quot;:760},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;options&quot;:[&quot;#2bcdee&quot;,&quot;#D9FF3D&quot;,&quot;#FF6B4A&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1100,&quot;height&quot;:760},&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#639392&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;options&quot;:[&quot;#1a1a1a&quot;,&quot;#EDF0F4&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = { booting: true, session: null, lgEmail: '', lgPw: '', lgErr: '', lgBusy: false, apiMissing: false };
 
   componentDidMount() {
-    let accent = null;
-    try { accent = localStorage.getItem('kinomad-accent'); } catch (_) {}
-    document.body.style.setProperty('--accent', accent || this.props.accent || '#2bcdee');
+    this._applyTheme();
     const start = () => {
       KMAUTH.bootGuest().then(
         (sess) => this.setState({ booting: false, apiMissing: false, session: sess }),
@@ -109,7 +107,30 @@ class Component extends DCLogic {
     if (this._onApi) window.removeEventListener('kmapi-ready', this._onApi);
   }
 
+  _applyTheme() {
+    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+    const s = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+    const pA = this.props.accent ?? '#639392';
+    const pB = this.props.bgColor ?? '#1a1a1a';
+    const pN = this.props.navColor ?? '#050505';
+    if (this._pA !== undefined && this._pA !== pA) s('kinomad-accent', pA);
+    if (this._pB !== undefined && this._pB !== pB) s('kinomad-bg', pB);
+    if (this._pN !== undefined && this._pN !== pN) s('kinomad-nav', pN);
+    this._pA = pA; this._pB = pB; this._pN = pN;
+    let accent = g('kinomad-accent'); if (accent == null) { accent = pA; s('kinomad-accent', accent); }
+    let bg = g('kinomad-bg'); if (bg == null) { bg = pB; s('kinomad-bg', bg); }
+    let nav = g('kinomad-nav'); if (nav == null) { nav = pN; s('kinomad-nav', nav); }
+    document.body.style.setProperty('--accent', accent);
+    document.body.style.setProperty('--bg', bg);
+    document.body.style.setProperty('--nav', nav);
+    document.body.style.setProperty('--panel', nav);
+    const fw = { Tablet: '834px', Mobile: '393px' }[(this.props.device || 'Desktop')];
+    if (fw) document.body.style.setProperty('--frame-w', fw);
+    else document.body.style.removeProperty('--frame-w');
+  }
+
   renderVals() {
+    this._applyTheme();
     const s = this.state;
     return {
       showForm: !s.booting && !s.session,

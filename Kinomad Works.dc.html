@@ -15,12 +15,13 @@
 <meta content="#0D0D0D" name="theme-color">
 <script src="./km-routes.js"></script>
 <script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
+<script src="./km-api.js"></script>
 <script>if(!window.KMAPI){var ka=document.createElement('script');ka.src='/km-api.js';ka.onload=function(){window.dispatchEvent(new Event('kmapi-ready'));};document.head.appendChild(ka);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=gambetta@400,401,500,501,700,701&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth;scrollbar-width:none}
 ::-webkit-scrollbar{display:none;width:0}
-body{margin:0;--bg:#1f2121;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--card:#141922;--accent:#D9FF3D;--accent-ink:var(--accent);background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;transition:background 0.5s ease,color 0.5s ease;-webkit-font-smoothing:antialiased}
+body{margin:0;--bg:#1a1a1a;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--card:#141922;--accent:#639392;--accent-ink:var(--accent);background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;transition:background 0.5s ease,color 0.5s ease;-webkit-font-smoothing:antialiased}
 body.light{--bg:#EDF0F4;--fg:#14130F;--mut:rgba(20,19,15,0.7);--line:rgba(20,19,15,0.16);--card:#DFE4EB;--accent-ink:color-mix(in oklab,var(--accent),#14130F 55%)}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent-ink)}
@@ -54,7 +55,9 @@ a:hover{color:var(--accent-ink)}
 .km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
 .km-skip:focus{top:12px;color:#14130F}
 #frame{width:var(--frame-w,100%);margin-inline:auto;container:page / inline-size;position:relative;background:var(--bg);transition:width 0.5s cubic-bezier(0.16,1,0.3,1)}
-body.dev{background:#06080d}
+body.dev{background:#06080d;height:100dvh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+body.dev #frame{height:var(--frame-h,100%);max-height:100dvh;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+body.dev #frame::-webkit-scrollbar{display:none}
 body.dev #frame{box-shadow:0 40px 130px rgba(0,0,0,0.55);outline:1px solid rgba(241,239,231,0.08);cursor:grab}
 body.dev.dragging{user-select:none}
 body.dev.dragging #frame{cursor:grabbing}
@@ -380,7 +383,7 @@ body.dev.dragging #frame{cursor:grabbing}
 
 </main>
 
-<footer data-r="foot" data-screen-label="Footer" style="position:sticky;bottom:0;z-index:0;background:#050505;color:#F1EFE7;padding:clamp(70px,9cqw,130px) 0 0;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;animation:km-footrise 1s cubic-bezier(0.16,1,0.3,1) both;animation-timeline:view();animation-range:entry 0% entry 75%">
+<footer data-r="foot" data-screen-label="Footer" style="position:sticky;bottom:0;z-index:0;background:#050505;color:#F1EFE7;padding:clamp(70px,9cqw,130px) 0 0;min-height:calc(var(--vh,1svh) * 100);box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;animation:km-footrise 1s cubic-bezier(0.16,1,0.3,1) both;animation-timeline:view();animation-range:entry 0% entry 75%">
   <div style="position:relative;z-index:1;padding:0 1.2cqw;display:flex;justify-content:space-between;align-items:flex-start;gap:24px">
     <div role="img" aria-label="Kinomad logo" style="width:clamp(56px,5cqw,84px);aspect-ratio:137/138;-webkit-mask:url('assets/logo-light.svg') center/contain no-repeat;mask:url('assets/logo-light.svg') center/contain no-repeat;background-image:linear-gradient(to top,var(--accent) 50%,#F1EFE7 50%);background-size:100% 200%;background-position:0 0;transition:background-position 0.6s cubic-bezier(0.16,1,0.3,1);cursor:pointer" style-hover="background-position:0 100%"></div>
     <a href="mailto:Hello@Kinomadstudio.com" style="font-size:clamp(18px,1.8cqw,26px);font-weight:600;letter-spacing:-0.01em;color:#F1EFE7;border-bottom:1px solid rgba(241,239,231,0.3);align-self:flex-start;padding-bottom:4px">Hello@Kinomadstudio.com</a>
@@ -410,7 +413,7 @@ body.dev.dragging #frame{cursor:grabbing}
 </footer>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#639392&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;options&quot;:[&quot;#1a1a1a&quot;,&quot;#EDF0F4&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = { light: false, menuOpen: false, device: 'Desktop', tapCard: null, bookingOpen: false, bkStep: 1, bkType: 0, bkMonthOffset: 0, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '' };
 
@@ -581,12 +584,16 @@ class Component extends DCLogic {
       const rise = () => { if (this._heroFx) this._heroFx(); if (this._scrollThumb) this._scrollThumb(); };
       this._riseFallback = rise;
       window.addEventListener('scroll', rise, { passive: true });
+      const rf = document.getElementById('frame');
+      if (rf) rf.addEventListener('scroll', rise, { passive: true });
       rise();
       return;
     }
     if (!window.matchMedia || !window.matchMedia('(pointer: fine)').matches) {
       const rise = () => this._scrollThumb();
       window.addEventListener('scroll', rise, { passive: true });
+      const rf = document.getElementById('frame');
+      if (rf) rf.addEventListener('scroll', rise, { passive: true });
       rise();
       return;
     }
@@ -608,8 +615,8 @@ class Component extends DCLogic {
     this._onWheel = (e) => {
       if (e.ctrlKey || e.defaultPrevented) return;
       e.preventDefault();
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (this._scT === null) { this._scT = window.scrollY; this._scC = window.scrollY; }
+      const max = this._sh() - this._vh();
+      if (this._scT === null) { this._scT = this._sy(); this._scC = this._sy(); }
       this._scT = Math.max(0, Math.min(max, this._scT + e.deltaY));
     };
     window.addEventListener('wheel', this._onWheel, { passive: false });
@@ -626,7 +633,7 @@ class Component extends DCLogic {
         this._scC += (this._scT - this._scC) * 0.085;
         const done = Math.abs(this._scT - this._scC) < 0.4;
         if (done) this._scC = this._scT;
-        window.scrollTo({ top: this._scC, behavior: 'instant' });
+        this._sv().scrollTo({ top: this._scC, behavior: 'instant' });
         if (done) this._scT = null;
       }
       this._curRaf = requestAnimationFrame(loop);
@@ -767,18 +774,43 @@ class Component extends DCLogic {
     };
   }
 
+  // In device preview the frame itself scrolls, so every scroll read goes through
+  // these helpers instead of touching window/document directly.
+  _dev() { return document.body.classList.contains('dev') ? document.getElementById('frame') : null; }
+  _sv() { return this._dev() || document.scrollingElement || document.documentElement; }
+  _sy() { const d = this._dev(); return d ? d.scrollTop : window.scrollY; }
+  _vh() { const d = this._dev(); return d ? d.clientHeight : window.innerHeight; }
+  _sh() { const d = this._dev(); return d ? d.scrollHeight : document.documentElement.scrollHeight; }
+  _relTop(el) {
+    const d = this._dev();
+    return el.getBoundingClientRect().top - (d ? d.getBoundingClientRect().top : 0);
+  }
+
   _scrollThumb() {
     const el = document.getElementById('km-scrollthumb');
     if (!el) return;
-    const doc = document.documentElement;
-    const max = doc.scrollHeight - window.innerHeight;
+    const vh = this._vh();
+    const sh = this._sh();
+    const max = sh - vh;
+    const y = this._sy();
     if (max <= 0) { el.style.display = 'none'; return; }
-    el.style.display = 'block';
-    const h = Math.max(48, window.innerHeight * (window.innerHeight / doc.scrollHeight));
+    // the footer owns the last screen, so the bar leaves before it. The footer is
+    // sticky, so its own rect can't report this — scroll progress can.
+    el.style.display = (max - y <= vh) ? 'none' : 'block';
+    // keep the bar inside the device frame instead of on the desk behind it
+    const dvf = this._dev();
+    if (dvf) {
+      const r = dvf.getBoundingClientRect();
+      el.style.top = r.top + 'px';
+      el.style.right = (window.innerWidth - r.right) + 'px';
+    } else {
+      el.style.top = '0px';
+      el.style.right = '0px';
+    }
+    const h = Math.max(48, vh * (vh / sh));
     el.style.height = h.toFixed(0) + 'px';
-    el.style.transform = 'translateY(' + ((window.scrollY / max) * (window.innerHeight - h)).toFixed(1) + 'px)';
+    el.style.transform = 'translateY(' + ((y / max) * (vh - h)).toFixed(1) + 'px)';
     const now = performance.now();
-    const y = window.scrollY;
     if (this._stY !== undefined) {
       const dy = y - this._stY;
       const dt = Math.max(1, now - this._stT);
@@ -853,7 +885,7 @@ class Component extends DCLogic {
     this._drag.y = e.clientY;
     this._drag.moved += Math.abs(dy);
     this._drag.v = dy;
-    const se = document.scrollingElement;
+    const se = this._sv();
     se.scrollTo({ top: se.scrollTop - dy * 1.5, behavior: 'instant' });
   }
 
@@ -865,7 +897,7 @@ class Component extends DCLogic {
     let v = this._drag.v || 0;
     const glide = () => {
       if (this._drag.down || Math.abs(v) < 0.3) return;
-      const se = document.scrollingElement;
+      const se = this._sv();
       se.scrollTo({ top: se.scrollTop - v * 1.5, behavior: 'instant' });
       v *= 0.95;
       this._mom = requestAnimationFrame(glide);
@@ -875,11 +907,23 @@ class Component extends DCLogic {
   }
 
   applyDevice() {
-    const map = { Tablet: '834px', Mobile: '390px' };
-    const w = map[(this.props.device || 'Desktop')];
+    const map = { Tablet: '834px', Mobile: '393px' };
+    const dv = this.props.device || 'Desktop';
+    const w = map[dv];
     document.body.classList.toggle('dev', !!w);
-    if (w) document.body.style.setProperty('--frame-w', w);
-    else document.body.style.removeProperty('--frame-w');
+    document.body.classList.toggle('dev-t', dv === 'Tablet');
+    document.body.classList.toggle('dev-m', dv === 'Mobile');
+    // visible web area of the real device, not the full screen height
+    const h = { Tablet: '1112px', Mobile: '660px' }[dv];
+    if (w) {
+      document.body.style.setProperty('--frame-w', w);
+      document.body.style.setProperty('--frame-h', h);
+      document.body.style.setProperty('--vh', (parseInt(h, 10) / 100) + 'px');
+    } else {
+      document.body.style.removeProperty('--frame-w');
+      document.body.style.removeProperty('--frame-h');
+      document.body.style.removeProperty('--vh');
+    }
     const dot = document.getElementById('km-cur-dot');
     if (dot) dot.style.display = w ? 'none' : '';
   }
@@ -887,9 +931,9 @@ class Component extends DCLogic {
   applyAccent() {
     const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
     const s = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
-    const pA = this.props.accent ?? '#D9FF3D';
-    const pN = this.props.navColor ?? '#0d1016';
-    const pB = this.props.bgColor ?? '#1f2121';
+    const pA = this.props.accent ?? '#639392';
+    const pN = this.props.navColor ?? '#050505';
+    const pB = this.props.bgColor ?? '#1a1a1a';
     if (this._pA !== undefined && this._pA !== pA) s('kinomad-accent', pA);
     if (this._pN !== undefined && this._pN !== pN) s('kinomad-nav', pN);
     if (this._pB !== undefined && this._pB !== pB) s('kinomad-bg', pB);
@@ -1000,7 +1044,7 @@ class Component extends DCLogic {
       },
       brandEnter: (e) => this.setState({ hovBrand: e.currentTarget.dataset.brand }),
       brandLeave: () => this.setState({ hovBrand: null }),
-      backToTop: (e) => { e.preventDefault(); this.setState({ menuOpen: false }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      backToTop: (e) => { e.preventDefault(); this.setState({ menuOpen: false }); this._sv().scrollTo({ top: 0, behavior: 'smooth' }); },
       parallaxMove: (e) => {
         const el = e.currentTarget.querySelector('[data-parallax]');
         if (!el) return;

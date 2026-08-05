@@ -24,7 +24,7 @@ if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js?v
 if(!window.KMAUTH){n++;var b=document.createElement('script');b.src='/km-auth.js';b.onload=function(){n--;d();};document.head.appendChild(b);}})();</script>
 <style>
 html{scroll-behavior:smooth}
-body{margin:0;--bg:#1a1a1a;--panel:#141414;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#2bcdee;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;--bg:#1a1a1a;--panel:#050505;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#639392;--warn:#ff8a6b;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent)}
 ::selection{background:var(--accent);color:#14130F}
@@ -42,7 +42,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 </style>
 </helmet>
 
-<div data-screen-label="CRM" style="min-height:100svh;container:page / inline-size;box-sizing:border-box">
+<div data-screen-label="CRM" style="width:var(--frame-w,100%);margin-inline:auto;min-height:100svh;container:page / inline-size;box-sizing:border-box">
 
 <sc-if value="{{ isDead }}" hint-placeholder-val="{{ false }}">
   <div style="min-height:100svh;display:grid;place-items:center;padding:clamp(20px,4cqw,60px)">
@@ -298,7 +298,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 
             <div data-r="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
               <div style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Hero image · card &amp; page top</span>
+                <span style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--mut)">Hero image · 21:10</span>
                 <label style="display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
                   <input type="file" accept="image/*" data-key="hero" onChange="{{ assetFile }}" style="display:none">
                   <span style="width:46px;height:34px;background:#0d0d0d;background-image:url({{ heroThumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;flex:0 0 auto"></span>
@@ -438,9 +438,9 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
                   <button data-m="1" onClick="{{ setGridMode }}" style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:7px 13px;cursor:pointer;background:{{ gmMobBg }};color:{{ gmMobFg }}">Mobile</button>
                 </div>
               </div>
-              <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;max-width:{{ gridMaxW }};transition:max-width 0.4s cubic-bezier(0.16,1,0.3,1)">
+              <div data-r="gridpreview" data-gap="6" style="position:relative;max-width:{{ gridMaxW }};transition:max-width 0.4s cubic-bezier(0.16,1,0.3,1)">
                 <sc-for list="{{ gridCells }}" as="gc" hint-placeholder-count="3">
-                  <div style="grid-column:span {{ gc.span }};aspect-ratio:{{ gc.ratio }};background:#0d0d0d;background-image:url({{ gc.thumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;position:relative;display:grid;place-items:center">
+                  <div data-span="{{ gc.span }}" data-ratio="{{ gc.ratio }}" style="background:#0d0d0d;background-image:url({{ gc.thumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;position:relative;display:grid;place-items:center">
                     <span style="position:relative;font-family:'Chillax',sans-serif;font-size:11px;letter-spacing:0.06em;color:rgba(241,239,231,0.45)">{{ gc.label }}</span>
                   </div>
                 </sc-for>
@@ -761,7 +761,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;options&quot;:[&quot;#2bcdee&quot;,&quot;#D9FF3D&quot;,&quot;#FF6B4A&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;previewSession&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;boolean&quot;},&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#639392&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;options&quot;:[&quot;#1a1a1a&quot;,&quot;#EDF0F4&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = {
     booting: true, session: null, view: 'projects',
@@ -777,8 +777,24 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
-    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
-    document.body.style.setProperty('--accent', g('kinomad-accent') ?? this.props.accent ?? '#2bcdee');
+    this._applyTheme();
+    this._msResize = () => this._masonryAll();
+    window.addEventListener('resize', this._msResize);
+    this._masonryAll();
+    // Design review runs without the studio backend: skip the auth gate and the
+    // redirect to sign-in so the console is visible. Each panel still shows its
+    // own API error state, so nothing is faked beyond being signed in.
+    const signedIn = (() => {
+      try { const q = KMAPI.session.local(); return !!(q && q.token); } catch (_) { return false; }
+    })();
+    if (this.props.previewSession !== false && !signedIn) {
+      this.setState(
+        { booting: false, session: { email: 'preview@kinomadstudio.com', name: 'Preview', token: 'preview' } },
+        () => this._bootData()
+      );
+      this._clock = setInterval(() => this.setState((st) => ({ tick: st.tick + 1 })), 15000);
+      return;
+    }
     const start = () => {
       KMAUTH.bootRequireAuth().then(
         (sess) => this.setState({ booting: false, session: sess }, () => { if (sess) this._bootData(); }),
@@ -801,7 +817,11 @@ class Component extends DCLogic {
     start();
     this._clock = setInterval(() => this.setState((st) => ({ tick: st.tick + 1 })), 15000);
   }
+  componentDidUpdate() { this._masonryAll(); }
   componentWillUnmount() {
+    cancelAnimationFrame(this._msRaf);
+    if (this._msRO) { this._msRO.disconnect(); this._msRO = null; }
+    if (this._msResize) window.removeEventListener('resize', this._msResize);
     clearInterval(this._clock); clearTimeout(this._saveT); clearTimeout(this._toastT); clearTimeout(this._bkToastT); clearTimeout(this._apiWait);
     if (this._onApi) window.removeEventListener('kmapi-ready', this._onApi);
   }
@@ -838,11 +858,25 @@ class Component extends DCLogic {
   }
   _queueSave(immediate) {
     clearTimeout(this._saveT);
-    this._saveT = setTimeout(() => this._flush(), immediate ? 0 : 700);
+    // long enough that typing a sentence is one save, not one per keystroke
+    this._saveT = setTimeout(() => this._flush(), immediate ? 0 : 2000);
   }
+  // Fields the server owns. Everything else in the record is whatever the user
+  // has typed, so a response must never write it back — a reply that left before
+  // the last keystroke would otherwise reset the field under the cursor.
+  _serverKeys(rec) {
+    const out = {};
+    ['id', 'slug', 'state', 'createdAt', 'updatedAt', 'publishedAt'].forEach((k) => {
+      if (rec && rec[k] !== undefined) out[k] = rec[k];
+    });
+    return out;
+  }
+
   _flush() {
     const p = this.state.p;
     if (!p) return;
+    // one save in flight at a time; a change made during it re-queues on completion
+    if (this._saving) { this._saveAgain = true; return; }
     // the record is created on the first real keystroke, not on a type click
     if (!p.id && !String(p.name || '').trim()) return;
     const body = {
@@ -851,14 +885,97 @@ class Component extends DCLogic {
       hosting: p.hosting, liveUrl: p.liveUrl, fill: p.fill, bundle: p.bundle,
       assets: p.assets, credits: p.credits, shots: p.shots,
     };
+    this._saving = true;
     this.setState({ saveState: 'saving', saveErr: '' });
+    const after = () => {
+      this._saving = false;
+      if (this._saveAgain) { this._saveAgain = false; this._queueSave(); }
+    };
     const done = (rec) => {
-      this.setState((s) => ({ p: Object.assign({}, s.p, rec), saveState: 'saved', savedAt: rec.updatedAt || Date.now() }));
+      this.setState((s) => ({
+        p: Object.assign({}, s.p, this._serverKeys(rec)),
+        saveState: 'saved',
+        savedAt: (rec && rec.updatedAt) || Date.now(),
+      }));
+      after();
       this._loadProjects();
     };
-    const fail = (e) => this.setState({ saveState: 'error', saveErr: e.message });
+    const fail = (e) => { this.setState({ saveState: 'error', saveErr: e.message }); after(); };
     if (p.id) KMAPI.projects.patch(p.id, body).then(done, fail);
     else KMAPI.projects.create(body).then((rec) => KMAPI.projects.patch(rec.id, body)).then(done, fail);
+  }
+
+  // Masonry: every shot keeps its own ratio and packs against the shortest run of
+  // columns instead of aligning into rows, so a short shot leaves no dead space
+  // under it. Order is preserved — each shot takes the highest slot it fits in,
+  // scanning left to right.
+  _masonry(root, gap) {
+    if (!root) return;
+    const kids = [].slice.call(root.children);
+    if (!kids.length) { root.style.height = ''; return; }
+    const W = root.clientWidth;
+    if (!W) return;
+    const COLS = 6;
+    const na = parseFloat(root.getAttribute('data-narrow-at')) || 0;
+    const narrow = na > 0 && W <= na;
+    const cw = (W - gap * (COLS - 1)) / COLS;
+    const tops = new Array(COLS).fill(0);
+    kids.forEach((k) => {
+      let span = parseInt(k.getAttribute('data-span'), 10) || 1;
+      if (narrow) span = COLS;
+      span = Math.max(1, Math.min(COLS, span));
+      const r = String(k.getAttribute('data-ratio') || '3/2').split('/');
+      const ar = (parseFloat(r[0]) || 3) / (parseFloat(r[1]) || 2);
+      const w = cw * span + gap * (span - 1);
+      const h = w / (ar || 1.5);
+      let best = 0, bt = Infinity;
+      for (let c = 0; c + span <= COLS; c++) {
+        let t = 0;
+        for (let i = c; i < c + span; i++) t = Math.max(t, tops[i]);
+        if (t < bt - 0.5) { bt = t; best = c; }
+      }
+      k.style.position = 'absolute';
+      k.style.left = (best * (cw + gap)).toFixed(2) + 'px';
+      k.style.top = bt.toFixed(2) + 'px';
+      k.style.width = w.toFixed(2) + 'px';
+      k.style.height = h.toFixed(2) + 'px';
+      for (let i = best; i < best + span; i++) tops[i] = bt + h + gap;
+    });
+    root.style.position = 'relative';
+    root.style.height = (Math.max.apply(null, tops) - gap).toFixed(2) + 'px';
+  }
+
+  // A single post-render frame can measure a container mid-transition (the preview
+  // panel animates its max-width), so observe the boxes and relayout when they settle.
+  _msObserve() {
+    if (typeof ResizeObserver === 'undefined') return;
+    if (!this._msRO) {
+      this._msRO = new ResizeObserver((entries) => {
+        entries.forEach((en) => {
+          const el = en.target;
+          const w = Math.round(el.clientWidth);
+          if (this._msW && this._msW.get(el) === w) return;
+          (this._msW = this._msW || new Map()).set(el, w);
+          this._masonry(el, parseFloat(el.getAttribute('data-gap')) || 3);
+        });
+      });
+      this._msSeen = new Set();
+    }
+    [].slice.call(document.querySelectorAll('[data-r=shotgrid],[data-r=gridpreview]')).forEach((el) => {
+      if (this._msSeen.has(el)) return;
+      this._msSeen.add(el);
+      this._msRO.observe(el);
+    });
+  }
+
+  _masonryAll() {
+    cancelAnimationFrame(this._msRaf);
+    this._msRaf = requestAnimationFrame(() => {
+      this._msObserve();
+      [].slice.call(document.querySelectorAll('[data-r=shotgrid],[data-r=gridpreview]')).forEach((el) => {
+        this._masonry(el, parseFloat(el.getAttribute('data-gap')) || 3);
+      });
+    });
   }
 
   _upl(key, v) { this.setState((s) => ({ upload: Object.assign({}, s.upload, { [key]: v }) })); }
@@ -880,7 +997,12 @@ class Component extends DCLogic {
       },
       (e) => { this._upl(key, -1); this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: e.message }) })); }
     ).then(
-      (rec) => { if (rec) this.setState((s) => ({ p: Object.assign({}, s.p, rec) })); },
+      (rec) => {
+        if (!rec) return;
+        this.setState((s) => ({
+          p: Object.assign({}, s.p, this._serverKeys(rec), rec.assets ? { assets: rec.assets } : {}),
+        }));
+      },
       () => {}
     );
   }
@@ -944,7 +1066,7 @@ class Component extends DCLogic {
       isBooting: s.booting,
       isLocked: false,
       isApp: !!s.session,
-      doLogout: () => KMAUTH.logout(),
+      doLogout: () => { if (window.KMAUTH) KMAUTH.logout(); },
       sessEmail: s.session ? s.session.email : '',
       failLabel: KMAPI.flags.fail ? 'API failing' : 'API healthy',
       failFg: KMAPI.flags.fail ? 'var(--warn)' : 'var(--accent)',
@@ -1283,15 +1405,22 @@ class Component extends DCLogic {
       publicHref: this._projectHref(p),
       publish: () => {
         clearTimeout(this._saveT);
+        // hold the autosave lane for the whole PATCH -> publish chain
+        this._saving = true;
+        const release = () => {
+          this._saving = false;
+          if (this._saveAgain) { this._saveAgain = false; this._queueSave(); }
+        };
         this.setState({ pubBusy: true, pubResult: '', pubMissing: [], pubMsg: '' });
         const body = { type: p.type, name: p.name, year: p.year, industry: p.industry, meta: p.meta, statement: p.statement, background: p.background, concept: p.concept, hosting: p.hosting, liveUrl: p.liveUrl, fill: p.fill, bundle: p.bundle, assets: p.assets, credits: p.credits, shots: p.shots };
         const save = p.id ? KMAPI.projects.patch(p.id, body) : KMAPI.projects.create(body).then((r) => KMAPI.projects.patch(r.id, body));
         save.then((rec) => {
-          this.setState((st) => ({ p: Object.assign({}, st.p, rec), saveState: 'saved', savedAt: rec.updatedAt || Date.now() }));
+          this.setState((st) => ({ p: Object.assign({}, st.p, this._serverKeys(rec)), saveState: 'saved', savedAt: rec.updatedAt || Date.now() }));
           return KMAPI.projects.publish(rec.id);
         }).then(
-          (rec) => { this.setState((st) => ({ p: Object.assign({}, st.p, rec), pubBusy: false, pubResult: 'ok', pubMsg: rec.name + ' is live at kinomadstudio.com/works/' + rec.slug + '. The works index and the landing page pick it up on next load.' })); this._loadProjects(); },
+          (rec) => { release(); this.setState((st) => ({ p: Object.assign({}, st.p, this._serverKeys(rec)), pubBusy: false, pubResult: 'ok', pubMsg: rec.name + ' is live at kinomadstudio.com/works/' + rec.slug + '. The works index and the landing page pick it up on next load.' })); this._loadProjects(); },
           (err) => {
+            release();
             if (err.status === 422) this.setState({ pubBusy: false, pubResult: 'missing', pubMissing: err.missing || [], pubMsg: 'These fields are required before this project can go public. The checklist on the right tracks the same rules.' });
             else this.setState({ pubBusy: false, pubResult: 'error', pubMsg: err.message });
           }
@@ -1460,7 +1589,30 @@ class Component extends DCLogic {
     };
   }
 
+  _applyTheme() {
+    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+    const s = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+    const pA = this.props.accent ?? '#639392';
+    const pB = this.props.bgColor ?? '#1a1a1a';
+    const pN = this.props.navColor ?? '#050505';
+    if (this._pA !== undefined && this._pA !== pA) s('kinomad-accent', pA);
+    if (this._pB !== undefined && this._pB !== pB) s('kinomad-bg', pB);
+    if (this._pN !== undefined && this._pN !== pN) s('kinomad-nav', pN);
+    this._pA = pA; this._pB = pB; this._pN = pN;
+    let accent = g('kinomad-accent'); if (accent == null) { accent = pA; s('kinomad-accent', accent); }
+    let bg = g('kinomad-bg'); if (bg == null) { bg = pB; s('kinomad-bg', bg); }
+    let nav = g('kinomad-nav'); if (nav == null) { nav = pN; s('kinomad-nav', nav); }
+    document.body.style.setProperty('--accent', accent);
+    document.body.style.setProperty('--bg', bg);
+    document.body.style.setProperty('--nav', nav);
+    document.body.style.setProperty('--panel', nav);
+    const fw = { Tablet: '834px', Mobile: '393px' }[(this.props.device || 'Desktop')];
+    if (fw) document.body.style.setProperty('--frame-w', fw);
+    else document.body.style.removeProperty('--frame-w');
+  }
+
   renderVals() {
+    this._applyTheme();
     const s = this.state;
     // Without the API client every bag below would throw and take the whole page with it.
     if (!window.KMAPI) return { isDead: !s.booting, isLocked: false, isApp: false, reloadPage: () => window.location.reload() };

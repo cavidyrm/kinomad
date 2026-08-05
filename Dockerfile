@@ -13,6 +13,9 @@ COPY *.html /usr/share/nginx/html/
 COPY *.dc.html /usr/share/nginx/html/
 COPY assets/ /usr/share/nginx/html/assets/
 
+# The deploy folder's own files must not end up in the web root.
+RUN rm -f /usr/share/nginx/html/docker-compose.yml /usr/share/nginx/html/.env*
+
 # Landing is the index; the 404 page is what nginx serves on a miss.
 RUN cp "/usr/share/nginx/html/Kinomad Landing.dc.html" /usr/share/nginx/html/index.html \
     && cp "/usr/share/nginx/html/Kinomad 404.dc.html" /usr/share/nginx/html/404.html

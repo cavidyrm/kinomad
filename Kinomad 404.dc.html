@@ -18,7 +18,7 @@
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth}
-body{margin:0;--bg:#1f2121;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#D9FF3D;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;--bg:#1a1a1a;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--accent:#639392;background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent)}
 .km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
@@ -36,7 +36,7 @@ a:hover{color:var(--accent)}
 </style>
 </helmet>
 
-<div data-screen-label="404" style="position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;container:page / inline-size;box-sizing:border-box">
+<div data-screen-label="404" style="width:var(--frame-w,100%);margin-inline:auto;position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;container:page / inline-size;box-sizing:border-box">
 
   <div style="display:flex;justify-content:space-between;align-items:center;padding:clamp(20px,3cqw,40px) clamp(20px,4cqw,64px) 0">
     <a href="Kinomad Landing.dc.html" aria-label="Kinomad home" style="display:block"><img src="assets/logo-light.svg" alt="Kinomad" style="width:clamp(28px,2.6cqw,40px);height:auto;display:block"></a>
@@ -71,15 +71,34 @@ a:hover{color:var(--accent)}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#639392&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;options&quot;:[&quot;#1a1a1a&quot;,&quot;#EDF0F4&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   componentDidMount() {
-    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
-    document.body.style.setProperty('--accent', g('kinomad-accent') ?? this.props.accent ?? '#D9FF3D');
-    document.body.style.setProperty('--bg', g('kinomad-bg') ?? this.props.bgColor ?? '#1f2121');
-    document.body.style.setProperty('--nav', g('kinomad-nav') ?? this.props.navColor ?? '#0d1016');
+    this._applyTheme();
   }
+  _applyTheme() {
+    const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+    const s = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+    const pA = this.props.accent ?? '#639392';
+    const pB = this.props.bgColor ?? '#1a1a1a';
+    const pN = this.props.navColor ?? '#050505';
+    if (this._pA !== undefined && this._pA !== pA) s('kinomad-accent', pA);
+    if (this._pB !== undefined && this._pB !== pB) s('kinomad-bg', pB);
+    if (this._pN !== undefined && this._pN !== pN) s('kinomad-nav', pN);
+    this._pA = pA; this._pB = pB; this._pN = pN;
+    let accent = g('kinomad-accent'); if (accent == null) { accent = pA; s('kinomad-accent', accent); }
+    let bg = g('kinomad-bg'); if (bg == null) { bg = pB; s('kinomad-bg', bg); }
+    let nav = g('kinomad-nav'); if (nav == null) { nav = pN; s('kinomad-nav', nav); }
+    document.body.style.setProperty('--accent', accent);
+    document.body.style.setProperty('--bg', bg);
+    document.body.style.setProperty('--nav', nav);
+    const fw = { Tablet: '834px', Mobile: '393px' }[(this.props.device || 'Desktop')];
+    if (fw) document.body.style.setProperty('--frame-w', fw);
+    else document.body.style.removeProperty('--frame-w');
+  }
+
   renderVals() {
+    this._applyTheme();
     return {};
   }
 }

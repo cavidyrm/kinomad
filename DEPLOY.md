@@ -1,65 +1,59 @@
-# Deploying this handoff
+# Deploying Kinomad
 
-The repo (`cavidyrm/kinomad`) builds a static nginx image, pushes it to
-`ghcr.io/cavidyrm/kinomad-frontend:latest`, and restarts the container on the server over SSH.
-Nothing about that pipeline needs to change. Replace two files and add the new ones.
+Static frontend in nginx, Go API behind it at `/api`, hosted client bundles at `/demo/<slug>/`.
+Everything the frontend needs is in this folder.
 
-## What broke on the last deploy
-
-**`KMAPI is not defined`, booking modal renders empty.** The `Dockerfile` copied pages
-with an explicit per-file whitelist:
-
-```dockerfile
-COPY support.js image-slot.js /usr/share/nginx/html/
-COPY ["Kinomad Landing.dc.html", "/usr/share/nginx/html/Kinomad Landing.dc.html"]
-…
+```
+deploy/
+  Dockerfile           frontend image (nginx + the pages)
+  nginx.conf           clean URLs, /api and /demo proxies, caching
+  docker-compose.yml   web + api + demo + postgres
+  .env.example         copy to .env and fill in
 ```
 
-`km-api.js` was never added to that list, so the image shipped without it. The pages
-requested it, got the SPA fallback (`try_files … /index.html` returns HTML with a 200),
-the browser parsed HTML as JavaScript, and `window.KMAPI` was never defined. The error
-surfaced inside the scheduler because that is the only thing on the landing page that
-reads it.
+## Deploy
 
-**`Kinomad Privacy.dc.html` was also missing** from the same whitelist — the privacy
-notice has been 404ing since it was added. The footer links to it on every page.
+```bash
+cd deploy
+cp .env.example .env          # fill PGPASSWORD, SESSION_SECRET, ADMIN_EMAILS
+docker compose --env-file .env up -d --build
+```
 
-The replacement `Dockerfile` copies by glob (`*.js`, `*.dc.html`) and then **asserts**
-every required file is present, so the build fails loudly instead of the site failing
-quietly. A forgotten `COPY` line cannot happen again.
+The compose file builds the frontend from this folder. To ship the image CI publishes
+instead, comment out `build: .` and uncomment the `image:` line.
 
-## Files to replace
+**Service names are load-bearing.** `nginx.conf` proxies to `kinomad-api` and
+`kinomad-demo` by container name. Renaming a service breaks `/api` and `/demo`.
 
-| From here | Repo path |
+## How the frontend reaches the backend
+
+`km-api.js` calls `/api` on the same origin — no base URL to configure, no CORS. nginx
+forwards it:
+
+| Request | Goes to |
 | --- | --- |
-| `deploy/Dockerfile` | `Dockerfile` |
-| `deploy/nginx.conf` | `nginx.conf` |
+| `/api/*` | `kinomad-api:8080/api/*` |
+| `/health` | `kinomad-api:8080/health` |
+| `/demo/<slug>/*` | `kinomad-demo/<slug>/*` |
 
-`docker-compose.yml`, `samplestaticcompose.yml`, `.dockerignore` and
-`.github/workflows/deploy.yml` are unchanged — keep the ones in the repo.
+Three details in that proxy block are deliberate:
 
-## Files to add at the repo root
-
-- `km-api.js` — the API client every page loads. **This is the file that was missing.**
-- `km-routes.js` — the canonical route table, and the link rewriting that turns the
-  design-tool filenames into clean URLs when the page is served from a host.
-- `Kinomad CRM Sign In.dc.html` — the admin sign-in page.
-
-Every page is replaced in this drop, because all nine now load `km-routes.js`.
-
-And replace with the versions in this folder: `Kinomad Landing.dc.html`,
-`Kinomad CRM.dc.html`, plus `README.md`, `BACKEND-GUIDE.md`, `CRM-HOSTED-BUNDLES.md`
-(this replaces `CRM-LOCAL-RUN.md` — hosted bundles are unpacked server-side now, there is
-no local server to start, so delete the old file).
+- `location ^~ /api/` — the `^~` prefix stops the regex subresource rules below from
+  stealing `/api/assets/<id>/file`.
+- `proxy_set_header Authorization` and `proxy_pass_header Set-Cookie` — the admin session
+  travels on both, so dropping either breaks sign-in silently.
+- `client_max_body_size 520M` — shot and reel uploads. The API's own limit should match;
+  if nginx is the smaller of the two the browser gets a bare 413 with no JSON body.
 
 ## Routing
 
-The new `nginx.conf` adds the clean URLs the README documents, without renaming any file:
+Clean URLs, no file renamed:
 
 | URL | Serves |
 | --- | --- |
 | `/` | `Kinomad Landing.dc.html` (also copied to `index.html`) |
 | `/works` | `Kinomad Works.dc.html` |
+| `/reels` | `reels.html` |
 | `/website/<slug>` | `Kinomad Website Page.dc.html`, rendering that project |
 | `/brand/<slug>` | `Kinomad Brand Page.dc.html` |
 | `/motion/<slug>` | `Kinomad Motion Page.dc.html` |
@@ -67,51 +61,49 @@ The new `nginx.conf` adds the clean URLs the README documents, without renaming 
 | `/admin` | `Kinomad CRM.dc.html` |
 | `/admin/login` | `Kinomad CRM Sign In.dc.html` |
 
-The bare `/website`, `/brand` and `/motion` also resolve, showing the first project of
-that type. Direct filename URLs keep working too.
-
-**How the pages know.** `km-routes.js` holds the route table and, only when the page is
-served from a host (the URL does not end in `.dc.html`), rewrites every internal link to
-its clean form, sets `<link rel="canonical">`, and reads the project slug from the path
-instead of `?project=`. In a design tool or a `file://` checkout it does nothing, so one
-set of files works in both places. If the script fails to load, links fall back to the
+Direct filename URLs keep working, so the same files open in a design tool and on the
+server. `km-routes.js` holds the route table and, only when served from a host, rewrites
+internal links to their clean form, sets `<link rel="canonical">`, and reads the project
+slug from the path instead of `?project=`. If it fails to load, links fall back to
 filename URLs, which nginx still serves — degraded, not broken.
 
-**Why the type prefix.** `/works/<slug>` needs to know a project's type to pick a
+**Why the type prefix.** `/works/<slug>` would need to know a project's type to pick a
 template, and only the API knows that. `/brand/vantar` is resolvable by a static server
 today. When the backend renders project pages, switch to `/works/<slug>` and 301 these.
 
-Two things to know about paths:
+**Relative subresources at depth.** The pages reference `./km-api.js`, `./support.js`,
+`./image-slot.js` and `assets/…` relatively so they work in a design tool. On a nested
+route those resolve below the root, so nginx maps any-depth requests for scripts, styles,
+fonts, media and `assets/…` back to the root. `/api/`, `/demo/` and root-level `/assets/`
+are excluded from that mapping. `km-api.js` additionally retries from `/km-api.js` if
+`window.KMAPI` is still undefined, so a bad base path degrades rather than breaks.
 
-1. **Depth matters.** The pages reference `assets/…` and `./km-api.js` relatively, so a
-   route one level deep resolves them under that level. `/admin/login` is the only such
-   route, and the config aliases `/admin/assets/` and `/admin/*.js` back to the root.
-   `/works/<slug>` will have the same problem when the backend starts rendering per-slug
-   pages — at that point either switch the pages to root-absolute paths (`/assets/…`,
-   `/km-api.js`) or add `<base href="/">` to each page's `<head>`.
-2. **Belt and braces.** All three pages that need `km-api.js` load it relatively and then
-   retry from `/km-api.js` if `window.KMAPI` is still undefined, so a wrong base path
-   degrades instead of breaking. The pages also fail gracefully if the client never
-   arrives: the landing scheduler falls back to published hours and refuses to submit, the
-   CRM shows a *Console failed to load* screen, sign-in blocks with an inline notice.
+`try_files … /index.html` is deliberately absent from the catch-all: a missing asset
+returns a real 404, not 200-with-HTML. Serving HTML for a missing script is what disguised
+a missing `km-api.js` as a JavaScript error on an earlier deploy.
 
-`try_files … /index.html` was also removed from the catch-all. A missing asset now returns
-a real 404 instead of 200-with-HTML, which is what disguised the missing script as a
-JavaScript error.
+## The image asserts its own contents
 
-## Before the backend exists
+`Dockerfile` copies by glob (`*.js`, `*.dc.html`, `assets/`) and then checks every required
+file is present, failing the build if one is missing. The previous per-file whitelist is
+what shipped an image without `km-api.js`. Anything new that lands next to the pages ships
+automatically; anything required that goes missing stops the build instead of the site.
 
-`km-api.js` is a **prototype stand-in** — it stores projects, availability and bookings in
-the visitor's own browser. It is safe to deploy (nothing leaves the browser, no secrets)
-and it makes the CRM and scheduler demonstrable, but:
+## Before the backend is live
 
-- Bookings made on the live site are only visible in the browser that made them. The
-  studio will not see them in the CRM.
-- Anyone can open `/admin/login` and sign in with any valid email and a 4-character
-  password.
+Without a reachable `/api` the pages degrade honestly rather than erroring:
 
-If the site is going public before the API is ready, either keep `/admin*` off the public
-build, or put HTTP basic auth in front of it:
+- Landing scheduler shows published studio hours and refuses to submit.
+- Works and the detail pages fall back to their built-in sample projects.
+- Sign-in blocks with an inline notice; the CRM shows a *Console failed to load* screen.
+
+The CRM also carries a **Preview session** toggle for design review, which skips the auth
+gate when no session exists. It only bypasses the gate — every panel still calls the real
+API and shows its own error state. Nothing to disable before shipping; once the API issues
+sessions the real gate takes over.
+
+If the site goes public before the API is ready, keep `/admin*` off the build or put basic
+auth in front of it:
 
 ```nginx
 location ~ ^/admin {
@@ -121,21 +113,54 @@ location ~ ^/admin {
 }
 ```
 
-Swapping in the real service is described in `BACKEND-GUIDE.md`: replace the bodies of the
-methods on `window.KMAPI` with `fetch` calls. The routes, payloads and status codes the UI
-already handles (401, 404, 409, 422, 503) are the contract.
+Once sessions exist, gate `/admin` with `auth_request` against the session endpoint so an
+unauthenticated request never reaches the HTML.
 
-## Sanity check after deploying
+## Smoke test
 
 ```bash
-curl -sI https://kinomadstudio.com/km-api.js | head -n1        # 200, not 404
-curl -s  https://kinomadstudio.com/km-api.js | head -c 40      # JS, not "<!DOCTYPE html>"
-curl -sI https://kinomadstudio.com/privacy | head -n1          # 200
-curl -sI https://kinomadstudio.com/admin/login | head -n1      # 200
-curl -sI https://kinomadstudio.com/brand/vantar | head -n1      # 200
-curl -sI https://kinomadstudio.com/admin/km-api.js | head -n1   # 200 — depth-safe rule
-curl -sI https://kinomadstudio.com/nope | head -n1              # 404, not 200
+H=https://kinomadstudio.com
+
+# Backend reachable through nginx
+curl -sI  $H/health                  | head -n1   # 200
+curl -s   $H/api/public/schedule     | head -c 60 # JSON, not HTML
+curl -sI  $H/api/public/projects     | head -n1   # 200
+
+# Scripts served as scripts, at the root and at depth
+curl -sI  $H/km-api.js               | head -n1   # 200
+curl -s   $H/km-api.js               | head -c 40 # JS, not "<!DOCTYPE html>"
+curl -sI  $H/brand/km-api.js         | head -n1   # 200 — depth rule
+curl -sI  $H/brand/vantar/support.js | head -n1   # 200 — deeper depth rule
+curl -sI  $H/brand/assets/logo-light.svg | head -n1  # 200
+curl -sI  $H/assets/logo-light.svg   | head -n1   # 200 — root assets untouched
+
+# Pages
+curl -sI  $H/works        | head -n1   # 200
+curl -sI  $H/reels        | head -n1   # 200
+curl -sI  $H/privacy      | head -n1   # 200
+curl -sI  $H/brand/vantar | head -n1   # 200
+curl -sI  $H/admin/login  | head -n1   # 200
+curl -sI  $H/nope         | head -n1   # 404, not 200
 ```
 
-Then open the landing page, click **Book a call**, and confirm the calendar and time
-column render. That path is the one that failed before.
+Then in a browser:
+
+1. Landing → **Book a call**: calendar and time column render, times load, submit succeeds.
+2. `/admin/login`: sign in with an address in `ADMIN_EMAILS`.
+3. CRM → new project → type a name: the *saved* indicator settles and the field keeps what
+   you typed.
+4. Publish it, then open its public URL from the CRM link.
+5. Resize to a phone width: the booking modal is a full-height sheet, and the process and
+   team rows swipe.
+
+## API contract
+
+`BACKEND-GUIDE.md` is the reference: routes, payloads, and the status codes the UI already
+handles (401, 404, 409, 422, 503). Notable expectations from the current frontend:
+
+- `shots[].span` is 1–6 with a free `w`/`h` ratio per shot.
+- Availability blocks are date **ranges**, not single dates.
+- `/api/public/busy` feeds the booking modal's greyed-out slots; a 409 on submit means the
+  slot went while the form was open, and the UI recovers by refreshing.
+- Project responses should echo only server-owned fields (`id`, `slug`, `state`,
+  timestamps) as authoritative — the CRM treats everything else as local until saved.

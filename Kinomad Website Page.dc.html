@@ -3,32 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="/support.js"></script>
+<script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <title>Website Design — Kinomad Studio</title>
-<link href="/assets/favicon.svg" rel="icon" type="image/svg+xml">
-<link href="/assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
-<link href="/assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
+<link href="assets/favicon.svg" rel="icon" type="image/svg+xml">
+<link href="assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
+<link href="assets/favicon-180.png" rel="apple-touch-icon" sizes="180x180">
 <meta content="#0D0D0D" name="theme-color">
-<script src="/km-routes.js"></script>
-<script src="/km-api.js"></script>
+<script src="./km-routes.js"></script>
+<script src="./km-api.js"></script>
 <script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
 <script>if(!window.KMAPI){var ka=document.createElement('script');ka.src='/km-api.js';ka.onload=function(){window.dispatchEvent(new Event('kmapi-ready'));};document.head.appendChild(ka);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=gambetta@400,401,500,501,700,701&display=swap" rel="stylesheet">
 <style>
 html{scroll-behavior:smooth;scrollbar-width:none}
 ::-webkit-scrollbar{display:none;width:0}
-body{margin:0;--bg:#1f2121;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--card:#141922;--accent:#D9FF3D;--accent-ink:var(--accent);background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;transition:background 0.5s ease,color 0.5s ease;-webkit-font-smoothing:antialiased}
+body{margin:0;--bg:#1a1a1a;--fg:#F1EFE7;--mut:rgba(241,239,231,0.55);--line:rgba(241,239,231,0.14);--card:#141922;--accent:#639392;--accent-ink:var(--accent);background:var(--bg);color:var(--fg);font-family:'General Sans',ui-sans-serif,system-ui,sans-serif;transition:background 0.5s ease,color 0.5s ease;-webkit-font-smoothing:antialiased}
 body.light{--bg:#EDF0F4;--fg:#14130F;--mut:rgba(20,19,15,0.7);--line:rgba(20,19,15,0.16);--card:#DFE4EB;--accent-ink:color-mix(in oklab,var(--accent),#14130F 55%)}
 a{color:var(--fg);text-decoration:none;transition:color 0.25s ease}
 a:hover{color:var(--accent-ink)}
 .km-flink{background-image:linear-gradient(currentColor,currentColor);background-repeat:no-repeat;background-position:100% 92%;background-size:0% 2px;transition:background-size 0.9s cubic-bezier(0.22,1,0.36,1)}
 .km-flink:hover{background-position:0 92%;background-size:100% 2px}
 .km-cta{background-color:var(--fg);background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-position:0 0;background-size:0% 100%;color:var(--bg);transition:background-size 0.8s cubic-bezier(0.22,1,0.36,1),color 0.4s ease}
-.km-cta:hover{background-size:100% 100%;color:#14130F}
+.km-cta:hover{background-size:100% 100%;color:var(--cta-ink,#14130F)}
 ::selection{background:var(--accent);color:#14130F}
 @keyframes km-hzoom{from{transform:scale(1.12)}to{transform:scale(1)}}
 @keyframes km-hfade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -39,7 +39,9 @@ a:hover{color:var(--accent-ink)}
 .km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
 .km-skip:focus{top:12px;color:#14130F}
 #frame{width:var(--frame-w,100%);margin-inline:auto;container:page / inline-size;position:relative;background:var(--bg);transition:width 0.5s cubic-bezier(0.16,1,0.3,1)}
-body.dev{background:#06080d}
+body.dev{background:#06080d;height:100dvh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+body.dev #frame{height:var(--frame-h,100%);max-height:100dvh;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+body.dev #frame::-webkit-scrollbar{display:none}
 body.dev #frame{box-shadow:0 40px 130px rgba(0,0,0,0.55);outline:1px solid rgba(241,239,231,0.08);cursor:grab}
 body.dev.dragging{user-select:none}
 body.dev.dragging #frame{cursor:grabbing}
@@ -95,7 +97,7 @@ body.dev.dragging #frame{cursor:grabbing}
   <div data-r="casemeta" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,0.8fr);gap:clamp(28px,5cqw,90px);align-items:start;padding-top:clamp(20px,2.6cqw,36px);animation:km-rise 1s cubic-bezier(0.16,1,0.3,1) 0.16s both">
     <div style="display:flex;flex-direction:column;align-items:flex-start;gap:clamp(24px,3cqw,40px)">
       <p style="margin:0;font-family:'Gambetta',serif;font-style:italic;font-weight:500;font-size:clamp(22px,2.6cqw,36px);line-height:1.3;text-wrap:pretty;max-width:640px">{{ c.statement }}</p>
-      <a href="{{ c.url }}" target="_blank" rel="noopener" class="km-cta" style="display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px">Visit live site <span style="font-size:16px">↗</span></a>
+      <a href="{{ c.url }}" target="_blank" rel="noopener" class="km-cta" style="--accent:{{ ctaFill }};--cta-ink:{{ ctaInk }};display:inline-flex;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;padding:15px 26px">Visit live site <span style="font-size:16px">↗</span></a>
     </div>
     <div style="display:flex;flex-direction:column">
       <div style="display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding:11px 0">
@@ -134,7 +136,7 @@ body.dev.dragging #frame{cursor:grabbing}
 
 <section data-screen-label="Website hero image" style="padding:0">
   <div style="position:relative;width:100%;aspect-ratio:21/10;background:var(--card)">
-    <x-import component-from-global-scope="image-slot" from="/image-slot.js" id="{{ c.heroId }}" src="{{ c.heroSrc }}" shape="rect" radius="0" placeholder="{{ c.heroPh }}" style="position:absolute;inset:0;width:100%;height:100%" hint-size="100%,560px"></x-import>
+    <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ c.heroId }}" src="{{ c.heroSrc }}" shape="rect" radius="0" placeholder="{{ c.heroPh }}" style="position:absolute;inset:0;width:100%;height:100%" hint-size="100%,560px"></x-import>
   </div>
 </section>
 
@@ -173,7 +175,7 @@ body.dev.dragging #frame{cursor:grabbing}
 
 </main>
 
-<footer data-r="foot" data-screen-label="Footer" style="position:sticky;bottom:0;z-index:0;background:#050505;color:#F1EFE7;padding:clamp(70px,9cqw,130px) 0 0;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;animation:km-footrise 1s cubic-bezier(0.16,1,0.3,1) both;animation-timeline:view();animation-range:entry 0% entry 75%">
+<footer data-r="foot" data-screen-label="Footer" style="position:sticky;bottom:0;z-index:0;background:#050505;color:#F1EFE7;padding:clamp(70px,9cqw,130px) 0 0;min-height:calc(var(--vh,1svh) * 100);box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;animation:km-footrise 1s cubic-bezier(0.16,1,0.3,1) both;animation-timeline:view();animation-range:entry 0% entry 75%">
   <div style="position:relative;z-index:1;padding:0 1.2cqw;display:flex;justify-content:space-between;align-items:flex-start;gap:24px">
     <div role="img" aria-label="Kinomad logo" style="width:clamp(56px,5cqw,84px);aspect-ratio:137/138;-webkit-mask:url('assets/logo-light.svg') center/contain no-repeat;mask:url('assets/logo-light.svg') center/contain no-repeat;background-image:linear-gradient(to top,var(--accent) 50%,#F1EFE7 50%);background-size:100% 200%;background-position:0 0;transition:background-position 0.6s cubic-bezier(0.16,1,0.3,1);cursor:pointer" style-hover="background-position:0 100%"></div>
     <a href="mailto:Hello@Kinomadstudio.com" style="font-size:clamp(18px,1.8cqw,26px);font-weight:600;letter-spacing:-0.01em;color:#F1EFE7;border-bottom:1px solid rgba(241,239,231,0.3);align-self:flex-start;padding-bottom:4px">Hello@Kinomadstudio.com</a>
@@ -203,7 +205,7 @@ body.dev.dragging #frame{cursor:grabbing}
 </footer>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2bcdee&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#639392&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;options&quot;:[&quot;#1a1a1a&quot;,&quot;#EDF0F4&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = { light: false, menuOpen: false, device: 'Desktop' };
 
@@ -287,7 +289,7 @@ class Component extends DCLogic {
     this._drag.y = e.clientY;
     this._drag.moved += Math.abs(dy);
     this._drag.v = dy;
-    const se = document.scrollingElement;
+    const se = this._sv();
     se.scrollTo({ top: se.scrollTop - dy * 1.5, behavior: 'instant' });
   }
 
@@ -299,7 +301,7 @@ class Component extends DCLogic {
     let v = this._drag.v || 0;
     const glide = () => {
       if (this._drag.down || Math.abs(v) < 0.3) return;
-      const se = document.scrollingElement;
+      const se = this._sv();
       se.scrollTo({ top: se.scrollTop - v * 1.5, behavior: 'instant' });
       v *= 0.95;
       this._mom = requestAnimationFrame(glide);
@@ -309,29 +311,66 @@ class Component extends DCLogic {
   }
 
   applyDevice() {
-    const map = { Tablet: '834px', Mobile: '390px' };
-    const w = map[(this.props.device || 'Desktop')];
+    const map = { Tablet: '834px', Mobile: '393px' };
+    const dv = this.props.device || 'Desktop';
+    const w = map[dv];
     document.body.classList.toggle('dev', !!w);
-    if (w) document.body.style.setProperty('--frame-w', w);
-    else document.body.style.removeProperty('--frame-w');
+    document.body.classList.toggle('dev-t', dv === 'Tablet');
+    document.body.classList.toggle('dev-m', dv === 'Mobile');
+    // visible web area of the real device, not the full screen height
+    const h = { Tablet: '1112px', Mobile: '660px' }[dv];
+    if (w) {
+      document.body.style.setProperty('--frame-w', w);
+      document.body.style.setProperty('--frame-h', h);
+      document.body.style.setProperty('--vh', (parseInt(h, 10) / 100) + 'px');
+    } else {
+      document.body.style.removeProperty('--frame-w');
+      document.body.style.removeProperty('--frame-h');
+      document.body.style.removeProperty('--vh');
+    }
     const dot = document.getElementById('km-cur-dot');
     if (dot) dot.style.display = w ? 'none' : '';
   }
 
 
 
+  // In device preview the frame itself scrolls, so every scroll read goes through
+  // these helpers instead of touching window/document directly.
+  _dev() { return document.body.classList.contains('dev') ? document.getElementById('frame') : null; }
+  _sv() { return this._dev() || document.scrollingElement || document.documentElement; }
+  _sy() { const d = this._dev(); return d ? d.scrollTop : window.scrollY; }
+  _vh() { const d = this._dev(); return d ? d.clientHeight : window.innerHeight; }
+  _sh() { const d = this._dev(); return d ? d.scrollHeight : document.documentElement.scrollHeight; }
+  _relTop(el) {
+    const d = this._dev();
+    return el.getBoundingClientRect().top - (d ? d.getBoundingClientRect().top : 0);
+  }
+
   _scrollThumb() {
     const el = document.getElementById('km-scrollthumb');
     if (!el) return;
-    const doc = document.documentElement;
-    const max = doc.scrollHeight - window.innerHeight;
+    const vh = this._vh();
+    const sh = this._sh();
+    const max = sh - vh;
+    const y = this._sy();
     if (max <= 0) { el.style.display = 'none'; return; }
-    el.style.display = 'block';
-    const h = Math.max(48, window.innerHeight * (window.innerHeight / doc.scrollHeight));
+    // the footer owns the last screen, so the bar leaves before it. The footer is
+    // sticky, so its own rect can't report this — scroll progress can.
+    el.style.display = (max - y <= vh) ? 'none' : 'block';
+    // keep the bar inside the device frame instead of on the desk behind it
+    const dvf = this._dev();
+    if (dvf) {
+      const r = dvf.getBoundingClientRect();
+      el.style.top = r.top + 'px';
+      el.style.right = (window.innerWidth - r.right) + 'px';
+    } else {
+      el.style.top = '0px';
+      el.style.right = '0px';
+    }
+    const h = Math.max(48, vh * (vh / sh));
     el.style.height = h.toFixed(0) + 'px';
-    el.style.transform = 'translateY(' + ((window.scrollY / max) * (window.innerHeight - h)).toFixed(1) + 'px)';
+    el.style.transform = 'translateY(' + ((y / max) * (vh - h)).toFixed(1) + 'px)';
     const now = performance.now();
-    const y = window.scrollY;
     if (this._stY !== undefined) {
       const dy = y - this._stY;
       const dt = Math.max(1, now - this._stT);
@@ -374,12 +413,16 @@ class Component extends DCLogic {
       const rise = () => { if (this._heroFx) this._heroFx(); if (this._scrollThumb) this._scrollThumb(); };
       this._riseFallback = rise;
       window.addEventListener('scroll', rise, { passive: true });
+      const rf = document.getElementById('frame');
+      if (rf) rf.addEventListener('scroll', rise, { passive: true });
       rise();
       return;
     }
     if (!window.matchMedia || !window.matchMedia('(pointer: fine)').matches) {
       const rise = () => this._scrollThumb();
       window.addEventListener('scroll', rise, { passive: true });
+      const rf = document.getElementById('frame');
+      if (rf) rf.addEventListener('scroll', rise, { passive: true });
       rise();
       return;
     }
@@ -402,8 +445,8 @@ class Component extends DCLogic {
     this._onWheel = (e) => {
       if (e.ctrlKey || e.defaultPrevented) return;
       e.preventDefault();
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (this._scT === null) { this._scT = window.scrollY; this._scC = window.scrollY; }
+      const max = this._sh() - this._vh();
+      if (this._scT === null) { this._scT = this._sy(); this._scC = this._sy(); }
       this._scT = Math.max(0, Math.min(max, this._scT + e.deltaY));
     };
     window.addEventListener('wheel', this._onWheel, { passive: false });
@@ -420,7 +463,7 @@ class Component extends DCLogic {
         this._scC += (this._scT - this._scC) * 0.085;
         const done = Math.abs(this._scT - this._scC) < 0.4;
         if (done) this._scC = this._scT;
-        window.scrollTo({ top: this._scC, behavior: 'instant' });
+        this._sv().scrollTo({ top: this._scC, behavior: 'instant' });
         if (done) this._scT = null;
       }
       this._curRaf = requestAnimationFrame(loop);
@@ -448,9 +491,9 @@ class Component extends DCLogic {
   applyAccent() {
     const g = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
     const s = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
-    const pA = this.props.accent ?? '#D9FF3D';
-    const pN = this.props.navColor ?? '#0d1016';
-    const pB = this.props.bgColor ?? '#1f2121';
+    const pA = this.props.accent ?? '#639392';
+    const pN = this.props.navColor ?? '#050505';
+    const pB = this.props.bgColor ?? '#1a1a1a';
     if (this._pA !== undefined && this._pA !== pA) s('kinomad-accent', pA);
     if (this._pN !== undefined && this._pN !== pN) s('kinomad-nav', pN);
     if (this._pB !== undefined && this._pB !== pB) s('kinomad-bg', pB);
@@ -471,7 +514,7 @@ class Component extends DCLogic {
   _fallbackCases() {
     return [
       {
-        id: 'web-aurelia', num: '01', name: 'Aurelia', industry: 'E-commerce', year: '2026', url: 'http://localhost:3001',
+        id: 'web-aurelia', fill: '#5B79A6', num: '01', name: 'Aurelia', industry: 'E-commerce', year: '2026', url: 'http://localhost:3001',
         statement: 'Aurelia is a slow-fashion storefront rebuilt around feel, a shop that browses like a lookbook.',
         background: 'Aurelia sells small-run garments made to last, but their old store was a template that treated every piece like a commodity. Product pages buried the craft, and checkout felt like a different brand entirely. They asked us to rebuild the storefront so the shopping experience matched the care in the clothes.',
         concept: 'We designed the store as an editorial object: full-bleed campaign imagery, unhurried type, and a product page that reads like a garment label, fabric, origin, care, before it ever asks for a size. The build is fully custom, from art direction to the checkout flow, tuned so the whole store loads like a single continuous page.',
@@ -494,7 +537,7 @@ class Component extends DCLogic {
         ],
       },
       {
-        id: 'web-nomadair', num: '02', name: 'Nomad Air', industry: 'Travel', year: '2025', url: 'http://localhost:3002',
+        id: 'web-nomadair', fill: '#2E6F6B', num: '02', name: 'Nomad Air', industry: 'Travel', year: '2025', url: 'http://localhost:3002',
         statement: 'Nomad Air is a travel platform that makes booking feel like the trip already started.',
         background: 'Nomad Air aggregates long-stay travel for remote workers. Their product was rich, visas, stays, flights, community, but the site explained it like a spreadsheet. Conversion stalled because the dream never made it above the fold. They came to us to make the platform feel like the destination.',
         concept: 'The site opens on place, not product: full-screen destinations, live local time and weather, and a search that reads as a sentence, "three months in Lisbon, leaving June". Booking steps shed their chrome and borrow the pacing of a boarding pass. The result is a funnel that feels like anticipation instead of admin.',
@@ -517,7 +560,7 @@ class Component extends DCLogic {
         ],
       },
       {
-        id: 'web-fieldnote', num: '03', name: 'Fieldnote', industry: 'SaaS', year: '2025', url: 'http://localhost:3003',
+        id: 'web-fieldnote', fill: '#3C4A6B', num: '03', name: 'Fieldnote', industry: 'SaaS', year: '2025', url: 'http://localhost:3003',
         statement: 'Fieldnote is a SaaS marketing site that explains a complex product in one scroll.',
         background: 'Fieldnote builds observability tooling for data teams, a product that takes engineers ten minutes to love and marketers ten pages to describe. Their old site tried to say everything and landed nothing. The brief: one page, one scroll, one clear idea of what Fieldnote does.',
         concept: 'We structured the site as a single narrative scroll: the problem appears as live, misbehaving data; Fieldnote enters and the same data resolves into order. Product UI is shown real and interactive, not as floating screenshots. Every section earns the next scroll, and the only CTA is the one that matters, try it on your own data.',
@@ -539,7 +582,7 @@ class Component extends DCLogic {
         ],
       },
       {
-        id: 'web-ostro', num: '04', name: 'Ostro', industry: 'Architecture', year: '2025', url: 'http://localhost:3004',
+        id: 'web-ostro', fill: '#7A6A57', num: '04', name: 'Ostro', industry: 'Architecture', year: '2025', url: 'http://localhost:3004',
         statement: 'Ostro is an architecture portfolio where the buildings do the talking.',
         background: 'Ostro Atelier had fifteen years of built work and a website that showed it in 400-pixel thumbnails. Awards, publications and photography were scattered across PDFs. They wanted a portfolio that treated their projects with the same spatial care they put into the buildings themselves.',
         concept: 'The site is organised like a walk-through: each project is a sequence of full-height photographs with plans and text tucked between them, revealed at the visitor\'s pace. Navigation stays out of the way, a single index that overlays like a site plan. Typography is quiet and structural, so the photography carries the weight.',
@@ -561,7 +604,7 @@ class Component extends DCLogic {
         ],
       },
       {
-        id: 'web-kepler', num: '05', name: 'Kepler Labs', industry: 'AI startup', year: '2024', url: 'http://localhost:3005',
+        id: 'web-kepler', fill: '#4B3F72', num: '05', name: 'Kepler Labs', industry: 'AI startup', year: '2024', url: 'http://localhost:3005',
         statement: 'Kepler Labs went from nothing to a live launch site in three weeks.',
         background: 'Kepler Labs was two weeks from announcing their seed round with no brand, no site and a deck full of dense research. They needed a public face fast, credible enough for investors, clear enough for the engineers they wanted to hire, without pretending to be bigger than four people.',
         concept: 'We stripped the launch site to what a four-person lab can honestly say: what they\'re building, who is building it, and why it matters. One page, dark and precise, with a single animated visual explaining the core idea. Designed and shipped in three weeks, built to grow sections as the company does.',
@@ -602,8 +645,18 @@ class Component extends DCLogic {
     const seg = (name) => (this.props.device || 'Desktop') === name
       ? { bg: 'var(--accent)', fg: '#14130F' }
       : { bg: 'transparent', fg: 'rgba(241,239,231,0.7)' };
+    // the CRM's "accent fill · hover sweep" drives the CTA sweep; ink flips with it
+    const fill = (c && c.fill) || 'var(--accent)';
+    let ink = '#14130F';
+    const fm = /^#([0-9a-f]{6})$/i.exec(fill);
+    if (fm) {
+      const n = parseInt(fm[1], 16);
+      const lum = (0.2126 * (n >> 16 & 255) + 0.7152 * (n >> 8 & 255) + 0.0722 * (n & 255)) / 255;
+      ink = lum < 0.55 ? '#F1EFE7' : '#14130F';
+    }
     return {
       c, others,
+      ctaFill: fill, ctaInk: ink,
       segDesktop: seg('Desktop'),
       segTablet: seg('Tablet'),
       segMobile: seg('Mobile'),
@@ -626,7 +679,7 @@ class Component extends DCLogic {
         document.body.classList.toggle('light', light);
         this.setState({ light });
       },
-      backToTop: (e) => { e.preventDefault(); this.setState({ menuOpen: false }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      backToTop: (e) => { e.preventDefault(); this.setState({ menuOpen: false }); this._sv().scrollTo({ top: 0, behavior: 'smooth' }); },
     };
   }
 }
