@@ -559,7 +559,7 @@ body.dev.dragging #frame{cursor:grabbing}
 </footer>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#7ad1bc&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;options&quot;:[&quot;#1a1a1a&quot;,&quot;#EDF0F4&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Desktop&quot;,&quot;options&quot;:[&quot;Desktop&quot;,&quot;Tablet&quot;,&quot;Mobile&quot;],&quot;section&quot;:&quot;Preview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#c1d2b0&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bgColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#1a1a1a&quot;,&quot;options&quot;:[&quot;#1a1a1a&quot;,&quot;#EDF0F4&quot;],&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;navColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#050505&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = { light: false, fill: 0, hovT: -1, hovS: -1, menuOpen: false, device: 'Desktop', openFaq: 0, workIdx: 1, bookingOpen: false, bkStep: 1, bkType: 0, bkMonthOffset: 0, bkDate: '', bkTime: '', bkName: '', bkEmail: '', bkNote: '', bkError: '', bkCfg: null, bkCfgLoading: false, bkBusy: [], bkBusyLoading: false, bkBusyErr: '', bkSubmitting: false, bkConflict: '' };
 
@@ -1307,7 +1307,14 @@ class Component extends DCLogic {
     return (f ? f.clientWidth : window.innerWidth) <= 780;
   }
 
+  // Coarse pointer OR narrow: a touch device never fires hover, so at desktop
+  // width it would otherwise get neither the hover reveal nor the tap reveal.
+  _touch() {
+    return !!(window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches);
+  }
+
   _isNarrow() {
+    if (this._touch()) return true;
     const f = document.getElementById('frame');
     return (f ? f.clientWidth : window.innerWidth) <= 1120;
   }
@@ -1360,7 +1367,7 @@ class Component extends DCLogic {
 
   _snapCenter(el) {
     const row = el.parentElement;
-    if (!row || !this._isNarrow()) return false;
+    if (!row || row.scrollWidth <= row.clientWidth + 1) return false;
     row.scrollTo({
       left: el.offsetLeft - row.offsetLeft - (row.clientWidth - el.clientWidth) / 2,
       behavior: this._reduced() ? 'auto' : 'smooth',
@@ -1558,9 +1565,21 @@ class Component extends DCLogic {
       },
       teamTap: (e) => {
         if (!this._isNarrow()) return;
-        this._snapCenter(e.currentTarget);
+        const el = e.currentTarget;
+        if (this._snapCenter(el)) return;
+        const on = el.getAttribute('data-revealed') !== '1';
+        [].slice.call(document.querySelectorAll('[data-r=team-row] > div')).forEach((c) => {
+          if (c !== el && c.getAttribute('data-revealed') === '1') { c.removeAttribute('data-revealed'); this._tSet(c, false); }
+        });
+        if (on) el.setAttribute('data-revealed', '1'); else el.removeAttribute('data-revealed');
+        this._tSet(el, on);
       },
-      procTap: (e) => this._snapCenter(e.currentTarget),
+      procTap: (e) => {
+        const el = e.currentTarget;
+        if (this._snapCenter(el)) return;
+        const i = Number(el.dataset.idx);
+        this.setState((st) => ({ hovP: st.hovP === i ? null : i }));
+      },
       segDesktop: seg('Desktop'),
       segTablet: seg('Tablet'),
       segMobile: seg('Mobile'),

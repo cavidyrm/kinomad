@@ -776,6 +776,12 @@ class Component extends DCLogic {
 
   // In device preview the frame itself scrolls, so every scroll read goes through
   // these helpers instead of touching window/document directly.
+  // Coarse pointer: no hover event ever fires, so reveals must accept a tap even
+  // at desktop width.
+  _touch() {
+    return !!(window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches);
+  }
+
   _dev() { return document.body.classList.contains('dev') ? document.getElementById('frame') : null; }
   _sv() { return this._dev() || document.scrollingElement || document.documentElement; }
   _sy() { const d = this._dev(); return d ? d.scrollTop : window.scrollY; }
@@ -954,6 +960,8 @@ class Component extends DCLogic {
   }
 
   renderVals() {
+    // reveals respond to a tap on any touch device, not just narrow previews
+    const tapOK = this.state.device !== 'Desktop' || this._touch();
     const demo = !this._projectsLoaded || this._demoFallback;
     const websBase = demo ? (this._webs || this._fallbackWebs()) : (this._webs || []);
     const brandsBase = demo ? (this._brands || this._fallbackBrands()) : (this._brands || []);
@@ -964,12 +972,12 @@ class Component extends DCLogic {
       industry: x.industry || (x.meta ? x.meta.split(' · ')[0] : ''),
       year: x.year || (x.meta ? x.meta.split(' · ')[2] : ''),
       url: x.url || '#',
-      openCls: (this.state.device !== 'Desktop' && this.state.tapCard === x.id) ? 'km-webcard-open' : '',
+      openCls: (tapOK && this.state.tapCard === x.id) ? 'km-webcard-open' : '',
     }));
     const threes = threesBase.map((x, i) => Object.assign({}, x, {
       href: this._href('Kinomad Motion Page.dc.html', x.id),
       num: x.num || ('0' + (i + 1)),
-      openCls: (this.state.device !== 'Desktop' && this.state.tapCard === x.id) ? 'km-webcard-open' : '',
+      openCls: (tapOK && this.state.tapCard === x.id) ? 'km-webcard-open' : '',
     }));
     this._sampleBrandColors(brandsBase);
     const fallback = { 'brand-vantar': '#5B79A6', 'brand-mono': '#6B4A32', 'brand-halcyon': '#96A58C' };
@@ -1003,7 +1011,7 @@ class Component extends DCLogic {
       brandCountPad: this._countPad(brands.length),
       threeCountPad: this._countPad(threes.length),
       cardTap: (e) => {
-        if (this.state.device === 'Desktop') return;
+        if (this.state.device === 'Desktop' && !this._touch()) return;
         const id = e.currentTarget.id;
         if (this.state.tapCard !== id) { e.preventDefault(); this.setState({ tapCard: id }); }
       },
