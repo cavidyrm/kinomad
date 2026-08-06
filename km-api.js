@@ -215,6 +215,25 @@
     return a.id || a.assetId || '';
   }
 
+  /** Asset id from CRM state — never send /api/assets/… URLs to the backend. */
+  function extractAssetId(ref) {
+    if (!ref) return '';
+    if (typeof ref === 'object') return ref.id || ref.assetId || '';
+    var s = String(ref);
+    var m = /\/api\/assets\/([^/?#]+)/.exec(s);
+    if (m) return m[1];
+    return s;
+  }
+
+  function shotRatio(s) {
+    if (s.ratio === 'custom') {
+      var w = Number(s.cw) || 3;
+      var h = Number(s.ch) || 2;
+      return w + '/' + h;
+    }
+    return s.ratio || '16/9';
+  }
+
   function normalizeAssets(assets) {
     if (!assets) return {};
     var out = {};
@@ -234,6 +253,15 @@
     if (!p) return p;
     var copy = Object.assign({}, p);
     copy.assets = normalizeAssets(copy.assets);
+    if (copy.shots) {
+      copy.shots = copy.shots.map(function (s) {
+        var aid = extractAssetId(s.assetId || s.img);
+        return Object.assign({}, s, {
+          assetId: aid,
+          img: aid ? assetUrl(aid) : (s.img || ''),
+        });
+      });
+    }
     return copy;
   }
 
@@ -264,13 +292,13 @@
     }
     if (p.shots) {
       body.shots = p.shots
-        .filter(function (s) { return s.assetId || s.img; })
+        .filter(function (s) { return extractAssetId(s.assetId || s.img); })
         .map(function (s, i) {
           return {
             id: s.id || '',
-            assetId: s.assetId || s.img,
+            assetId: extractAssetId(s.assetId || s.img),
             span: s.span || 6,
-            ratio: s.ratio || '16/9',
+            ratio: shotRatio(s),
             order: s.order != null ? s.order : i,
           };
         });
@@ -293,7 +321,7 @@
       { key: 'copy', label: 'Background & concept', ok: !!p.background && !!p.concept },
       { key: 'credits', label: 'At least one credit', ok: (p.credits || []).some(function (c) { return c.who && c.role; }) },
     ];
-    var shots = (p.shots || []).filter(function (s) { return s.img || s.assetId; });
+    var shots = (p.shots || []).filter(function (s) { return extractAssetId(s.assetId || s.img); });
     if (p.type === 'website') {
       if (p.hosting === 'hosted') need.push({ key: 'bundle', label: 'Site bundle unpacked', ok: (p.bundle || {}).status === 'ready' });
       else need.push({ key: 'liveUrl', label: 'Live website URL', ok: /^https?:\/\/\S+\.\S+/.test(p.liveUrl || '') });

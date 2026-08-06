@@ -1223,7 +1223,7 @@ class Component extends DCLogic {
         op: s.shDrag === i ? '0.45' : '1',
       };
     });
-    const filled = (p.shots || []).filter((x) => x.img);
+    const filled = (p.shots || []).filter((x) => x.img || x.assetId);
     const gridCells = (p.shots || []).map((sh, i) => ({
       span: s.gridMobile ? 6 : (sh.span || 1),
       ratio: sh.ratio === 'custom' ? ((Number(sh.cw) || 3) + '/' + (Number(sh.ch) || 2)) : (sh.ratio || '3/2'),
@@ -1325,6 +1325,10 @@ class Component extends DCLogic {
       shotFile: (e) => {
         const i = Number(e.currentTarget.dataset.idx), f = e.currentTarget.files && e.currentTarget.files[0];
         if (!f) return;
+        if (!p.id) {
+          this.setState((st) => ({ uploadErr: Object.assign({}, st.uploadErr, { ['shot' + i]: 'Save the project name first so we can create a draft.' }) }));
+          return;
+        }
         const key = 'shot' + i;
         this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: 0 }), uploadErr: Object.assign({}, st.uploadErr, { [key]: '' }) }));
         KMAPI.assets.upload(p.id, f, (v) => this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: v }) }))).then(
@@ -1333,16 +1337,17 @@ class Component extends DCLogic {
             // default the ratio from the image the API just measured
             const g = (x, y) => y ? g(y, x % y) : x;
             let ratio = '3/2';
+            let cw, ch;
             if (a.width && a.height) {
               const known = ['21/9', '2/1', '16/9', '16/10', '3/2', '4/3', '1/1', '4/5', '3/4', '9/16'];
               const r = a.width / a.height;
               let best = known[0], bd = Infinity;
               known.forEach((k2) => { const pr = k2.split('/'); const diff = Math.abs((+pr[0] / +pr[1]) - r); if (diff < bd) { bd = diff; best = k2; } });
               ratio = bd / r < 0.04 ? best : 'custom';
-              if (ratio === 'custom') { const dv = g(a.width, a.height) || 1; var cw = Math.round(a.width / dv), ch = Math.round(a.height / dv); if (cw > 40 || ch > 40) { cw = Math.round(r * 100) / 100; ch = 1; } }
+              if (ratio === 'custom') { const dv = g(a.width, a.height) || 1; cw = Math.round(a.width / dv); ch = Math.round(a.height / dv); if (cw > 40 || ch > 40) { cw = Math.round(r * 100) / 100; ch = 1; } }
             }
             const cur = this.state.p.shots || [];
-            this._patch({ shots: cur.map((x, j) => j === i ? Object.assign({}, x, { img: a.url, name: a.name, w: a.width, h: a.height, ratio: ratio, cw: typeof cw !== 'undefined' ? String(cw) : x.cw, ch: typeof ch !== 'undefined' ? String(ch) : x.ch }) : x) }, true);
+            this._patch({ shots: cur.map((x, j) => j === i ? Object.assign({}, x, { assetId: a.assetId, img: a.url, name: a.name, w: a.width, h: a.height, ratio: ratio, cw: typeof cw !== 'undefined' ? String(cw) : x.cw, ch: typeof ch !== 'undefined' ? String(ch) : x.ch }) : x) }, true);
           },
           (err) => this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: -1 }), uploadErr: Object.assign({}, st.uploadErr, { [key]: err.message }) }))
         );
