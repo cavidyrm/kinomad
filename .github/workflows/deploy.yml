@@ -32,8 +32,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
 
-
-
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.2.5
         with:
