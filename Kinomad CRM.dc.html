@@ -16,11 +16,11 @@
 <script src="./km-routes.js"></script>
 <script>if(!window.KMROUTES){var kr=document.createElement('script');kr.src='/km-routes.js';document.head.appendChild(kr);}</script>
 <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,401,500,501,600,601,700,701&f[]=chillax@200,300,400,500,600,700&display=swap" rel="stylesheet">
-<script src="./km-api.js?v=3"></script>
+<script src="./km-api.js?v=4"></script>
 <script src="./km-auth.js"></script>
 <script>/* deploy safety: relative paths break on nested routes — retry from site root */
 (function(){var n=0,d=function(){if(!n&&window.KMAPI&&window.KMAUTH)window.dispatchEvent(new Event('kmapi-ready'));};
-if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js?v=3';a.onload=function(){n--;d();};document.head.appendChild(a);}
+if(!window.KMAPI){n++;var a=document.createElement('script');a.src='/km-api.js?v=4';a.onload=function(){n--;d();};document.head.appendChild(a);}
 if(!window.KMAUTH){n++;var b=document.createElement('script');b.src='/km-auth.js';b.onload=function(){n--;d();};document.head.appendChild(b);}})();</script>
 <style>
 html{scroll-behavior:smooth}
@@ -872,13 +872,38 @@ class Component extends DCLogic {
     return out;
   }
 
+  // Nothing can be attached to a project that does not exist yet, and an upload
+  // can start well before the debounced autosave has run. Every path that needs
+  // an id comes through here so the record is created once and shared, rather
+  // than each caller racing to create its own.
+  _ensureDraft() {
+    const p = this.state.p || this._blank();
+    if (p.id) return Promise.resolve(p.id);
+    if (this._draftId) return Promise.resolve(this._draftId);
+    if (!this._draftP) {
+      this._draftP = KMAPI.projects.create({ type: p.type || 'website' }).then(
+        (rec) => {
+          this._draftId = rec.id;
+          this._draftP = null;
+          this.setState((s) => ({ p: Object.assign({}, s.p, this._serverKeys(rec)) }));
+          return rec.id;
+        },
+        (e) => { this._draftP = null; throw e; }
+      );
+    }
+    return this._draftP;
+  }
+
+  _resetDraft() { this._draftId = null; this._draftP = null; }
+
   _flush() {
     const p = this.state.p;
     if (!p) return;
     // one save in flight at a time; a change made during it re-queues on completion
     if (this._saving) { this._saveAgain = true; return; }
-    // the record is created on the first real keystroke, not on a type click
-    if (!p.id && !String(p.name || '').trim()) return;
+    // the record is created on the first real keystroke, not on a type click —
+    // unless an upload already had to create it
+    if (!p.id && !this._draftId && !String(p.name || '').trim()) return;
     const body = {
       type: p.type, name: p.name, year: p.year, industry: p.industry, meta: p.meta,
       statement: p.statement, background: p.background, concept: p.concept,
@@ -901,8 +926,7 @@ class Component extends DCLogic {
       this._loadProjects();
     };
     const fail = (e) => { this.setState({ saveState: 'error', saveErr: e.message }); after(); };
-    if (p.id) KMAPI.projects.patch(p.id, body).then(done, fail);
-    else KMAPI.projects.create(body).then((rec) => KMAPI.projects.patch(rec.id, body)).then(done, fail);
+    this._ensureDraft().then((id) => KMAPI.projects.patch(id, body)).then(done, fail);
   }
 
   // Masonry: every shot keeps its own ratio and packs against the shortest run of
@@ -981,37 +1005,58 @@ class Component extends DCLogic {
   _upl(key, v) { this.setState((s) => ({ upload: Object.assign({}, s.upload, { [key]: v }) })); }
 
   _uploadAsset(key, file) {
-    const p = this.state.p;
-    if (!p || !p.id) {
-      this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: 'Save the project name first so we can create a draft.' }) }));
-      return;
-    }
     this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: '' }) }));
     this._upl(key, 0);
-    KMAPI.assets.upload(p.id, file, (pct) => this._upl(key, pct), key).then(
-      (a) => {
-        this._upl(key, -1);
-        const assetObj = { id: a.assetId, name: a.name, url: a.url, w: a.width, h: a.height };
-        this._patch({ assets: Object.assign({}, (this.state.p || {}).assets, { [key]: assetObj }) }, true);
-        return KMAPI.projects.get(p.id);
-      },
-      (e) => { this._upl(key, -1); this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: e.message }) })); }
-    ).then(
-      (rec) => {
-        if (!rec) return;
-        this.setState((s) => ({
-          p: Object.assign({}, s.p, this._serverKeys(rec), rec.assets ? { assets: rec.assets } : {}),
-        }));
-      },
-      () => {}
-    );
+    this._ensureDraft()
+      .then((id) => KMAPI.assets.upload(id, file, (pct) => this._upl(key, pct), key).then((a) => ({ a, id })))
+      .then(
+        (r) => {
+          this._upl(key, -1);
+          const assetObj = { id: r.a.assetId, name: r.a.name, url: r.a.url, w: r.a.width, h: r.a.height };
+          this._patch({ assets: Object.assign({}, (this.state.p || {}).assets, { [key]: assetObj }) }, true);
+          return KMAPI.projects.get(r.id);
+        },
+        (e) => { this._upl(key, -1); this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: e.message }) })); }
+      )
+      .then(
+        (rec) => {
+          if (!rec) return;
+          this.setState((s) => ({
+            p: Object.assign({}, s.p, this._serverKeys(rec), { assets: this._mergeAssets((s.p || {}).assets, rec.assets) }),
+          }));
+        },
+        () => {}
+      );
+  }
+
+  // The server is the authority on which asset fills a slot, but the upload
+  // reply is the only place the filename and pixel size are known for certain.
+  // Keep those whenever both sides point at the same asset.
+  _mergeAssets(local, remote) {
+    const out = Object.assign({}, remote || {});
+    Object.keys(out).forEach((k) => {
+      const l = (local || {})[k];
+      if (!l || l.id !== out[k].id) return;
+      out[k] = Object.assign({}, out[k], {
+        name: out[k].name || l.name,
+        w: out[k].w || l.w,
+        h: out[k].h || l.h,
+      });
+    });
+    return out;
   }
 
   _pollBundle() {
     const p = this.state.p;
-    KMAPI.bundle.status(p && p.id, p && p.slug).then((r) => {
-      this._patch({ bundle: Object.assign({}, (this.state.p || {}).bundle, { status: r.status, message: r.message || '', url: r.url || '' }) }, true);
-    });
+    if (!p || !p.id) return;
+    KMAPI.bundle.status(p.id).then(
+      (r) => {
+        this._patch({ bundle: Object.assign({}, (this.state.p || {}).bundle, { status: r.status, message: r.message || '', url: r.url || '' }) }, true);
+      },
+      (e) => {
+        this._patch({ bundle: Object.assign({}, (this.state.p || {}).bundle, { status: 'error', message: e.message }) }, true);
+      }
+    );
   }
 
   /* ---------- availability ---------- */
@@ -1123,13 +1168,13 @@ class Component extends DCLogic {
       pjEmptyAll: !!s.pjList && !s.pjErr && list.length === 0,
       loadProjects: () => this._loadProjects(),
       pjToast: s.pjToast || ' ', pjToastFg: s.pjToastErr ? 'var(--warn)' : 'var(--accent)',
-      newProject: () => this.setState({ view: 'work', p: this._blank('website'), saveState: 'idle', pubResult: '', pubMissing: [], upload: {} }),
-      newOfType: (e) => { const t = e.currentTarget.dataset.type; this.setState({ view: 'work', p: this._blank(t), saveState: 'idle', pubResult: '', pubMissing: [], upload: {} }); },
+      newProject: () => { this._resetDraft(); this.setState({ view: 'work', p: this._blank('website'), saveState: 'idle', pubResult: '', pubMissing: [], upload: {} }); },
+      newOfType: (e) => { const t = e.currentTarget.dataset.type; this._resetDraft(); this.setState({ view: 'work', p: this._blank(t), saveState: 'idle', pubResult: '', pubMissing: [], upload: {} }); },
       pjEdit: (e) => {
         const id = e.currentTarget.dataset.id;
         this._setBusy(id, 'Opening');
         KMAPI.projects.get(id).then(
-          (rec) => { this._clearBusy(id); this.setState({ view: 'work', p: rec, saveState: 'idle', savedAt: rec.updatedAt, pubResult: '', pubMissing: [], upload: {} }); },
+          (rec) => { this._clearBusy(id); this._resetDraft(); this.setState({ view: 'work', p: rec, saveState: 'idle', savedAt: rec.updatedAt, pubResult: '', pubMissing: [], upload: {} }); },
           (err) => { this._clearBusy(id); this._toast(err.message, true); this._loadProjects(); }
         );
       },
@@ -1153,7 +1198,7 @@ class Component extends DCLogic {
         this.setState({ pjConfirm: '' });
         this._setBusy(id, 'Deleting');
         KMAPI.projects.remove(id).then(
-          () => { this._clearBusy(id); this._toast('Project deleted.'); if (this.state.p && this.state.p.id === id) this.setState({ p: null, view: 'projects' }); this._loadProjects(); },
+          () => { this._clearBusy(id); this._toast('Project deleted.'); if (this.state.p && this.state.p.id === id) { this._resetDraft(); this.setState({ p: null, view: 'projects' }); } this._loadProjects(); },
           (err) => { this._clearBusy(id); this._toast(err.message, true); }
         );
       },
@@ -1291,10 +1336,12 @@ class Component extends DCLogic {
         const f = e.currentTarget.files && e.currentTarget.files[0];
         if (!f) return;
         this.setState({ bundleProg: 0, bundleName: f.name });
-        KMAPI.bundle.upload(p.id, f, (v) => this.setState({ bundleProg: v })).then(
-          (r) => { this.setState({ bundleProg: -1 }); this._patch({ bundle: { status: 'unpacking', name: r.name, message: '', url: '' } }, true); setTimeout(() => this._pollBundle(), 400); },
-          (err) => { this.setState({ bundleProg: -1 }); this._patch({ bundle: { status: 'error', name: f.name, message: err.message, url: '' } }, true); }
-        );
+        this._ensureDraft()
+          .then((id) => KMAPI.bundle.upload(id, f, (v) => this.setState({ bundleProg: v })))
+          .then(
+            (r) => { this.setState({ bundleProg: -1 }); this._patch({ bundle: { status: 'unpacking', name: r.name, message: '', url: '' } }, true); setTimeout(() => this._pollBundle(), 400); },
+            (err) => { this.setState({ bundleProg: -1 }); this._patch({ bundle: { status: 'error', name: f.name, message: err.message, url: '' } }, true); }
+          );
       },
       heroThumb: (asset('hero') && asset('hero').url) || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', heroThumbShow: asset('hero') && asset('hero').url ? 'block' : 'none',
       heroLabel: uerr.hero ? uerr.hero : asset('hero') ? asset('hero').name + ' · ' + asset('hero').w + '×' + asset('hero').h : 'Choose an image',
@@ -1325,13 +1372,9 @@ class Component extends DCLogic {
       shotFile: (e) => {
         const i = Number(e.currentTarget.dataset.idx), f = e.currentTarget.files && e.currentTarget.files[0];
         if (!f) return;
-        if (!p.id) {
-          this.setState((st) => ({ uploadErr: Object.assign({}, st.uploadErr, { ['shot' + i]: 'Save the project name first so we can create a draft.' }) }));
-          return;
-        }
         const key = 'shot' + i;
         this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: 0 }), uploadErr: Object.assign({}, st.uploadErr, { [key]: '' }) }));
-        KMAPI.assets.upload(p.id, f, (v) => this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: v }) }))).then(
+        this._ensureDraft().then((id) => KMAPI.assets.upload(id, f, (v) => this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: v }) })))).then(
           (a) => {
             this.setState((st) => ({ upload: Object.assign({}, st.upload, { [key]: -1 }) }));
             // default the ratio from the image the API just measured
@@ -1418,7 +1461,7 @@ class Component extends DCLogic {
         };
         this.setState({ pubBusy: true, pubResult: '', pubMissing: [], pubMsg: '' });
         const body = { type: p.type, name: p.name, year: p.year, industry: p.industry, meta: p.meta, statement: p.statement, background: p.background, concept: p.concept, hosting: p.hosting, liveUrl: p.liveUrl, fill: p.fill, bundle: p.bundle, assets: p.assets, credits: p.credits, shots: p.shots };
-        const save = p.id ? KMAPI.projects.patch(p.id, body) : KMAPI.projects.create(body).then((r) => KMAPI.projects.patch(r.id, body));
+        const save = this._ensureDraft().then((id) => KMAPI.projects.patch(id, body));
         save.then((rec) => {
           this.setState((st) => ({ p: Object.assign({}, st.p, this._serverKeys(rec)), saveState: 'saved', savedAt: rec.updatedAt || Date.now() }));
           return KMAPI.projects.publish(rec.id);
@@ -1644,7 +1687,7 @@ class Component extends DCLogic {
       crmTitle: titles[v], crmSub: subs[v],
       setView: (e) => {
         const nv = e.currentTarget.dataset.view;
-        if (nv === 'work' && !this.state.p) return this.setState({ view: 'work', p: this._blank('website') });
+        if (nv === 'work' && !this.state.p) { this._resetDraft(); return this.setState({ view: 'work', p: this._blank('website') }); }
         this.setState({ view: nv });
       },
       vwProjBg: v === 'projects' ? 'var(--accent)' : 'transparent', vwProjFg: v === 'projects' ? '#14130F' : '#F1EFE7',
