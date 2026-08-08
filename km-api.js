@@ -501,9 +501,19 @@
     };
   }
 
+  /* Works asks for websites, brands and 3D in the same tick, and each one reads
+     the same /public/projects response. Share the in-flight request so that is
+     one round trip, not three. Cleared on settle — no stale cache. */
+  var listInFlight = null;
+
   var publicApi = {
     list: function () {
-      return jsonFetch('GET', '/public/projects').then(function (data) { return data.projects || []; });
+      if (listInFlight) return listInFlight;
+      var req = jsonFetch('GET', '/public/projects').then(function (data) { return data.projects || []; });
+      var clear = function () { if (listInFlight === req) listInFlight = null; };
+      req.then(clear, clear);
+      listInFlight = req;
+      return req;
     },
     get: function (slug) {
       return jsonFetch('GET', '/public/projects/' + encodeURIComponent(slug)).then(function (data) { return data.project; });

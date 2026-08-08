@@ -40,6 +40,8 @@ a:hover{color:var(--accent-ink)}
 @keyframes km-srise{from{opacity:0;transform:translateY(90px)}to{opacity:1;transform:translateY(0)}}
 @keyframes km-footrise{from{transform:translateY(90px);opacity:0.35}to{transform:translateY(0);opacity:1}}
 @keyframes km-pulse{0%,100%{opacity:0.35}50%{opacity:0.75}}
+@keyframes km-skel{0%,100%{opacity:0.5}50%{opacity:0.85}}
+.km-skel{background:var(--card);animation:km-skel 1.5s ease-in-out infinite}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}html{scroll-behavior:auto}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
@@ -400,7 +402,7 @@ body.dev.dragging #frame{cursor:grabbing}
   </div>
 </section>
 
-<section data-screen-label="Featured works" style="padding:clamp(48px,7cqw,110px) 0 clamp(56px,8cqw,120px)">
+<section data-screen-label="Featured works" style="display:{{ worksShow }};padding:clamp(48px,7cqw,110px) 0 clamp(56px,8cqw,120px)">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);margin:0 clamp(20px,4cqw,64px);padding:20px 0 clamp(28px,4cqw,56px)">
     <h2 style="margin:0;font-size:clamp(36px,4.6cqw,76px);font-weight:700;letter-spacing:-0.015em;line-height:0.92;text-transform:uppercase">Selected works</h2>
     <a href="Kinomad Works.dc.html" style="font-family:'Chillax',sans-serif;font-size:13px;letter-spacing:0.14em;padding-bottom:6px">ALL WORKS ↗</a>
@@ -413,6 +415,12 @@ body.dev.dragging #frame{cursor:grabbing}
           <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ wk.imgId }}" src="{{ wk.src }}" shape="rect" radius="0" placeholder="{{ wk.ph }}" style="width:100%;height:100%" hint-size="100%,300px"></x-import>
         </div>
       </sc-for>
+      <sc-if value="{{ worksLoading }}">
+        <div class="km-skel" style="flex:0 0 auto;width:30cqw;height:22cqw"></div>
+        <div class="km-skel" style="flex:0 0 auto;width:48cqw;height:34cqw;animation-delay:0.12s"></div>
+        <div class="km-skel" style="flex:0 0 auto;width:30cqw;height:22cqw;animation-delay:0.24s"></div>
+        <div class="km-skel" style="flex:0 0 auto;width:30cqw;height:22cqw;animation-delay:0.36s"></div>
+      </sc-if>
     </div>
     <div style="display:flex;justify-content:flex-end;padding:22px clamp(20px,4cqw,64px) 0">
       <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.14em;color:var(--mut);border:1px solid var(--line);padding:6px 14px">← DRAG →</span>
@@ -433,8 +441,8 @@ body.dev.dragging #frame{cursor:grabbing}
       <span style="font-size:15px;line-height:1.5;color:var(--mut);font-weight:500"><sc-for list="{{ awIndustryW }}" as="w" hint-placeholder-count="2"><span style="display:inline-block;margin-right:0.3em;opacity:{{ w.o }};transform:{{ w.tf }};transition:{{ w.tr }}">{{ w.t }}</span></sc-for></span>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
-      <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.12em;font-weight:600">// 04 Location</span>
-      <span style="font-size:15px;line-height:1.5;color:var(--mut);font-weight:500"><sc-for list="{{ awLocationW }}" as="w" hint-placeholder-count="2"><span style="display:inline-block;margin-right:0.3em;opacity:{{ w.o }};transform:{{ w.tf }};transition:{{ w.tr }}">{{ w.t }}</span></sc-for></span>
+      <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.12em;font-weight:600">// 04 Year</span>
+      <span style="font-size:15px;line-height:1.5;color:var(--mut);font-weight:500"><sc-for list="{{ awYearW }}" as="w" hint-placeholder-count="2"><span style="display:inline-block;margin-right:0.3em;opacity:{{ w.o }};transform:{{ w.tf }};transition:{{ w.tr }}">{{ w.t }}</span></sc-for></span>
     </div>
     <a href="{{ awHref }}" style="justify-self:end;border:1px solid var(--fg);padding:14px 26px;font-weight:600;font-size:15px;white-space:nowrap;transition:background 0.3s ease,color 0.3s ease" style-hover="background:var(--accent);color:#14130F">View Project</a>
   </div>
@@ -645,6 +653,70 @@ class Component extends DCLogic {
     this._clockTimer = setInterval(() => this._tick(), 1000);
     this._tick();
     this._initCursor();
+    this._loadWorks();
+  }
+
+  /* Selected works comes from the published projects, in the order the CRM
+     puts them in. There is no "featured" flag, so it is the first few. */
+  _loadWorks() {
+    const self = this;
+    const FEATURED = 6;
+    const done = (list) => {
+      self._worksL = list;
+      self._worksLoaded = true;
+      self.setState({ workIdx: list.length > 1 ? 1 : 0, wReveal: true });
+    };
+    const start = () => {
+      if (!window.KMAPI || !KMAPI.public) return done(self._fallbackWorks());
+      KMAPI.public.list().then(
+        (projects) => {
+          const items = (projects || []).slice(0, FEATURED).map((p, i) => self._toFeatured(p, i));
+          // A reachable API with nothing published is not a reason to show
+          // invented projects — the section hides itself instead.
+          done(items);
+        },
+        () => done(self._fallbackWorks())
+      );
+    };
+    if (window.KMAPI) start();
+    else window.addEventListener('kmapi-ready', start, { once: true });
+  }
+
+  _toFeatured(p, i) {
+    const c = KMAPI.public.toCase(p, i);
+    const page = p.type === 'brand' ? 'Kinomad Brand Page.dc.html'
+      : p.type === 'three' ? 'Kinomad Motion Page.dc.html'
+      : 'Kinomad Website Page.dc.html';
+    return {
+      title: c.name,
+      imgId: c.heroId,
+      src: c.heroSrc,
+      ph: c.heroPh,
+      desc: c.statement,
+      // The record has no services list; its category/deliverable/format is the
+      // closest thing the CRM actually captures.
+      services: c.meta,
+      industry: c.industry,
+      year: c.year,
+      href: this._href(page, c.slug),
+    };
+  }
+
+  _href(file, slug) {
+    if (window.KMROUTES) return KMROUTES.href(file, slug);
+    return file + (slug ? '?project=' + encodeURIComponent(slug) : '');
+  }
+
+  /* Only reached when the API cannot be talked to at all — the page still needs
+     to look like itself. A reachable API with no published work hides the
+     section rather than showing these. */
+  _fallbackWorks() {
+    return [
+      { title: 'Aurelia', imgId: 'feat-aurelia', src: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Aurelia, website hero screen', desc: 'A slow-fashion storefront rebuilt around feel: art direction, UX and full build.', services: 'Interface Design, Art Direction, Development', industry: 'E-commerce / Fashion', year: '2026', href: this._href('Kinomad Works.dc.html') },
+      { title: 'Vantar', imgId: 'feat-vantar', src: 'https://images.pexels.com/photos/6244/designer-board-typo-word.jpg?auto=compress&cs=tinysrgb&w=1920', ph: 'Vantar, identity system spread', desc: 'A fintech identity with one clear voice: strategy, logo, type and every touchpoint after.', services: 'Brand Strategy, Visual Systems, Brand Guidelines', industry: 'Fintech', year: '2026', href: this._href('Kinomad Works.dc.html') },
+      { title: 'Solstice', imgId: 'feat-solstice', src: 'https://images.pexels.com/photos/13180245/pexels-photo-13180245.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Solstice, 3D render still', desc: 'Product visualization modeled, lit and rendered until it feels real.', services: '3D Experiences, Motion Graphics, Video Editing', industry: 'Consumer Tech', year: '2025', href: this._href('Kinomad Works.dc.html') },
+      { title: 'Nomad Air', imgId: 'feat-nomadair', src: 'https://images.pexels.com/photos/34088260/pexels-photo-34088260.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Nomad Air, website screens', desc: 'A travel platform that makes booking feel like the trip already started.', services: 'Interface Design, Development, Motion Graphics', industry: 'Travel', year: '2025', href: this._href('Kinomad Works.dc.html') },
+    ];
   }
 
   /* The scheduler must never take the page down with it. If km-api.js failed to load
@@ -1474,20 +1546,18 @@ class Component extends DCLogic {
       { num: '04', name: 'Marketing', count: '004', href: 'Kinomad Works.dc.html', head: 'Growing brands with campaigns that convert', desc: 'From launch strategy to always-on growth, our marketing services turn attention into traction, pairing sharp creative with data to reach the right people and move them to act.', tags: 'GROWTH STRATEGY / CAMPAIGNS / SOCIAL & CONTENT / SEO & PERFORMANCE / EMAIL & CRM' },
       { num: '05', name: 'Engineering', count: '002', href: 'Kinomad Works.dc.html', head: 'Building robust foundations for digital excellence', desc: 'Our engineering services deliver full-stack solutions, technical optimization, and seamless integrations that power your digital presence with reliability and performance.', tags: 'FULL STACK SOLUTIONS / TECHNICAL SEO / PERFORMANCE OPTIMIZATION / CMS INTEGRATION / DIGITAL SIGNAGE' },
     ]);
-    const worksData = this._worksL || (this._worksL = [
-      { title: 'Aurelia', imgId: 'feat-aurelia', src: 'https://images.pexels.com/photos/9849320/pexels-photo-9849320.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Aurelia, website hero screen', desc: 'A slow-fashion storefront rebuilt around feel: art direction, UX and full build.', services: 'Interface Design, Art Direction, Development', industry: 'E-commerce / Fashion', location: 'Lisbon, Portugal', href: 'Kinomad Works.dc.html#web-aurelia' },
-      { title: 'Vantar', imgId: 'feat-vantar', src: 'https://images.pexels.com/photos/6244/designer-board-typo-word.jpg?auto=compress&cs=tinysrgb&w=1920', ph: 'Vantar, identity system spread', desc: 'A fintech identity with one clear voice: strategy, logo, type and every touchpoint after.', services: 'Brand Strategy, Visual Systems, Brand Guidelines', industry: 'Fintech', location: 'Berlin, Germany', href: 'Kinomad Works.dc.html#brand-vantar' },
-      { title: 'Solstice', imgId: 'feat-solstice', src: 'https://images.pexels.com/photos/13180245/pexels-photo-13180245.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Solstice, 3D render still', desc: 'Product visualization modeled, lit and rendered until it feels real.', services: '3D Experiences, Motion Graphics, Video Editing', industry: 'Consumer Tech', location: 'Copenhagen, Denmark', href: 'Kinomad Works.dc.html#three-d-solstice' },
-      { title: 'Nomad Air', imgId: 'feat-nomadair', src: 'https://images.pexels.com/photos/34088260/pexels-photo-34088260.jpeg?auto=compress&cs=tinysrgb&w=1920', ph: 'Nomad Air, website screens', desc: 'A travel platform that makes booking feel like the trip already started.', services: 'Interface Design, Development, Motion Graphics', industry: 'Travel', location: 'Barcelona, Spain', href: 'Kinomad Works.dc.html#web-nomadair' },
-    ]);
-    const wi = this.state.workIdx;
+    const worksLoading = !this._worksLoaded;
+    const worksData = this._worksL || [];
+    const wi = Math.min(this.state.workIdx, Math.max(0, worksData.length - 1));
     const mob = this._mobW();
     const works = worksData.map((w, i) => Object.assign({}, w, {
       cw: (i === wi ? (mob ? 80 : 48) : (mob ? 52 : 30)) + 'cqw',
       ch: (i === wi ? (mob ? 58 : 34) : (mob ? 38 : 22)) + 'cqw',
       op: i === wi ? '1' : '0.8',
     }));
-    const aw = worksData[wi];
+    // Every field the meta row animates has to be a string, including in the
+    // loading and empty states — mkW() splits them.
+    const aw = worksData[wi] || { title: '', desc: '', services: '', industry: '', year: '', href: '#' };
     const reveal = this.state.wReveal !== false;
     const mkW = (text, base, step) => text.split(' ').map((t, i) => ({
       t,
@@ -1540,8 +1610,11 @@ class Component extends DCLogic {
       awDescW: mkW(aw.desc, 200, 38),
       awServicesW: mkW(aw.services, 300, 44),
       awIndustryW: mkW(aw.industry, 400, 55),
-      awLocationW: mkW(aw.location, 440, 55),
+      awYearW: mkW(aw.year, 440, 55),
       awHref: aw.href,
+      worksLoading: worksLoading,
+      // Nothing published and the API answered: no strip, no meta, no title.
+      worksShow: (worksLoading || worksData.length > 0) ? 'block' : 'none',
       wDown: (e) => { this._pOk = true; this._wStart(e.currentTarget, e.clientX, e.clientY); try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {} e.stopPropagation(); },
       wMove: (e) => this._wDrag(e.clientX),
       wUp: (e) => this._wEnd(e.clientX),

@@ -348,7 +348,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
             <span style="font-family:'Chillax',sans-serif;font-size:12px;letter-spacing:0.16em;color:var(--mut)">// 02 REEL</span>
             <label style="display:flex;flex-direction:column;gap:10px;border:1px dashed color-mix(in srgb,var(--fg) 35%,transparent);background:var(--panel);padding:clamp(22px,2.4cqw,36px);cursor:pointer;text-align:center;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
               <input type="file" accept="video/mp4,video/webm" data-key="reel" onChange="{{ assetFile }}" style="display:none">
-              <span style="font-size:15px;font-weight:600">{{ reelLabel }}</span>
+              <span style="font-size:15px;font-weight:600;color:{{ reelLabelFg }}">{{ reelLabel }}</span>
               <span style="font-size:13px;color:var(--mut);font-weight:500">Optional. MP4 or WebM, 21:9 preferred. With no reel the project page opens straight into the shots.</span>
             </label>
             <div style="height:3px;background:#0d0d0d;display:{{ reelBarShow }}"><div style="height:100%;width:{{ reelPct }};background:var(--accent);transition:width 0.12s linear"></div></div>
@@ -358,7 +358,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
                 <label style="display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
                   <input type="file" accept="image/*" data-key="poster" onChange="{{ assetFile }}" style="display:none">
                   <span style="width:46px;height:34px;background:#0d0d0d;background-image:url({{ posterThumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;flex:0 0 auto"></span>
-                  <span style="font-size:13px;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ posterLabel }}</span>
+                  <span style="font-size:13px;font-weight:500;color:{{ posterLabelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ posterLabel }}</span>
                 </label>
               </div>
               <div style="display:flex;flex-direction:column;gap:8px">
@@ -366,7 +366,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!
                 <label style="display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);padding:9px 12px;cursor:pointer;transition:border-color 0.25s ease" style-hover="border-color:var(--accent)">
                   <input type="file" accept="image/*" data-key="card" onChange="{{ assetFile }}" style="display:none">
                   <span style="width:46px;height:34px;background:#0d0d0d;background-image:url({{ cardThumb }});background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line);overflow:hidden;flex:0 0 auto"></span>
-                  <span style="font-size:13px;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ cardLabel }}</span>
+                  <span style="font-size:13px;font-weight:500;color:{{ cardLabelFg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ cardLabel }}</span>
                 </label>
               </div>
             </div>
@@ -1004,7 +1004,17 @@ class Component extends DCLogic {
 
   _upl(key, v) { this.setState((s) => ({ upload: Object.assign({}, s.upload, { [key]: v }) })); }
 
+  // Same ceilings the API enforces. Checked here too so a file that can never
+  // succeed is refused at once, instead of after minutes of upload.
+  _sizeLimit(key) { return key === 'reel' ? 500 * 1024 * 1024 : 25 * 1024 * 1024; }
+
   _uploadAsset(key, file) {
+    const max = this._sizeLimit(key);
+    if (file.size > max) {
+      const mb = (n) => Math.round(n / (1024 * 1024));
+      this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: mb(file.size) + ' MB is over the ' + mb(max) + ' MB limit — compress it first.' }) }));
+      return;
+    }
     this.setState((s) => ({ uploadErr: Object.assign({}, s.uploadErr, { [key]: '' }) }));
     this._upl(key, 0);
     this._ensureDraft()
@@ -1347,10 +1357,15 @@ class Component extends DCLogic {
       heroLabel: uerr.hero ? uerr.hero : asset('hero') ? asset('hero').name + ' · ' + asset('hero').w + '×' + asset('hero').h : 'Choose an image',
       heroBarShow: (upl.hero != null && upl.hero >= 0) ? 'block' : 'none', heroPct: pct('hero'),
       posterThumb: (asset('poster') && asset('poster').url) || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', posterThumbShow: asset('poster') && asset('poster').url ? 'block' : 'none',
-      posterLabel: asset('poster') ? asset('poster').name : 'Choose an image',
+      posterLabel: uerr.poster ? uerr.poster : asset('poster') ? asset('poster').name : 'Choose an image',
+      posterLabelFg: uerr.poster ? 'var(--warn)' : 'var(--mut)',
       cardThumb: (asset('card') && asset('card').url) || 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==', cardThumbShow: asset('card') && asset('card').url ? 'block' : 'none',
-      cardLabel: asset('card') ? asset('card').name : 'Choose an image',
-      reelLabel: asset('reel') ? asset('reel').name : 'Click to upload reel video (optional)',
+      cardLabel: uerr.card ? uerr.card : asset('card') ? asset('card').name : 'Choose an image',
+      cardLabelFg: uerr.card ? 'var(--warn)' : 'var(--mut)',
+      // A failed slot upload used to leave the label exactly as it was, so a
+      // reel that never arrived looked identical to one nobody had picked.
+      reelLabel: uerr.reel ? uerr.reel : asset('reel') ? asset('reel').name : 'Click to upload reel video (optional)',
+      reelLabelFg: uerr.reel ? 'var(--warn)' : 'inherit',
       reelBarShow: (upl.reel != null && upl.reel >= 0) ? 'block' : 'none', reelPct: pct('reel'),
       assetFile: (e) => { const k = e.currentTarget.dataset.key, f = e.currentTarget.files && e.currentTarget.files[0]; if (f) this._uploadAsset(k, f); },
       shots: shots,

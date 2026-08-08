@@ -50,6 +50,8 @@ a:hover{color:var(--accent-ink)}
 @keyframes km-spin{to{transform:rotate(1turn)}}
 @keyframes km-par{from{transform:translateY(-5.5%)}to{transform:translateY(5.5%)}}
 @keyframes km-footrise{from{transform:translateY(90px);opacity:0.35}to{transform:translateY(0);opacity:1}}
+@keyframes km-skel{0%,100%{opacity:0.5}50%{opacity:0.85}}
+.km-skel{background:var(--card);animation:km-skel 1.5s ease-in-out infinite}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:0.01ms !important}html{scroll-behavior:auto}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .km-skip{position:absolute;left:12px;top:-60px;z-index:200;background:var(--accent);color:#14130F;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 18px;transition:top 0.2s ease}
@@ -282,6 +284,13 @@ body.dev.dragging #frame{cursor:grabbing}
       </div>
     </a>
   </sc-for>
+  <sc-if value="{{ worksLoading }}">
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <div class="km-skel" style="height:clamp(300px,29cqw,450px)"></div>
+      <div class="km-skel" style="height:clamp(300px,29cqw,450px);animation-delay:0.18s"></div>
+      <div class="km-skel" style="height:clamp(300px,29cqw,450px);animation-delay:0.36s"></div>
+    </div>
+  </sc-if>
 </section>
 
 <section data-screen-label="Brand identity" id="brand" style="padding:0 clamp(20px,4cqw,64px) clamp(64px,9cqw,130px);scroll-margin-top:70px">
@@ -330,6 +339,26 @@ body.dev.dragging #frame{cursor:grabbing}
         </div>
       </div>
     </sc-for>
+    <sc-if value="{{ worksLoading }}">
+      <div style="display:flex;flex-direction:column">
+        <div class="km-skel" style="width:120px;height:16px;margin-bottom:14px"></div>
+        <div data-r="brandimgs" style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px">
+          <div class="km-skel" style="aspect-ratio:3/2"></div>
+          <div class="km-skel" style="aspect-ratio:3/2;animation-delay:0.12s"></div>
+          <div class="km-skel" style="aspect-ratio:3/2;animation-delay:0.24s"></div>
+          <div class="km-skel" style="aspect-ratio:3/2;animation-delay:0.36s"></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <div class="km-skel" style="width:96px;height:16px;margin-bottom:14px;animation-delay:0.2s"></div>
+        <div data-r="brandimgs" style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px">
+          <div class="km-skel" style="aspect-ratio:3/2;animation-delay:0.2s"></div>
+          <div class="km-skel" style="aspect-ratio:3/2;animation-delay:0.32s"></div>
+          <div class="km-skel" style="aspect-ratio:3/2;animation-delay:0.44s"></div>
+          <div class="km-skel" style="aspect-ratio:3/2;animation-delay:0.56s"></div>
+        </div>
+      </div>
+    </sc-if>
   </div>
 </section>
 
@@ -370,6 +399,20 @@ body.dev.dragging #frame{cursor:grabbing}
         </div>
       </a>
     </sc-for>
+    <sc-if value="{{ worksLoading }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="km-skel" style="aspect-ratio:2/3"></div>
+        <div class="km-skel" style="width:60%;height:20px"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="km-skel" style="aspect-ratio:2/3;animation-delay:0.15s"></div>
+        <div class="km-skel" style="width:52%;height:20px;animation-delay:0.15s"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="km-skel" style="aspect-ratio:2/3;animation-delay:0.3s"></div>
+        <div class="km-skel" style="width:64%;height:20px;animation-delay:0.3s"></div>
+      </div>
+    </sc-if>
   </div>
 </section>
 
@@ -657,7 +700,9 @@ class Component extends DCLogic {
   }
 
   _sampleBrandColors(list) {
-    if (this._sampledColors) return;
+    /* The empty loading render must not latch the guard, or the real brands
+       that arrive a moment later never get sampled. */
+    if (this._sampledColors || !list.length) return;
     this._sampledColors = true;
     list.forEach((b) => {
       const img = new Image();
@@ -962,10 +1007,14 @@ class Component extends DCLogic {
   renderVals() {
     // reveals respond to a tap on any touch device, not just narrow previews
     const tapOK = this.state.device !== 'Desktop' || this._touch();
-    const demo = !this._projectsLoaded || this._demoFallback;
-    const websBase = demo ? (this._webs || this._fallbackWebs()) : (this._webs || []);
-    const brandsBase = demo ? (this._brands || this._fallbackBrands()) : (this._brands || []);
-    const threesBase = demo ? (this._threes || this._fallbackThrees()) : (this._threes || []);
+    /* Until the API answers we show skeletons, never the built-in samples — a
+       first paint of demo projects that swaps to the real ones reads as a bug.
+       _loadProjects fills _webs/_brands/_threes with the samples only when the
+       request actually fails, and sets _projectsLoaded in both outcomes. */
+    const loading = !this._projectsLoaded;
+    const websBase = loading ? [] : (this._webs || []);
+    const brandsBase = loading ? [] : (this._brands || []);
+    const threesBase = loading ? [] : (this._threes || []);
     const webs = websBase.map((x, i) => Object.assign({}, x, {
       href: this._href('Kinomad Website Page.dc.html', x.id),
       num: x.num || ('0' + (i + 1)),
@@ -1006,10 +1055,11 @@ class Component extends DCLogic {
       : { bg: 'transparent', fg: 'rgba(241,239,231,0.7)' };
     return {
       ...this._bkView(),
-      totalCount: webs.length + brands.length + threes.length,
-      webCountPad: this._countPad(webs.length),
-      brandCountPad: this._countPad(brands.length),
-      threeCountPad: this._countPad(threes.length),
+      worksLoading: loading,
+      totalCount: loading ? '··' : webs.length + brands.length + threes.length,
+      webCountPad: loading ? '··' : this._countPad(webs.length),
+      brandCountPad: loading ? '··' : this._countPad(brands.length),
+      threeCountPad: loading ? '··' : this._countPad(threes.length),
       cardTap: (e) => {
         if (this.state.device === 'Desktop' && !this._touch()) return;
         const id = e.currentTarget.id;
