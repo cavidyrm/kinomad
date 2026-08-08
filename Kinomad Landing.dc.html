@@ -419,7 +419,6 @@ body.dev.dragging #frame{cursor:grabbing}
         <div class="km-skel" style="flex:0 0 auto;width:30cqw;height:22cqw"></div>
         <div class="km-skel" style="flex:0 0 auto;width:48cqw;height:34cqw;animation-delay:0.12s"></div>
         <div class="km-skel" style="flex:0 0 auto;width:30cqw;height:22cqw;animation-delay:0.24s"></div>
-        <div class="km-skel" style="flex:0 0 auto;width:30cqw;height:22cqw;animation-delay:0.36s"></div>
       </sc-if>
     </div>
     <div style="display:flex;justify-content:flex-end;padding:22px clamp(20px,4cqw,64px) 0">
@@ -656,11 +655,14 @@ class Component extends DCLogic {
     this._loadWorks();
   }
 
-  /* Selected works comes from the published projects, in the order the CRM
-     puts them in. There is no "featured" flag, so it is the first few. */
+  /* Selected works shows the top three from the Works page. /public/projects
+     is ordered by type then position, and project_type is an enum declared
+     (website, brand, three), so that order is already the Works page's section
+     order — the first three here are the first three there. There is no
+     "featured" flag; reorder in the CRM to change which ones show. */
   _loadWorks() {
     const self = this;
-    const FEATURED = 6;
+    const FEATURED = 3;
     const done = (list) => {
       self._worksL = list;
       self._worksLoaded = true;
